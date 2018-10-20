@@ -1,5 +1,8 @@
 # Change Log
 
+Notable changes to this project based on the [Keep a Changelog](https://keepachangelog.com) format.
+This project adheres to [Semantic Versioning](https://semver.org).
+
 
 ## [Unreleased](https://github.com/thebigmunch/google-music/tree/master)
 
