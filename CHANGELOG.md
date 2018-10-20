@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 ### Added
 
 * Add support for rating store and playlist songs.
+* Add Mobileclient.song_play for incrementing song play counts.
 
 ### Changed
 

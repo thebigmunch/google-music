@@ -891,7 +891,29 @@ class MobileClient(GoogleMusicClient):
 
 		return song_info
 
-	# TODO: Does this really need to return anything?
+	def song_play(self, song):
+		"""Add play to song play count.
+
+		Parameters:
+			song (dict): A song dict.
+
+		Returns:
+			bool: ``True`` if successful, ``False`` if not.
+		"""
+
+		if 'storeId' in song:
+			song_id = song['storeId']
+		elif 'trackId' in song:
+			song_id = song['trackId']
+		else:
+			song_id = song['id']
+
+		song_duration = song['durationMillis']
+
+		response = self._call(mc_calls.ActivityRecordPlay, song_id, song_duration)
+
+		return True if response.body['eventResults'][0]['code'] == 'OK' else False
+
 	def song_rate(self, song, rating):
 		"""Rate song.
 
