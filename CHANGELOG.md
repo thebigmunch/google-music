@@ -1,8 +1,13 @@
 # Change Log
 
+
 ## [Unreleased](https://github.com/thebigmunch/google-music/tree/master)
 
 [Commits](https://github.com/thebigmunch/google-music/compare/1.0.0...master)
+
+### Added
+
+* Add support for rating store and playlist songs.
 
 ### Changed
 

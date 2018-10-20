@@ -900,7 +900,14 @@ class MobileClient(GoogleMusicClient):
 			rating (int): 0 (not rated), 1 (thumbs down), or 5 (thumbs up).
 		"""
 
-		self._call(mc_calls.ActivityRecordRate, song['id'], rating)
+		if 'storeId' in song:
+			song_id = song['storeId']
+		elif 'trackId' in song:
+			song_id = song['trackId']
+		else:
+			song_id = song['id']
+
+		self._call(mc_calls.ActivityRecordRate, song_id, rating)
 
 	def songs(self):
 		"""Get a listing of Music Library songs.
