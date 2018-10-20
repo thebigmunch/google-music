@@ -697,9 +697,13 @@ class MobileClient(GoogleMusicClient):
 		for cluster in clusters:
 			result_type = f"{QueryResultType(int(cluster['cluster']['type'])).name}s"
 
-			entries_len = len(cluster.get('entries', []))
-			if entries_len > 0:
-					results[result_type].extend(cluster['entries'])
+			entries = cluster.get('entries', [])
+			if len(entries) > 0:
+				for entry in entries:
+					item_key = next(
+						key for key in entry if key not in ['cluster', 'score', 'type']
+					)
+					results[result_type].append(entry[item_key])
 
 		return dict(results)
 

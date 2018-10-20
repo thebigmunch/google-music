@@ -8,6 +8,9 @@
 
 * Return plain dict from Mobileclient.search.
   This was mistakenly left as defaultdict.
+* Only return item dicts from search results.
+  Previously, entire search result with metadata was returned.
+
 
 ## [1.0.0](https://github.com/thebigmunch/google-music/releases/tag/1.0.0) (2018-10-19)
 
