@@ -898,6 +898,9 @@ class MobileClient(GoogleMusicClient):
 		Parameters:
 			song (dict): A song dict.
 			rating (int): 0 (not rated), 1 (thumbs down), or 5 (thumbs up).
+
+		Returns:
+			bool: ``True`` if successful, ``False`` if not.
 		"""
 
 		if 'storeId' in song:
@@ -907,7 +910,10 @@ class MobileClient(GoogleMusicClient):
 		else:
 			song_id = song['id']
 
-		self._call(mc_calls.ActivityRecordRate, song_id, rating)
+		response = self._call(mc_calls.ActivityRecordRate, song_id, rating)
+		
+		return True if response.body['eventResults'][0]['code'] == 'OK' else False
+
 
 	def songs(self):
 		"""Get a listing of Music Library songs.

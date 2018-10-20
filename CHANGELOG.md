@@ -18,6 +18,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
   This was mistakenly left as defaultdict.
 * Only return item dicts from search results.
   Previously, entire search result with metadata was returned.
+* Add return value for Mobileclient.song_rate.
+  ``True`` if successful, ``False`` of not.
 
 
 ## [1.0.0](https://github.com/thebigmunch/google-music/releases/tag/1.0.0) (2018-10-19)
