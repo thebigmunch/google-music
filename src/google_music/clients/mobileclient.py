@@ -701,7 +701,7 @@ class MobileClient(GoogleMusicClient):
 			if entries_len > 0:
 					results[result_type].extend(cluster['entries'])
 
-		return results
+		return dict(results)
 
 	def search_suggestion(self, query):
 		"""Get search query suggestions for query.
