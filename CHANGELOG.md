@@ -14,7 +14,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ### Changed
 
-* Refactor MobileClient.playlist_entries to match Mobileclient.songs impelementation.
+* Refactor MobileClient.playlist_entries to match MobileClient.songs impelementation.
+* Rename MobileClient.playlist_feed to MobileClient.playlists.
 
 
 

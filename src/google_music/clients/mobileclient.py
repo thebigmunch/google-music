@@ -517,7 +517,7 @@ class MobileClient(GoogleMusicClient):
 
 		return playlist
 
-	def playlist_feed(self, *, include_songs=False):
+	def playlists(self, *, include_songs=False):
 		"""Get a listing of library playlists.
 
 		Parameters:
