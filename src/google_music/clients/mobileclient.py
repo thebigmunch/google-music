@@ -1054,18 +1054,15 @@ class MobileClient(GoogleMusicClient):
 			if start_token is None:
 				break
 
-	def station(self, station_id, *, num_songs=25, only_library=False, recently_played=None):
 	# TODO: Investigate library_content_only.
 	# TODO: Figure out 'radio/stationfeed'.
+	def station(self, station_id, *, num_songs=25, recently_played=None):
 		"""Get information about a station.
 
 		Parameters:
 			station_id (str): A station ID.
 			num_songs (int, Optional): The maximum number of songs to return from the station.
 				Default: ``25``
-			only_library (bool, Optional): Only return stations added to the library;
-				Do not return generated stations.
-				Default: False
 			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
 				where ``id`` is a song ID and ``type`` is 0 for a library song and 1 for a store song.
 
@@ -1074,8 +1071,9 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		station_info = {
-			'station_id': station_id, 'num_entries': num_songs,
-			'library_content_only': only_library
+			'station_id': station_id,
+			'num_entries': num_songs,
+			'library_content_only': False
 		}
 
 		if recently_played is not None:
@@ -1120,7 +1118,6 @@ class MobileClient(GoogleMusicClient):
 			num_songs (int, Optional): The maximum number of songs to return from the station. Default: ``25``
 			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
 				where ``id`` is a song ID and ``type`` is 0 for a library song and 1 for a store song.
-
 		"""
 
 		station_id = station['id']

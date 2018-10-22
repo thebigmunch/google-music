@@ -28,6 +28,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 * MobileClient.song_feed.
 * MobileClient.song_feed_iter.
+* ``only_library`` parameter from MobileClient.station.
 
 
 ## [1.1.0](https://github.com/thebigmunch/google-music/releases/tag/1.1.0) (2018-10-20)
