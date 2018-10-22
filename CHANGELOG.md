@@ -22,8 +22,12 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Refactor MobileClient.playlists to match MobileClient.songs impelementation.
 * Refactor MobileClient.podcasts to match MobileClient.songs impelementation.
 * Refactor MobileClient.podcast_episodes to match MobileClient.songs impelementation.
+* Change MobileClient.songs to use TrackFeed call instead of Tracks.
 
+### Removed
 
+* MobileClient.song_feed.
+* MobileClient.song_feed_iter.
 
 
 ## [1.1.0](https://github.com/thebigmunch/google-music/releases/tag/1.1.0) (2018-10-20)

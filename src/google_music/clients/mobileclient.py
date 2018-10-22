@@ -1017,51 +1017,20 @@ class MobileClient(GoogleMusicClient):
 		return True if response.body['eventResults'][0]['code'] == 'OK' else False
 
 	def songs(self):
-		"""Get a listing of Music Library songs.
+		"""Get a listing of library songs.
 
 		Returns:
 			list: Song dicts.
 		"""
 
-		return [song for chunk in self.songs_iter(page_size=49995) for song in chunk]
+		return [
+			song
+			for chunk in self.songs_iter(page_size=49995)
+			for song in chunk
+		]
 
-	def songs_iter(self, *, start_token=None, page_size=1000):
-		"""Get a paged iterator of Music Library songs.
-
-		Parameters:
-			start_token (str): The token of the page to return.
-				Default: Not sent to get first page.
-			page_size (int, Optional): The maximum number of results per returned page.
-				Max allowed is ``49995``.
-				Default: ``1000``
-
-		Yields:
-			list: Song dicts.
-		"""
-
-		while True:
-			response = self._call(mc_calls.Tracks, max_results=page_size, start_token=start_token)
-			items = response.body.get('data', {}).get('items', [])
-
-			if items:
-				yield items
-
-			start_token = response.body.get('nextPageToken')
-
-			if start_token is None:
-				break
-
-	def song_feed(self):
-		"""Get a feed of Music Library songs.
-
-		Returns:
-			list: Song dicts.
-		"""
-
-		return [song for chunk in self.song_feed_iter(page_size=49995) for song in chunk]
-
-	def song_feed_iter(self, *, page_size=250):
-		"""Get a paged iterator of Music Library songs.
+	def songs_iter(self, *, page_size=250):
+		"""Get a paged iterator of library songs.
 
 		Parameters:
 			page_size (int, Optional): The maximum number of results per returned page.
@@ -1075,14 +1044,13 @@ class MobileClient(GoogleMusicClient):
 		start_token = None
 
 		while True:
-			response = self._call(mc_calls.Tracks, max_results=page_size, start_token=start_token)
+			response = self._call(mc_calls.TrackFeed, max_results=page_size, start_token=start_token)
 			items = response.body.get('data', {}).get('items', [])
 
 			if items:
 				yield items
 
 			start_token = response.body.get('nextPageToken')
-
 			if start_token is None:
 				break
 
