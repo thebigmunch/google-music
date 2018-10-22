@@ -691,26 +691,49 @@ class MobileClient(GoogleMusicClient):
 		if device_id is None:
 			device_id = self.device_id
 
-		podcast_episode_list = []
+		return [
+			podcast_episode
+			for chunk in self.podcast_episode_iter(device_id=device_id, page_size=49995)
+			for podcast_episode in chunk
+		]
+
+	def podcast_episode_iter(self, *, device_id=None, page_size=250):
+		"""Get a paged iterator of podcast episode for all subscribed podcasts.
+
+		Parameters:
+			device_id (str, Optional): A mobile device ID.
+				Default: Use ``device_id`` of the :class:`MobileClient` instance.
+			page_size (int, Optional): The maximum number of results per returned page.
+				Max allowed is ``49995``.
+				Default: ``250``
+
+		Yields:
+			list: Song dicts.
+		"""
+
+		if device_id is None:
+			device_id = self.device_id
+
 		start_token = None
 		prev_items = None
 
 		while True:
 			response = self._call(
-				mc_calls.PodcastEpisode, device_id, max_results=250, start_token=start_token
+				mc_calls.PodcastEpisode, device_id, max_results=page_size, start_token=start_token
 			)
-			start_token = response.body.get('nextPageToken')
 			items = response.body.get('data', {}).get('items', [])
 
 			# Google does some weird shit.
 			if items != prev_items:
-				podcast_episode_list.extend(items)
+				yield items
 
 				prev_items = items
 			else:
 				break
 
-		return podcast_episode_list
+			start_token = response.body.get('nextPageToken')
+			if start_token is None:
+				break
 
 	def promoted_songs(self):
 		"""Get a listing of promoted store songs based on account activity and other factors.

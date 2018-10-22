@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Add playlist_entries_iter method to MobileClient.
 * Add playlists_iter method to MobileClient.
 * Add podcasts_iter method to MobileClient.
+* Add podcast_episdoe_iter method to MobileClient.
 
 ### Changed
 
@@ -20,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Rename MobileClient.playlist_feed to MobileClient.playlists.
 * Refactor MobileClient.playlists to match MobileClient.songs impelementation.
 * Refactor MobileClient.podcasts to match MobileClient.songs impelementation.
+* Refactor MobileClient.podcast_episodes to match MobileClient.songs impelementation.
 
 
 
