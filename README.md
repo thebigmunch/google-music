@@ -1,6 +1,7 @@
 # google-music
 
-[google-music](https://github.com/thebigmunch/google-music) is an API wrapper library for Google Music.
+[google-music](https://github.com/thebigmunch/google-music) is an API wrapper library for Google Music using my sans-I/O library,
+[google-music-proto](https://github.com/thebigmunch/google-music-proto).
 
 
 ## Installation
