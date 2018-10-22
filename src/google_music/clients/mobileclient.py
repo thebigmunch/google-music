@@ -1127,36 +1127,49 @@ class MobileClient(GoogleMusicClient):
 		return station.get('tracks', [])
 
 	# TODO: Figure out 'radio/station' vs 'radio/stationfeed'.
-	def stations(self, *, only_library=False):
-		"""Get a listing of Music Library stations.
+	def stations(self, *, generated=True, library=True):
+		"""Get a listing of library stations.
 
 		The listing can contain stations added to the library and generated from the library.
 
 		Parameters:
-			only_library (bool, Optional): Only return stations added to the library;
-				Do not return generated stations.
-				Default: False
+			generated (bool, Optional): Include generated stations.
+				Default: True
+			library (bool, Optional): Include library stations.
+				Default: True
 
 		Returns:
 			list: Station information dicts.
 		"""
 
-		station_list = []
+		return [
+			station
+			for chunk in self.stations_iter(page_size=49995)
+			for station in chunk
+			if (generated and not station.get('inLibrary')) or (library and station.get('inLibrary'))
+		]
+
+	def stations_iter(self, *, page_size=250):
+		"""Get a paged iterator of library songs.
+
+		Parameters:
+			page_size (int, Optional): The maximum number of results per returned page.
+				Max allowed is ``49995``.
+				Default: ``250``
+
+		Yields:
+			list: Song dicts.
+		"""
+
 		start_token = None
 
 		while True:
-			response = self._call(mc_calls.RadioStation, max_results=250, start_token=start_token)
-			station_list.extend(response.body.get('data', {}).get('items', []))
+			response = self._call(mc_calls.RadioStation, max_results=page_size, start_token=start_token)
+			yield response.body.get('data', {}).get('items', [])
 
 			start_token = response.body.get('nextPageToken')
-
 			if start_token is None:
 				break
-
-		if only_library:
-			station_list = [station for station in station_list if station.get('inLibrary')]
-
-		return station_list
 
 	def stream(self, item, *, device_id=None, quality='hi', session_token=None):
 		"""Get MP3 stream of a podcast episode, library song, station_song, or store song.

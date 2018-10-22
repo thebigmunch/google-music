@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Add playlists_iter method to MobileClient.
 * Add podcasts_iter method to MobileClient.
 * Add podcast_episdoe_iter method to MobileClient.
+* ``generated`` and ``library`` parameters to MobileClient.stations
+  to control returned station types.
 
 ### Changed
 
@@ -23,12 +25,14 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Refactor MobileClient.podcasts to match MobileClient.songs impelementation.
 * Refactor MobileClient.podcast_episodes to match MobileClient.songs impelementation.
 * Change MobileClient.songs to use TrackFeed call instead of Tracks.
+* Refactor MobileClient.stations to match MobileClient.songs impelementation.
 
 ### Removed
 
 * MobileClient.song_feed.
 * MobileClient.song_feed_iter.
 * ``only_library`` parameter from MobileClient.station.
+* ``only_library`` parameter from MobileClient.stations.
 
 
 ## [1.1.0](https://github.com/thebigmunch/google-music/releases/tag/1.1.0) (2018-10-20)
