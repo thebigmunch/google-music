@@ -917,7 +917,7 @@ class MobileClient(GoogleMusicClient):
 		return station.get('tracks', [])
 
 	def shuffle_song(self, song, *, num_songs=100, only_library=False, recently_played=None):
-		"""Get a listing of arist shuffle/mix songs.
+		"""Get a listing of song shuffle/mix songs.
 
 		Parameters:
 			song (dict): A song dict.
