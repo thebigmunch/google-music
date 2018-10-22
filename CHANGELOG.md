@@ -11,12 +11,13 @@ This project adheres to [Semantic Versioning](https://semver.org).
 ### Added
 
 * Add playlist_entries_iter method to MobileClient.
+* Add playlists_iter method to Mobileclient
 
 ### Changed
 
 * Refactor MobileClient.playlist_entries to match MobileClient.songs impelementation.
 * Rename MobileClient.playlist_feed to MobileClient.playlists.
-
+* Refactor MobileClient.playlists to match MobileClient.songs impelementation.
 
 
 

@@ -528,17 +528,11 @@ class MobileClient(GoogleMusicClient):
 			list: A list of playlist dicts.
 		"""
 
-		playlist_list = []
-		start_token = None
-
-		while True:
-			response = self._call(mc_calls.PlaylistFeed, max_results=250, start_token=start_token)
-			playlist_list.extend(response.body.get('data', {}).get('items', []))
-
-			start_token = response.body.get('nextPageToken')
-
-			if start_token is None:
-				break
+		playlist_list = [
+			playlist
+			for chunk in self.playlists_iter(page_size=49995)
+			for playlist in chunk
+		]
 
 		if include_songs:
 			playlist_entries = self.playlist_entries()
@@ -548,7 +542,9 @@ class MobileClient(GoogleMusicClient):
 
 				if playlist_type in ('USER_GENERATED', None) and playlist_type != 'SHARED':
 					pl_entries = [
-						pl_entry for pl_entry in playlist_entries if pl_entry['playlistId'] == playlist['id']
+						pl_entry
+						for pl_entry in playlist_entries
+						if pl_entry['playlistId'] == playlist['id']
 					]
 
 					pl_entries.sort(key=itemgetter('absolutePosition'))
@@ -556,6 +552,33 @@ class MobileClient(GoogleMusicClient):
 					playlist['tracks'] = pl_entries
 
 		return playlist_list
+
+	def playlists_iter(self, *, start_token=None, page_size=250):
+		"""Get a paged iterator of library playlists.
+
+		Parameters:
+			start_token (str): The token of the page to return.
+				Default: Not sent to get first page.
+			page_size (int, Optional): The maximum number of results per returned page.
+				Max allowed is ``49995``.
+				Default: ``250``
+
+		Yields:
+			list: Playlist entry dicts.
+		"""
+
+		start_token = None
+
+		while True:
+			response = self._call(mc_calls.PlaylistFeed, max_results=page_size, start_token=start_token)
+			items = response.body.get('data', {}).get('items', [])
+
+			if items:
+				yield items
+
+			start_token = response.body.get('nextPageToken')
+			if start_token is None:
+				break
 
 	def podcast(self, podcast_series_id, *, max_episodes=50):
 		"""Get information about a podcast series.
