@@ -1013,9 +1013,8 @@ class MobileClient(GoogleMusicClient):
 			song_id = song['id']
 
 		response = self._call(mc_calls.ActivityRecordRate, song_id, rating)
-		
-		return True if response.body['eventResults'][0]['code'] == 'OK' else False
 
+		return True if response.body['eventResults'][0]['code'] == 'OK' else False
 
 	def songs(self):
 		"""Get a listing of Music Library songs.
