@@ -8,6 +8,16 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/1.0.0...master)
 
+### Added
+
+* Add playlist_entries_iter method to MobileClient.
+
+### Changed
+
+* Refactor MobileClient.playlist_entries to match Mobileclient.songs impelementation.
+
+
+
 
 
 ## [1.1.0](https://github.com/thebigmunch/google-music/releases/tag/1.1.0) (2018-10-20)

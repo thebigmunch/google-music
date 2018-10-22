@@ -418,19 +418,38 @@ class MobileClient(GoogleMusicClient):
 			list: Playlist entry dicts.
 		"""
 
-		playlist_entry_list = []
+		return [
+			playlist_entry
+			for chunk in self.playlist_entries_iter(page_size=49995)
+			for playlist_entry in chunk
+		]
+
+	def playlist_entries_iter(self, *, start_token=None, page_size=250):
+		"""Get a paged iterator of library playlists.
+
+		Parameters:
+			start_token (str): The token of the page to return.
+				Default: Not sent to get first page.
+			page_size (int, Optional): The maximum number of results per returned page.
+				Max allowed is ``49995``.
+				Default: ``250``
+
+		Yields:
+			list: Playlist entry dicts.
+		"""
+
 		start_token = None
 
 		while True:
-			response = self._call(mc_calls.PlaylistEntryFeed, max_results=250, start_token=start_token)
-			playlist_entry_list.extend(response.body.get('data', {}).get('items', []))
+			response = self._call(mc_calls.PlaylistEntryFeed, max_results=page_size, start_token=start_token)
+			items = response.body.get('data', {}).get('items', [])
+
+			if items:
+				yield items
 
 			start_token = response.body.get('nextPageToken')
-
 			if start_token is None:
 				break
-
-		return playlist_entry_list
 
 	# TODO: Rename and add shared playlist method or combine for shared playlists.
 	def playlist(self, playlist_id, *, include_songs=False):
