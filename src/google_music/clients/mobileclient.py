@@ -5,7 +5,9 @@ from operator import itemgetter
 from uuid import getnode as get_mac
 
 import google_music_proto.mobileclient.calls as mc_calls
-from google_music_proto.mobileclient.types import QueryResultType, StationSeedType
+from google_music_proto.mobileclient.types import (
+	ListenNowItemType, QueryResultType, StationSeedType
+)
 from google_music_proto.oauth import IOS_CLIENT_ID, IOS_CLIENT_SECRET, MOBILE_SCOPE
 
 from .base import GoogleMusicClient
@@ -368,14 +370,20 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of Listen Now items.
 
 		Note:
-			This does not include situations; use :meth:`listen_now_situations` to get situations.
+			This does not include situations; use :meth:`situations` to get situations.
+
+		Returns:
+			dict: With ``albums`` and ``stations`` keys of listen now items.
 		"""
 
 		response = self._call(mc_calls.ListenNowGetListenNowItems)
 		listen_now_item_list = response.body.get('listennow_items', [])
 
-		return listen_now_item_list
+		listen_now_items = defaultdict(list)
+		for item in listen_now_item_list:
+			listen_now_items[f"{ListenNowItemType(int(item['type'])).name}s"].append(item)
 
+		return dict(listen_now_items)
 
 	def new_releases(self, genre_id=None):
 		new_releases_tab = self.explore_tabs(genre_id=genre_id)['new_releases']
