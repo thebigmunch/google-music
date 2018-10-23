@@ -334,13 +334,6 @@ class MobileClient(GoogleMusicClient):
 
 		return genre_list
 
-	# TODO: This doesn't appear to return anything while the ExploreTabs call returns new releases and top charts?
-	# def explore_new_releases(self):
-	# 	response = self._call(mc_calls.ExploreNewReleases)
-	# 	new_releases = response.get('groups', [])
-	#
-	# 	return new_releases
-
 	def explore_tabs(self, *, num_items=100, genre_id=None):
 		"""Get a listing of explore tabs.
 
@@ -384,8 +377,17 @@ class MobileClient(GoogleMusicClient):
 		return listen_now_item_list
 
 
+	def new_releases(self, genre_id=None):
+		new_releases_tab = self.explore_tabs(genre_id=genre_id)['new_releases']
 
+		new_releases = []
+		if 'groups' in new_releases_tab:
+			for group in new_releases_tab['groups']:
+				for entity in group['entities']:
+					entity.pop('kind')
+					new_releases.append(entity.popitem()[1])
 
+		return new_releases
 
 	def playlist_entries(self):
 		"""Get a listing of playlist entries for all library playlists.

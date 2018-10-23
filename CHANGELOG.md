@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Add ``podcast_episdode_iter`` method to ``MobileClient``.
 * ``generated`` and ``library`` parameters to ``MobileClient.stations``
   to control returned station types.
+* Add ``MobileClient.new_releases`` to get explore tab new releases.
 
 ### Changed
 
