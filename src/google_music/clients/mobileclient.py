@@ -19,6 +19,7 @@ from ..utils import create_mac_string
 # TODO: Shared playlists and playlist entries.
 # TODO: Playlist entries batch.
 # TODO: Difference between shuffles and instant mixes?
+# TODO: Situations are now returned through a protobuf call?
 
 
 class MobileClient(GoogleMusicClient):
@@ -398,17 +399,9 @@ class MobileClient(GoogleMusicClient):
 
 		return listen_now_item_list
 
-	def listen_now_situations(self, *, tz_offset=None):
-		"""Get a listing of Listen Now situations.
 
-		Parameters:
-			tz_offset (int, Optional): A time zone offset from UTC in seconds.
-		"""
 
-		response = self._call(mc_calls.ListenNowSituations, tz_offset)
-		listen_now_situation_list = response.body.get('situations', [])
 
-		return listen_now_situation_list
 
 	def playlist_entries(self):
 		"""Get a listing of playlist entries for all library playlists.
@@ -953,6 +946,18 @@ class MobileClient(GoogleMusicClient):
 			station = {}
 
 		return station.get('tracks', [])
+
+	def situations(self, *, tz_offset=None):
+		"""Get a listing of situations.
+
+		Parameters:
+			tz_offset (int, Optional): A time zone offset from UTC in seconds.
+		"""
+
+		response = self._call(mc_calls.ListenNowSituations, tz_offset)
+		situation_list = response.body.get('situations', [])
+
+		return situation_list
 
 	def song(self, song_id):
 		"""Get information about a song.
