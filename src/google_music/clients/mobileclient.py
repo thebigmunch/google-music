@@ -319,8 +319,13 @@ class MobileClient(GoogleMusicClient):
 
 		self._call(mc_calls.DeviceManagementInfoDelete, device['id'])
 
+	# TODO: Set device dict as property of MobileClient?
 	def device_set(self, device):
-		"""Set device used by :class:`Mobileclient` instance."""
+		"""Set device used by :class:`MobileClient` instance.
+
+		Parameters:
+			device (dict): A device dict as returned by :meth:`devices`.
+		"""
 
 		if device['id'].startswith('0x'):
 			self.device_id = device['id'][2:]
