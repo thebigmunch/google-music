@@ -26,7 +26,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Refactor ``MobileClient.podcast_episodes`` to match ``MobileClient.songs`` impelementation.
 * Change ``MobileClient.songs`` to use ``TrackFeed`` call instead of ``Tracks``.
 * Refactor ``MobileClient.stations`` to match ``MobileClient.songs`` impelementation.
-* Rename ``Mobileclient.listen_now_situations`` to ``situations``.
+* Rename ``MobileClient.listen_now_situations`` to ``situations``.
+* Rename ``MobileClient.browse_top_chart`` to ``top_charts``.
 
 ### Removed
 

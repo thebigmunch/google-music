@@ -252,14 +252,6 @@ class MobileClient(GoogleMusicClient):
 
 		return stations
 
-	def browse_top_chart(self):
-		"""Get a listing of the default top charts."""
-
-		response = self._call(mc_calls.BrowseTopChart)
-		top_charts = response.body
-
-		return top_charts
-
 	def browse_top_chart_for_genre(self, genre_id):
 		"""Get a listing of top charts for a top chart genre.
 
@@ -1257,3 +1249,11 @@ class MobileClient(GoogleMusicClient):
 			stream_url = response.body['url']
 
 		return stream_url
+
+	def top_charts(self):
+		"""Get a listing of the default top charts."""
+
+		response = self._call(mc_calls.BrowseTopChart)
+		top_charts = response.body
+
+		return top_charts
