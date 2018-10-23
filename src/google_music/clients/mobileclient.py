@@ -264,14 +264,6 @@ class MobileClient(GoogleMusicClient):
 
 		return top_chart_for_genre
 
-	def browse_top_chart_genres(self):
-		"""Get a listing of genres from the browse top charts tab."""
-
-		response = self._call(mc_calls.BrowseTopChartGenres)
-		top_chart_genres = response.body.get('genres', [])
-
-		return top_chart_genres
-
 	def config(self):
 		"""Get a listing of mobile client configuration settings."""
 
@@ -1257,3 +1249,11 @@ class MobileClient(GoogleMusicClient):
 		top_charts = response.body
 
 		return top_charts
+
+	def top_charts_genres(self):
+		"""Get a listing of genres from the browse top charts tab."""
+
+		response = self._call(mc_calls.BrowseTopChartGenres)
+		top_chart_genres = response.body.get('genres', [])
+
+		return top_chart_genres
