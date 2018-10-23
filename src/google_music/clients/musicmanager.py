@@ -49,7 +49,10 @@ class MusicManager(GoogleMusicClient):
 					mac_int = (mac_int + 1) % (1 << 48)
 
 				mac_string = create_mac_string(mac_int)
-				uploader_id = ':'.join(mac_string[x:x + 2] for x in range(0, 12, 2))
+				uploader_id = ':'.join(
+					mac_string[x:x + 2]
+					for x in range(0, 12, 2)
+				)
 
 			if not is_valid_mac(uploader_id):
 				raise ValueError("uploader_id must be a valid MAC address.")
@@ -122,14 +125,34 @@ class MusicManager(GoogleMusicClient):
 		song_list = []
 
 		if purchased and uploaded:
-			song_list = [song for chunk in self.songs_iter(export_type=1) for song in chunk]
+			song_list = [
+				song
+				for chunk in self.songs_iter(export_type=1)
+				for song in chunk
+			]
 		if purchased and not uploaded:
-			song_list = [song for chunk in self.songs_iter(export_type=2) for song in chunk]
+			song_list = [
+				song
+				for chunk in self.songs_iter(export_type=2)
+				for song in chunk
+			]
 		elif uploaded and not purchased:
-			all_songs = [song for chunk in self.songs_iter(export_type=1) for song in chunk]
-			purchased_songs = [song for chunk in self.songs_iter(export_type=2) for song in chunk]
+			all_songs = [
+				song
+				for chunk in self.songs_iter(export_type=1)
+				for song in chunk
+			]
+			purchased_songs = [
+				song
+				for chunk in self.songs_iter(export_type=2)
+				for song in chunk
+			]
 
-			song_list = [song for song in all_songs if song not in purchased_songs]
+			song_list = [
+				song
+				for song in all_songs
+				if song not in purchased_songs
+			]
 
 		return song_list
 
@@ -147,12 +170,18 @@ class MusicManager(GoogleMusicClient):
 		"""
 
 		def track_info_to_dict(track_info):
-			return dict((field.name, value) for field, value in track_info.ListFields())
+			return dict(
+				(field.name, value)
+				for field, value in track_info.ListFields()
+			)
 
 		while True:
 			response = self._call(mm_calls.ExportIDs, self.uploader_id, continuation_token=continuation_token, export_type=export_type)
 
-			items = [track_info_to_dict(track_info) for track_info in response.body.download_track_info]
+			items = [
+				track_info_to_dict(track_info)
+				for track_info in response.body.download_track_info
+			]
 
 			if items:
 				yield items
@@ -199,7 +228,11 @@ class MusicManager(GoogleMusicClient):
 			base_dir = os.path.dirname(song.filepath)
 
 			try:
-				rel_path = next(path for path in album_art_path if os.path.isfile(os.path.join(base_dir, path)))
+				rel_path = next(
+					path
+					for path in album_art_path
+					if os.path.isfile(os.path.join(base_dir, path))
+				)
 				album_art_path = os.path.join(base_dir, rel_path)
 			except StopIteration:
 				album_art_path = None

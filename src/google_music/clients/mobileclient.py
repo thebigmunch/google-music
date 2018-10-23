@@ -86,7 +86,11 @@ class MobileClient(GoogleMusicClient):
 		"""The subscription status of the account linked to the :class:`MobileClient` instance."""
 
 		subscribed = next(
-			(config_item['value'] == 'true' for config_item in self.config() if config_item['key'] == 'isNautilusUser'),
+			(
+				config_item['value'] == 'true'
+				for config_item in self.config()
+				if config_item['key'] == 'isNautilusUser'
+			),
 			None
 		)
 
@@ -151,7 +155,11 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		response = self._call(mc_calls.TrackBatchCreate, songs)
-		song_ids = [res['id'] for res in response.body['mutate_response'] if res['response_code'] == 'OK']
+		song_ids = [
+			res['id']
+			for res in response.body['mutate_response']
+			if res['response_code'] == 'OK'
+		]
 
 		return song_ids
 
@@ -286,9 +294,18 @@ class MobileClient(GoogleMusicClient):
 
 		response = self._call(mc_calls.TrackBatchDelete, [song['id'] for song in songs])
 
-		success_ids = [res['id'] for res in response.body['mutate_response'] if res['response_code'] == 'OK']
+		success_ids = [
+			res['id']
+			for res in response.body['mutate_response']
+			if res['response_code'] == 'OK'
+		]
+
 		# TODO: Report failures.
-		# failure_ids = [res['id'] for res in response.body['mutate_response'] if res['response_code'] != 'OK']
+		# failure_ids = [
+		# 	res['id']
+		# 	for res in response.body['mutate_response']
+		# 	if res['response_code'] != 'OK'
+		# ]
 
 		return success_ids
 
@@ -452,7 +469,14 @@ class MobileClient(GoogleMusicClient):
 
 		playlists = self.playlist_feed(include_songs=include_songs)
 
-		playlist_info = next((playlist for playlist in playlists if playlist['id'] == playlist_id), {})
+		playlist_info = next(
+			(
+				playlist
+				for playlist in playlists
+				if playlist['id'] == playlist_id
+			),
+			{}
+		)
 
 		return playlist_info
 
@@ -659,7 +683,9 @@ class MobileClient(GoogleMusicClient):
 
 		response = self._call(mc_calls.PodcastFetchEpisode, podcast_episode_id)
 		podcast_episode_info = [
-			podcast_episode for podcast_episode in response.body if not podcast_episode['deleted']
+			podcast_episode
+			for podcast_episode in response.body
+			if not podcast_episode['deleted']
 		]
 
 		return podcast_episode_info
@@ -768,7 +794,9 @@ class MobileClient(GoogleMusicClient):
 			if len(entries) > 0:
 				for entry in entries:
 					item_key = next(
-						key for key in entry if key not in ['cluster', 'score', 'type']
+						key
+						for key in entry
+						if key not in ['cluster', 'score', 'type']
 					)
 					results[result_type].append(entry[item_key])
 
@@ -787,7 +815,10 @@ class MobileClient(GoogleMusicClient):
 		response = self._call(mc_calls.QuerySuggestion, query)
 		suggested_queries = response.body.get('suggested_queries', [])
 
-		return [suggested_query['suggestion_string'] for suggested_query in suggested_queries]
+		return [
+			suggested_query['suggestion_string']
+			for suggested_query in suggested_queries
+		]
 
 	def shuffle_album(self, album, *, num_songs=100, only_library=False, recently_played=None):
 		"""Get a listing of album shuffle/mix songs.
@@ -966,7 +997,14 @@ class MobileClient(GoogleMusicClient):
 		if song_id.startswith('T'):
 			song_info = self._call(mc_calls.FetchTrack, song_id).body
 		else:
-			song_info = next((song for song in self.songs() if song['id'] == song_id), None)
+			song_info = next(
+				(
+					song
+					for song in self.songs()
+					if song['id'] == song_id
+				),
+				None
+			)
 
 		return song_info
 
