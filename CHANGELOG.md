@@ -30,6 +30,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Rename ``MobileClient.browse_top_chart`` to ``top_charts``.
 * Rename ``MobileClient.browse_top_chart_genres`` to ``top_charts_genres``.
 * Rename ``MobileClient.browse_top_chart_for_genre`` to ``top_charts_for_genre``.
+* Refactor ``Mobileclient.explore_tabs``.
 
 ### Removed
 

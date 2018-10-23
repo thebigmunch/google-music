@@ -342,14 +342,26 @@ class MobileClient(GoogleMusicClient):
 	# 	return new_releases
 
 	def explore_tabs(self, *, num_items=100, genre_id=None):
+		"""Get a listing of explore tabs.
+
+		Parameters:
+			num_items (int, Optional): Number of items per tab to return.
+				Default: ``100``
+			genre_id (genre_id, Optional): Genre ID from :meth:`explore_genres` to explore.
+				Default: ``None``.
+
+		Returns:
+			dict: Explore tabs content.
+		"""
+
 		response = self._call(mc_calls.ExploreTabs, num_items=num_items, genre_id=genre_id)
 		tab_list = response.body.get('tabs', [])
-		explore_tabs = defaultdict(list)
 
+		explore_tabs = {}
 		for tab in tab_list:
-			explore_tabs[tab['tab_type']].append(tab)
+			explore_tabs[tab['tab_type'].lower()] = tab
 
-		return dict(explore_tabs)
+		return explore_tabs
 
 	def listen_now_dismissed_items(self):
 		"""Get a listing of items dismissed from Listen Now tab."""
