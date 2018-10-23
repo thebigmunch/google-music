@@ -353,7 +353,7 @@ class MobileClient(GoogleMusicClient):
 				If given, a listing of this genre's sub-genres is returned.
 
 		Returns:
-			list: A list of genre dicts.
+			list: Genre dicts.
 		"""
 
 		response = self._call(mc_calls.ExploreGenres, parent_genre_id)
@@ -424,7 +424,7 @@ class MobileClient(GoogleMusicClient):
 		]
 
 	def playlist_entries_iter(self, *, start_token=None, page_size=250):
-		"""Get a paged iterator of library playlists.
+		"""Get a paged iterator of playlist entries for all library playlists.
 
 		Parameters:
 			start_token (str): The token of the page to return.
@@ -564,7 +564,7 @@ class MobileClient(GoogleMusicClient):
 				Default: ``250``
 
 		Yields:
-			list: Playlist entry dicts.
+			list: Playlist dicts.
 		"""
 
 		start_token = None
@@ -627,7 +627,7 @@ class MobileClient(GoogleMusicClient):
 				Default: ``250``
 
 		Yields:
-			list: Song dicts.
+			list: Podcast series dicts.
 		"""
 
 		if device_id is None:
@@ -708,7 +708,7 @@ class MobileClient(GoogleMusicClient):
 				Default: ``250``
 
 		Yields:
-			list: Song dicts.
+			list: Podcast episode dicts.
 		"""
 
 		if device_id is None:
@@ -1150,7 +1150,7 @@ class MobileClient(GoogleMusicClient):
 		]
 
 	def stations_iter(self, *, page_size=250):
-		"""Get a paged iterator of library songs.
+		"""Get a paged iterator of library stations.
 
 		Parameters:
 			page_size (int, Optional): The maximum number of results per returned page.
@@ -1158,7 +1158,7 @@ class MobileClient(GoogleMusicClient):
 				Default: ``250``
 
 		Yields:
-			list: Song dicts.
+			list: Station dicts.
 		"""
 
 		start_token = None
