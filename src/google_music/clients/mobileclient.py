@@ -715,18 +715,6 @@ class MobileClient(GoogleMusicClient):
 			if start_token is None:
 				break
 
-	def promoted_songs(self):
-		"""Get a listing of promoted store songs based on account activity and other factors.
-
-		Returns:
-			list: Promoted song dicts.
-		"""
-
-		response = self._call(mc_calls.EphemeralTop)
-		promoted_songs_list = response.body.get('data', {}).get('items', [])
-
-		return promoted_songs_list
-
 	def search(self, query, *, max_results=100, **kwargs):
 		"""Search Google Music for content.
 
@@ -1294,6 +1282,18 @@ class MobileClient(GoogleMusicClient):
 			stream_url = response.body['url']
 
 		return stream_url
+
+	def thumbs_up_songs(self):
+		"""Get a listing of 'Thumbs Up' store songs.
+
+		Returns:
+			list: Store song dicts.
+		"""
+
+		response = self._call(mc_calls.EphemeralTop)
+		promoted_songs_list = response.body.get('data', {}).get('items', [])
+
+		return promoted_songs_list
 
 	def top_charts(self):
 		"""Get a listing of the default top charts."""

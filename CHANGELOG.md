@@ -39,6 +39,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Rename ``MobileClient.browse_station_categories`` to ``browse_stations_categories``.
 * Rename ``MobileClient.browse_podcast_genres`` to ``browse_podcasts_genres``.
 * Rename ``MobileClient.delete_song(s)`` to ``song(s)_delete``.
+* Rename ``MobileClient.promoted_songs`` to ``thumbs_up_songs``.
 
 ### Removed
 
