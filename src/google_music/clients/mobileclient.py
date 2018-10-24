@@ -17,7 +17,6 @@ from ..utils import create_mac_string
 # TODO: Playlist edits.
 # TODO: Podcast edits.
 # TODO: Station create/edit.
-# TODO: Fully utilize RadioStationFeed including IFL.
 # TODO: Shared playlists and playlist entries.
 # TODO: Playlist entries batch.
 # TODO: Difference between shuffles and instant mixes?
@@ -1102,7 +1101,7 @@ class MobileClient(GoogleMusicClient):
 		"""Get information about a station.
 
 		Parameters:
-			station_id (str): A station ID.
+			station_id (str): A station ID. Use 'IFL' for I'm Feeling Lucky.
 			num_songs (int, Optional): The maximum number of songs to return from the station.
 				Default: ``25``
 			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
@@ -1168,7 +1167,6 @@ class MobileClient(GoogleMusicClient):
 
 		return station.get('tracks', [])
 
-	# TODO: Figure out 'radio/station' vs 'radio/stationfeed'.
 	def stations(self, *, generated=True, library=True):
 		"""Get a listing of library stations.
 
