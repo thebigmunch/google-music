@@ -466,6 +466,16 @@ class MobileClient(GoogleMusicClient):
 
 		return playlist
 
+	# TODO: Check success/failure?
+	def playlist_delete(self, playlist):
+		"""Delete a playlist.
+
+		Parameters:
+			playlist (dict): A playlist dict.
+		"""
+
+		self._call(mc_calls.PlaylistsDelete, playlist['id'])
+
 	def playlist_edit(self, playlist, *, name=None, description=None, public=None):
 		"""Edit playlist(s).
 

@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
   to control returned station types.
 * Add ``MobileClient.new_releases`` to get explore tab new releases.
 * Support for I'm Feeling Lucky Radio.
+* Add ``playlist_delete`` method to ``MobileClient``.
 
 ### Changed
 
