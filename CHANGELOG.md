@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Add ``MobileClient.new_releases`` to get explore tab new releases.
 * Support for I'm Feeling Lucky Radio.
 * Add ``playlist_delete`` method to ``MobileClient``.
+* ``library`` and ``store`` parameters to ``MobileClient.thumbs_up_songs``.
 
 ### Changed
 
@@ -41,6 +42,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Rename ``MobileClient.browse_podcast_genres`` to ``browse_podcasts_genres``.
 * Rename ``MobileClient.delete_song(s)`` to ``song(s)_delete``.
 * Rename ``MobileClient.promoted_songs`` to ``thumbs_up_songs``.
+* Refactor ``MobileClient.thumbs_up_songs`` to return both
+  library and store 'Thumbs Up' songs.
 
 ### Removed
 

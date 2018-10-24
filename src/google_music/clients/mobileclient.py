@@ -1293,17 +1293,33 @@ class MobileClient(GoogleMusicClient):
 
 		return stream_url
 
-	def thumbs_up_songs(self):
+	def thumbs_up_songs(self, *, library=True, store=True):
 		"""Get a listing of 'Thumbs Up' store songs.
 
+		Parameters:
+			library (bool, Optional): Include 'Thumbs Up' songs from library.
+				Default: True
+			generated (bool, Optional): Include 'Thumbs Up' songs from store.
+				Default: True
+
 		Returns:
-			list: Store song dicts.
+			list: Dicts of 'Thumbs Up' songs.
 		"""
 
-		response = self._call(mc_calls.EphemeralTop)
-		promoted_songs_list = response.body.get('data', {}).get('items', [])
+		thumbs_up_songs = []
 
-		return promoted_songs_list
+		if library is True:
+			thumbs_up_songs.extend(
+				song
+				for song in self.songs()
+				if song['rating'] == '5'
+			)
+
+		if store is True:
+			response = self._call(mc_calls.EphemeralTop)
+			thumbs_up_songs.extend(response.body.get('data', {}).get('items', []))
+
+		return thumbs_up_songs
 
 	def top_charts(self):
 		"""Get a listing of the default top charts."""
