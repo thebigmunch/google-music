@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased](https://github.com/thebigmunch/google-music/tree/master)
 
-[Commits](https://github.com/thebigmunch/google-music/compare/1.0.0...master)
+[Commits](https://github.com/thebigmunch/google-music/compare/1.1.0...master)
 
 ### Added
 
@@ -38,7 +38,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
   keys containing those types of listen now items.
 * Rename ``MobileClient.browse_station_categories`` to ``browse_stations_categories``.
 * Rename ``MobileClient.browse_podcast_genres`` to ``browse_podcasts_genres``.
-
+* Rename ``MobileClient.delete_song(s)`` to ``song(s)_delete``.
 
 ### Removed
 

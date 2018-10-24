@@ -271,45 +271,6 @@ class MobileClient(GoogleMusicClient):
 
 		return config_list
 
-	def delete_song(self, song):
-		"""Delete song from library.
-
-		Parameters:
-			song_id (str): A song ID.
-
-		Returns:
-			str: Successfully deleted song ID.
-		"""
-
-		return self.delete_songs([song])[0]
-
-	def delete_songs(self, songs):
-		"""Delete song(s) from library.
-
-		Parameters:
-			song_ids (list): A list of song IDs.
-
-		Returns:
-			list: Successfully deleted song IDs.
-		"""
-
-		response = self._call(mc_calls.TrackBatchDelete, [song['id'] for song in songs])
-
-		success_ids = [
-			res['id']
-			for res in response.body['mutate_response']
-			if res['response_code'] == 'OK'
-		]
-
-		# TODO: Report failures.
-		# failure_ids = [
-		# 	res['id']
-		# 	for res in response.body['mutate_response']
-		# 	if res['response_code'] != 'OK'
-		# ]
-
-		return success_ids
-
 	# TODO: Check success/failure?
 	def device_deauthorize(self, device):
 		"""Deauthorize a registered device.
@@ -1013,6 +974,45 @@ class MobileClient(GoogleMusicClient):
 			)
 
 		return song_info
+
+	def song_delete(self, song):
+		"""Delete song from library.
+
+		Parameters:
+			song (str): A library song dict.
+
+		Returns:
+			str: Successfully deleted song ID.
+		"""
+
+		return self.delete_songs([song])[0]
+
+	def songs_delete(self, songs):
+		"""Delete songs from library.
+
+		Parameters:
+			song (list): A list of song dicts.
+
+		Returns:
+			list: Successfully deleted song IDs.
+		"""
+
+		response = self._call(mc_calls.TrackBatchDelete, [song['id'] for song in songs])
+
+		success_ids = [
+			res['id']
+			for res in response.body['mutate_response']
+			if res['response_code'] == 'OK'
+		]
+
+		# TODO: Report failures.
+		# failure_ids = [
+		# 	res['id']
+		# 	for res in response.body['mutate_response']
+		# 	if res['response_code'] != 'OK'
+		# ]
+
+		return success_ids
 
 	def song_play(self, song):
 		"""Add play to song play count.
