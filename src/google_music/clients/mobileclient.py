@@ -206,23 +206,12 @@ class MobileClient(GoogleMusicClient):
 
 		return artist_info
 
-	def browse_podcast_genres(self):
-		"""Get the genres from the Podcasts browse tab dropdown.
-
-		Returns:
-			list: Genre groups that contain sub groups.
-		"""
-
-		response = self._call(mc_calls.PodcastBrowseHierarchy)
-		genres = response.body.get('groups', [])
-
-		return genres
-
 	def browse_podcasts(self, podcast_genre_id='JZCpodcasttopchartall'):
 		"""Get the podcasts for a genre from the Podcasts browse tab.
 
 		Parameters:
-			podcast_genre_id (str, Optional): A podcast genre ID as found in :meth:`browse_podcast_genres`.
+			podcast_genre_id (str, Optional): A podcast genre ID as found
+				in :meth:`browse_podcasts_genres`.
 				Default: ``'JZCpodcasttopchartall'``.
 
 		Returns:
@@ -234,11 +223,17 @@ class MobileClient(GoogleMusicClient):
 
 		return podcast_series_list
 
+	def browse_podcasts_genres(self):
+		"""Get the genres from the Podcasts browse tab dropdown.
 
 		Returns:
+			list: Genre groups that contain sub groups.
 		"""
 
+		response = self._call(mc_calls.PodcastBrowseHierarchy)
+		genres = response.body.get('groups', [])
 
+		return genres
 
 	def browse_stations(self, station_category_id):
 		"""Get the stations for a category from Browse Stations.
