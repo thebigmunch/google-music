@@ -36,6 +36,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Refactor ``MobileClient.listen_now_items``.
   It now returns a dict with ``albums`` and ``stations``
   keys containing those types of listen now items.
+* Rename ``MobileClient.browse_station_categories`` to ``browse_stations_categories``.
 
 
 ### Removed

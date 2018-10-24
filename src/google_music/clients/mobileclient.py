@@ -234,7 +234,29 @@ class MobileClient(GoogleMusicClient):
 
 		return podcast_series_list
 
-	def browse_station_categories(self):
+
+		Returns:
+		"""
+
+
+
+	def browse_stations(self, station_category_id):
+		"""Get the stations for a category from Browse Stations.
+
+		Parameters:
+			station_category_id (str): A station category ID as
+			found with :meth:`browse_stations_categories`.
+
+		Returns:
+			list: Station dicts.
+		"""
+
+		response = self._call(mc_calls.BrowseStations, station_category_id)
+		stations = response.body.get('stations', [])
+
+		return stations
+
+	def browse_stations_categories(self):
 		"""Get the categories from Browse Stations.
 
 		Returns:
@@ -245,21 +267,6 @@ class MobileClient(GoogleMusicClient):
 		station_categories = response.body.get('root', {}).get('subcategories', [])
 
 		return station_categories
-
-	def browse_stations(self, station_category_id):
-		"""Get the stations for a category from Browse Stations.
-
-		Parameters:
-			station_category_id (str): A station category ID as found with :meth:`browse_station_categories`.
-
-		Returns:
-			list: Station dicts.
-		"""
-
-		response = self._call(mc_calls.BrowseStations, station_category_id)
-		stations = response.body.get('stations', [])
-
-		return stations
 
 	def config(self):
 		"""Get a listing of mobile client configuration settings."""
