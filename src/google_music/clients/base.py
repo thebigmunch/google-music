@@ -8,7 +8,7 @@ from ..session import GoogleMusicSession, dump_token, load_token
 
 
 # TODO: Configurable token updater/saver/loader.
-class GoogleMusicClient():
+class GoogleMusicClient:
 	def _oauth(self, username, *, token=None):
 		auto_refresh_kwargs = {
 			'client_id': self.client_id,
