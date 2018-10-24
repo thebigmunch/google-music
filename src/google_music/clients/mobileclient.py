@@ -434,7 +434,7 @@ class MobileClient(GoogleMusicClient):
 			dict: Playlist information.
 		"""
 
-		playlists = self.playlist_feed(include_songs=include_songs)
+		playlists = self.playlists(include_songs=include_songs)
 
 		playlist_info = next(
 			(
