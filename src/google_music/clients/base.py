@@ -41,7 +41,7 @@ class GoogleMusicClient:
 		self.token = token
 		self._update_token(token)
 
-	@retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, max=10))
+	@retry(reraise=True, stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, max=10))
 	def _call(self, call_cls, *args, **kwargs):
 		call = call_cls(*args, **kwargs)
 
