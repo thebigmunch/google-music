@@ -131,37 +131,6 @@ class MobileClient(GoogleMusicClient):
 	def tier(self, tier):
 		self.session.params.update({'tier': tier})
 
-	def add_store_song(self, song):
-		"""Add a store song to your library.
-
-		Parameters:
-			song (dict): A store song dict.
-
-		Returns:
-			str: Song's library ID.
-		"""
-
-		return self.add_store_songs([song])[0]
-
-	def add_store_songs(self, songs):
-		"""Add store songs to your library.
-
-		Parameters:
-			songs (list): A list of store song dicts.
-
-		Returns:
-			list: Songs' library IDs.
-		"""
-
-		response = self._call(mc_calls.TrackBatchCreate, songs)
-		song_ids = [
-			res['id']
-			for res in response.body['mutate_response']
-			if res['response_code'] == 'OK'
-		]
-
-		return song_ids
-
 	def album(self, album_id, *, include_description=True, include_songs=True):
 		"""Get information about an album.
 
@@ -973,6 +942,37 @@ class MobileClient(GoogleMusicClient):
 			)
 
 		return song_info
+
+	def song_add(self, song):
+		"""Add a store song to your library.
+
+		Parameters:
+			song (dict): A store song dict.
+
+		Returns:
+			str: Song's library ID.
+		"""
+
+		return self.add_store_songs([song])[0]
+
+	def songs_add(self, songs):
+		"""Add store songs to your library.
+
+		Parameters:
+			songs (list): A list of store song dicts.
+
+		Returns:
+			list: Songs' library IDs.
+		"""
+
+		response = self._call(mc_calls.TrackBatchCreate, songs)
+		song_ids = [
+			res['id']
+			for res in response.body['mutate_response']
+			if res['response_code'] == 'OK'
+		]
+
+		return song_ids
 
 	def song_delete(self, song):
 		"""Delete song from library.
