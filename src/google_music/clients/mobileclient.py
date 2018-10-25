@@ -240,7 +240,7 @@ class MobileClient(GoogleMusicClient):
 
 		Parameters:
 			station_category_id (str): A station category ID as
-			found with :meth:`browse_stations_categories`.
+				found with :meth:`browse_stations_categories`.
 
 		Returns:
 			list: Station dicts.
@@ -354,7 +354,8 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of Listen Now items.
 
 		Note:
-			This does not include situations; use :meth:`situations` to get situations.
+			This does not include situations;
+			use the :meth:`situations` method instead.
 
 		Returns:
 			dict: With ``albums`` and ``stations`` keys of listen now items.
