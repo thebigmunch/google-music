@@ -251,7 +251,7 @@ class MusicManager(GoogleMusicClient):
 				track_sample = mm_calls.Sample.generate_sample(song, track_info, sample_request, external_art=external_art)
 				response = self._call(mm_calls.Sample, self.uploader_id, [track_sample])
 				track_sample_response = response.body.sample_response.track_sample_response[0]
-			except (OSError, ValueError, subprocess.CalledProcessError) as e:
+			except (OSError, ValueError, subprocess.CalledProcessError):
 				raise  # TODO
 		else:
 			track_sample_response = metadata_response.track_sample_response[0]
