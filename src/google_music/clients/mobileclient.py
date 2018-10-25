@@ -953,7 +953,7 @@ class MobileClient(GoogleMusicClient):
 			str: Song's library ID.
 		"""
 
-		return self.add_store_songs([song])[0]
+		return self.songs_add([song])[0]
 
 	def songs_add(self, songs):
 		"""Add store songs to your library.
@@ -984,7 +984,7 @@ class MobileClient(GoogleMusicClient):
 			str: Successfully deleted song ID.
 		"""
 
-		return self.delete_songs([song])[0]
+		return self.songs_delete([song])[0]
 
 	def songs_delete(self, songs):
 		"""Delete songs from library.
