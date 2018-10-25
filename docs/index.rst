@@ -1,13 +1,9 @@
-==================
-google-music
-==================
-
-
-google-music is an API wrapper for interacting with Google Music.
+google-music --- A Google Music API library
+===========================================
 
 
 Getting Started
-===============
+---------------
 
 Install google-music with `pip <https://pip.pypa.io/en/stable/>`_.
 
@@ -16,7 +12,7 @@ Install google-music with `pip <https://pip.pypa.io/en/stable/>`_.
 	$ pip install google-music
 
 
-Create a mobile or music manager client using the :ref:`api`.
+Create a mobile or music manager client using the high-level API.
 
 .. code-block:: python
 
@@ -26,14 +22,11 @@ Create a mobile or music manager client using the :ref:`api`.
 	>>> mm = google_music.musicmanager()
 
 
-See the :ref:`mobileclient` and :ref:`musicmanager` documentation for available functionality.
-
-
 API Reference
-=============
+-------------
 
 .. toctree::
-	:maxdepth: 1
+	:titlesonly:
 
 	api
 	mobileclient

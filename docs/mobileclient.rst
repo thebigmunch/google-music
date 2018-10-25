@@ -1,8 +1,6 @@
-.. _mobileclient:
+:class:`MobileClient <google_music.clients.MobileClient>` --- Mobile API client
+===============================================================================
 
-MobileClient
-============
-
-.. autoclass:: google_music.clients.MobileClient
+.. autoclass:: google_music.MobileClient
 	:members:
 	:member-order: bysource

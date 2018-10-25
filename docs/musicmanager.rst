@@ -1,8 +1,6 @@
-.. _musicmanager:
+:class:`MusicManager <google_music.clients.MusicManager>` --- Music Manager API client
+==================================================
 
-MusicManager
-============
-
-.. autoclass:: google_music.clients.MusicManager
+.. autoclass:: google_music.MusicManager
 	:members:
 	:member-order: bysource

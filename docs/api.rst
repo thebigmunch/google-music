@@ -1,7 +1,5 @@
-.. _api:
+:mod:`API <google_music.api>` --- High-Level API
+================================================
 
-High-Level API
-==============
-
-.. autofunction:: google_music.api.mobileclient
-.. autofunction:: google_music.api.musicmanager
+.. autofunction:: google_music.mobileclient
+.. autofunction:: google_music.musicmanager
