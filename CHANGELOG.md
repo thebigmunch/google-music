@@ -44,6 +44,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Rename ``MobileClient.promoted_songs`` to ``thumbs_up_songs``.
 * Refactor ``MobileClient.thumbs_up_songs`` to return both
   library and store 'Thumbs Up' songs.
+* Rename ``MobileClient.add_store_song(s)`` to ``song(s)_add``.
 
 ### Removed
 
