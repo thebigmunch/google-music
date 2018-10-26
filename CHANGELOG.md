@@ -10,15 +10,15 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ### Added
 
-* Add ``playlist_entries_iter`` method to ``MobileClient``.
-* Add ``playlists_iter`` method to ``MobileClient``.
-* Add ``podcasts_iter`` method to ``MobileClient``.
-* Add ``podcast_episdode_iter`` method to ``MobileClient``.
+* ``MobileClient.playlist_entries_iter``
+* ``MobileClient.playlists_iter``
+* ``MobileClient.podcasts_iter``
+* ``MobileClient.podcast_episdode_iter``
 * ``generated`` and ``library`` parameters to ``MobileClient.stations``
   to control returned station types.
-* Add ``MobileClient.new_releases`` to get explore tab new releases.
+* ``MobileClient.new_releases`` to get explore tab new releases.
 * Support for I'm Feeling Lucky Radio.
-* Add ``playlist_delete`` method to ``MobileClient``.
+* ``MobileClient.playlist_delete``
 * ``library`` and ``store`` parameters to ``MobileClient.thumbs_up_songs``.
 
 ### Changed
@@ -28,21 +28,20 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Refactor ``MobileClient.playlists`` to match ``MobileClient.songs`` impelementation.
 * Refactor ``MobileClient.podcasts`` to match ``MobileClient.songs`` impelementation.
 * Refactor ``MobileClient.podcast_episodes`` to match ``MobileClient.songs`` impelementation.
-* Change ``MobileClient.songs`` to use ``TrackFeed`` call instead of ``Tracks``.
+* ``MobileClient.songs`` now uses ``TrackFeed`` call instead of ``Tracks``.
 * Refactor ``MobileClient.stations`` to match ``MobileClient.songs`` impelementation.
 * Rename ``MobileClient.listen_now_situations`` to ``situations``.
 * Rename ``MobileClient.browse_top_chart`` to ``top_charts``.
 * Rename ``MobileClient.browse_top_chart_genres`` to ``top_charts_genres``.
 * Rename ``MobileClient.browse_top_chart_for_genre`` to ``top_charts_for_genre``.
-* Refactor ``MobileClient.explore_tabs``.
-* Refactor ``MobileClient.listen_now_items``.
-  It now returns a dict with ``albums`` and ``stations``
+* ``MobileClient.explore_tabs`` now returns dict with lowercased keys.
+* ``MobileClient.listen_now_items`` now returns a dict with ``albums`` and ``stations``
   keys containing those types of listen now items.
 * Rename ``MobileClient.browse_station_categories`` to ``browse_stations_categories``.
 * Rename ``MobileClient.browse_podcast_genres`` to ``browse_podcasts_genres``.
 * Rename ``MobileClient.delete_song(s)`` to ``song(s)_delete``.
 * Rename ``MobileClient.promoted_songs`` to ``thumbs_up_songs``.
-* Refactor ``MobileClient.thumbs_up_songs`` to return both
+* ``MobileClient.thumbs_up_songs`` now returns both
   library and store 'Thumbs Up' songs.
 * Rename ``MobileClient.add_store_song(s)`` to ``song(s)_add``.
 
@@ -60,8 +59,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ### Added
 
-* Add support for rating store and playlist songs.
-* Add ``Mobileclient.song_play`` for incrementing song play counts.
+* Support for rating store and playlist songs.
+* ``Mobileclient.song_play`` for incrementing song play counts.
 
 ### Changed
 
@@ -69,7 +68,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
   This was mistakenly left as defaultdict.
 * Only return item dicts from search results.
   Previously, entire search result with metadata was returned.
-* Add return value for ``Mobileclient.song_rate``.
+* Return value for ``Mobileclient.song_rate``.
   ``True`` if successful, ``False`` if not.
 
 
