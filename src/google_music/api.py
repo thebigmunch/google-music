@@ -37,7 +37,7 @@ def musicmanager(username='', uploader_id=None, *, token=None):
 		token (dict, Optional): An OAuth token compatible with ``requests-oauthlib``.
 
 	Returns:
-		MusicManager: An authenticated :class:`google_music.MusicManager` instance.
+		MusicManager: An authenticated :class:`~google_music.MusicManager` instance.
 	"""
 
 	return MusicManager(username, uploader_id, token=token)
