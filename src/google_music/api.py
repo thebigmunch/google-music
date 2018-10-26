@@ -18,7 +18,7 @@ def mobileclient(username='', device_id=None, *, token=None, locale='en_US'):
 			responses. This must be a locale supported by Android. Default: `'en_US'``.
 
 	Returns:
-		MobileClient: An authenticated :class:`~google_music.clients.MobileClient` instance.
+		MobileClient: An authenticated :class:`~google_music.MobileClient` instance.
 	"""
 
 	return MobileClient(username, device_id, token=token, locale=locale)
@@ -37,7 +37,7 @@ def musicmanager(username='', uploader_id=None, *, token=None):
 		token (dict, Optional): An OAuth token compatible with ``requests-oauthlib``.
 
 	Returns:
-		MusicManager: An authenticated :class:`~google_music.clients.MusicManager` instance.
+		MusicManager: An authenticated :class:`google_music.MusicManager` instance.
 	"""
 
 	return MusicManager(username, uploader_id, token=token)
