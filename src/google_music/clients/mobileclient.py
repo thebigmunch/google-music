@@ -1045,14 +1045,16 @@ class MobileClient(GoogleMusicClient):
 			list: Songs' library IDs.
 		"""
 
-		response = self._call(mc_calls.TrackBatchCreate, songs)
-		song_ids = [
+		mutations = [mc_calls.TrackBatch.add(song) for song in songs]
+		response = self._call(mc_calls.TrackBatch, mutations)
+
+		success_ids = [
 			res['id']
 			for res in response.body['mutate_response']
 			if res['response_code'] == 'OK'
 		]
 
-		return song_ids
+		return success_ids
 
 	def song_delete(self, song):
 		"""Delete song from library.
@@ -1076,7 +1078,8 @@ class MobileClient(GoogleMusicClient):
 			list: Successfully deleted song IDs.
 		"""
 
-		response = self._call(mc_calls.TrackBatchDelete, [song['id'] for song in songs])
+		mutations = [mc_calls.TrackBatch.delete(song['id']) for song in songs]
+		response = self._call(mc_calls.TrackBatch, mutations)
 
 		success_ids = [
 			res['id']
@@ -1112,7 +1115,8 @@ class MobileClient(GoogleMusicClient):
 
 		song_duration = song['durationMillis']
 
-		response = self._call(mc_calls.ActivityRecordPlay, song_id, song_duration)
+		event = mc_calls.ActivityRecordRealtime.play(song_id, song_duration)
+		response = self._call(mc_calls.ActivityRecordRealtime, event)
 
 		return True if response.body['eventResults'][0]['code'] == 'OK' else False
 
@@ -1134,7 +1138,8 @@ class MobileClient(GoogleMusicClient):
 		else:
 			song_id = song['id']
 
-		response = self._call(mc_calls.ActivityRecordRate, song_id, rating)
+		event = mc_calls.ActivityRecordRealtime.rate(song_id, rating)
+		response = self._call(mc_calls.ActivityRecordRealtime, event)
 
 		return True if response.body['eventResults'][0]['code'] == 'OK' else False
 
