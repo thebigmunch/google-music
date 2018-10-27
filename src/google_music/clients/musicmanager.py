@@ -122,35 +122,23 @@ class MusicManager(GoogleMusicClient):
 		if not uploaded and not purchased:
 			raise ValueError("'uploaded' and 'purchased' cannot both be False.")
 
-		song_list = []
-
 		if purchased and uploaded:
-			song_list = [
-				song
-				for chunk in self.songs_iter(export_type=1)
-				for song in chunk
-			]
-		if purchased and not uploaded:
-			song_list = [
-				song
-				for chunk in self.songs_iter(export_type=2)
-				for song in chunk
-			]
-		elif uploaded and not purchased:
-			all_songs = [
-				song
-				for chunk in self.songs_iter(export_type=1)
-				for song in chunk
-			]
-			purchased_songs = [
-				song
-				for chunk in self.songs_iter(export_type=2)
-				for song in chunk
-			]
+			song_list = []
+			for chunk in self.songs_iter(export_type=1):
+				song_list.extend(chunk)
+		elif purchased:
+			song_list = []
+			for chunk in self.songs_iter(export_type=2):
+				song_list.extend(chunk)
+		elif uploaded:
+			purchased_songs = []
+			for chunk in self.songs_iter(export_type=2):
+				purchased_songs.extend(chunk)
 
 			song_list = [
 				song
-				for song in all_songs
+				for chunk in self.songs_iter(export_type=1)
+				for song in chunk
 				if song not in purchased_songs
 			]
 

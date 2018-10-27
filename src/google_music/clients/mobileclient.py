@@ -359,11 +359,11 @@ class MobileClient(GoogleMusicClient):
 			list: Playlist entry dicts.
 		"""
 
-		return [
-			playlist_entry
-			for chunk in self.playlist_entries_iter(page_size=49995)
-			for playlist_entry in chunk
-		]
+		playlist_entry_list = []
+		for chunk in self.playlist_entries_iter(page_size=49995):
+			playlist_entry_list.extend(chunk)
+
+		return playlist_entry_list
 
 	def playlist_entries_iter(self, *, start_token=None, page_size=250):
 		"""Get a paged iterator of playlist entries for all library playlists.
@@ -487,11 +487,9 @@ class MobileClient(GoogleMusicClient):
 			list: A list of playlist dicts.
 		"""
 
-		playlist_list = [
-			playlist
-			for chunk in self.playlists_iter(page_size=49995)
-			for playlist in chunk
-		]
+		playlist_list = []
+		for chunk in self.playlists_iter(page_size=49995):
+			playlist_list.extend(chunk)
 
 		if include_songs:
 			playlist_entries = self.playlist_entries()
@@ -499,14 +497,15 @@ class MobileClient(GoogleMusicClient):
 			for playlist in playlist_list:
 				playlist_type = playlist.get('type')
 
-				if playlist_type in ('USER_GENERATED', None) and playlist_type != 'SHARED':
-					pl_entries = [
-						pl_entry
-						for pl_entry in playlist_entries
-						if pl_entry['playlistId'] == playlist['id']
-					]
-
-					pl_entries.sort(key=itemgetter('absolutePosition'))
+				if playlist_type in ('USER_GENERATED', None):
+					pl_entries = sorted(
+						(
+							pl_entry
+							for pl_entry in playlist_entries
+							if pl_entry['playlistId'] == playlist['id']
+						),
+						key=itemgetter('absolutePosition')
+					)
 
 					playlist['tracks'] = pl_entries
 
@@ -569,11 +568,11 @@ class MobileClient(GoogleMusicClient):
 		if device_id is None:
 			device_id = self.device_id
 
-		return [
-			podcast
-			for chunk in self.podcasts_iter(device_id=device_id, page_size=49995)
-			for podcast in chunk
-		]
+		podcast_list = []
+		for chunk in self.podcasts_iter(device_id=device_id, page_size=49995):
+			podcast_list.extend(chunk)
+
+		return podcast_list
 
 	def podcasts_iter(self, *, device_id=None, page_size=250):
 		"""Get a paged iterator of subscribed podcast series.
@@ -652,13 +651,13 @@ class MobileClient(GoogleMusicClient):
 		if device_id is None:
 			device_id = self.device_id
 
-		return [
-			podcast_episode
-			for chunk in self.podcast_episode_iter(device_id=device_id, page_size=49995)
-			for podcast_episode in chunk
-		]
+		podcast_episode_list = []
+		for chunk in self.podcast_episodes_iter(device_id=device_id, page_size=49995):
+			podcast_episode_list.extend(chunk)
 
-	def podcast_episode_iter(self, *, device_id=None, page_size=250):
+		return podcast_episode_list
+
+	def podcast_episodes_iter(self, *, device_id=None, page_size=250):
 		"""Get a paged iterator of podcast episode for all subscribed podcasts.
 
 		Parameters:
@@ -1146,11 +1145,11 @@ class MobileClient(GoogleMusicClient):
 			list: Song dicts.
 		"""
 
-		return [
-			song
-			for chunk in self.songs_iter(page_size=49995)
-			for song in chunk
-		]
+		song_list = []
+		for chunk in self.songs_iter(page_size=49995):
+			song_list.extend(chunk)
+
+		return song_list
 
 	def songs_iter(self, *, page_size=250):
 		"""Get a paged iterator of library songs.
@@ -1264,12 +1263,13 @@ class MobileClient(GoogleMusicClient):
 			list: Station information dicts.
 		"""
 
-		return [
-			station
-			for chunk in self.stations_iter(page_size=49995)
-			for station in chunk
-			if (generated and not station.get('inLibrary')) or (library and station.get('inLibrary'))
-		]
+		station_list = []
+		for chunk in self.stations_iter(page_size=49995):
+			for station in chunk:
+				if (generated and not station.get('inLibrary')) or (library and station.get('inLibrary')):
+					station_list.append(station)
+
+		return station_list
 
 	def stations_iter(self, *, page_size=250):
 		"""Get a paged iterator of library stations.
