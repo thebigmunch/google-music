@@ -32,7 +32,8 @@ class MobileClient(GoogleMusicClient):
 	Note:
 		Streaming requires a ``device_id`` from a valid, linked mobile device.
 		The :class:`MobileClient` instance's ``device_id`` can be changed after
-		instantiation, or a different ``device_id`` provided to :method:'Mobileclient.stream'.
+		instantiation, or a different ``device_id`` provided to :meth:`stream`
+		or :meth:`stream_url`.
 
 	Parameters:
 		username (str, Optional): Your Google Music username.
