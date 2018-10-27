@@ -20,6 +20,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Support for I'm Feeling Lucky Radio.
 * ``MobileClient.playlist_delete``
 * ``library`` and ``store`` parameters to ``MobileClient.thumbs_up_songs``.
+* ``MobileClient.search_google``
+* ``MobileClient.search_library``
 
 ### Changed
 
@@ -44,6 +46,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * ``MobileClient.thumbs_up_songs`` now returns both
   library and store 'Thumbs Up' songs.
 * Rename ``MobileClient.add_store_song(s)`` to ``song(s)_add``.
+* ``MobileClient.search`` now returns results from both
+  Google Music and user's library as done in the official client.
 
 ### Removed
 

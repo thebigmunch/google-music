@@ -696,22 +696,58 @@ class MobileClient(GoogleMusicClient):
 				break
 
 	def search(self, query, *, max_results=100, **kwargs):
+		"""Search Google Music and library for content.
+
+		Parameters:
+			query (str): Search text.
+			max_results (int, Optional): Maximum number of results per type per
+				location to retrieve. I.e up to 100 Google and 100 library
+				for a total of 200 for the default value.
+				Google only accepts values up to 100.
+				Default: ``100``
+			kwargs (bool, Optional): Any of ``albums``, ``artists``, ``genres``,
+				``playlists``, ``podcasts``, ``situations``, ``songs``, ``stations``,
+				``videos`` set to ``True`` will include that result type in the
+				returned dict.
+				Setting none of them will include all result types in the returned dict.
+
+		Returns:
+			dict: A dict of results separated into keys: ``'albums'``, ``'artists'``,
+				``'genres'``, ``'playlists'``, ```'podcasts'``, ``'situations'``,
+				``'songs'``, ``'stations'``, ``'videos'``.
+
+		Note:
+			Free account search is restricted so may not contain hits for all result types.
+		"""
+
+		results = defaultdict(list)
+
+		for type_, results_ in self.search_library(query, max_results=max_results, **kwargs).items():
+			results[type_].extend(results_)
+
+		for type_, results_ in self.search_google(query, max_results=max_results, **kwargs).items():
+			results[type_].extend(results_)
+
+		return dict(results)
+
+	def search_google(self, query, *, max_results=100, **kwargs):
 		"""Search Google Music for content.
 
 		Parameters:
 			query (str): Search text.
 			max_results (int, Optional): Maximum number of results per type to retrieve.
 				Google only accepts values up to 100.
-				Setting to ``None`` allows up to 1000 results per type but won't return playlist results.
 				Default: ``100``
-			kwargs (bool, Optional): Any of ``albums``, ``artists``, ``genres``, ``playlists``,
-				``podcasts``, ``situations``, ``songs``, ``stations``, ``videos`` set to ``True``
-				will include that result type in the returned dict.
+			kwargs (bool, Optional): Any of ``albums``, ``artists``, ``genres``,
+				``playlists``, ``podcasts``, ``situations``, ``songs``, ``stations``,
+				``videos`` set to ``True`` will include that result type in the
+				returned dict.
 				Setting none of them will include all result types in the returned dict.
 
 		Returns:
-			dict: A dict of results separated into keys: ``'albums'``, ``'artists'``, ``'genres'``,
-				``'playlists'``, ```'podcasts'``, ``'situations'``, ``'songs'``, ``'stations'``, ``'videos'``.
+			dict: A dict of results separated into keys: ``'albums'``, ``'artists'``,
+				``'genres'``, ``'playlists'``, ```'podcasts'``, ``'situations'``,
+				``'songs'``, ``'stations'``, ``'videos'``.
 
 		Note:
 			Free account search is restricted so may not contain hits for all result types.
@@ -736,6 +772,50 @@ class MobileClient(GoogleMusicClient):
 					results[result_type].append(entry[item_key])
 
 		return dict(results)
+
+	def search_library(self, query, *, max_results=100, **kwargs):
+		"""Search Google Music for content.
+
+		Parameters:
+			query (str): Search text.
+			max_results (int, Optional): Maximum number of results per type to retrieve.
+				Google only accepts values up to 100.
+				Setting to ``None`` allows up to 1000 results per type but won't return playlist results.
+				Default: ``100``
+			kwargs (bool, Optional): Any of ``playlists``, ``podcasts``,
+				``songs``, ``stations``, ``videos`` set to ``True``
+				will include that result type in the returned dict.
+				Setting none of them will include all result types in the returned dict.
+
+		Returns:
+			dict: A dict of results separated into keys:
+				``'playlists'``, ``'podcasts'``, ``'songs'``, ``'stations'``.
+		"""
+
+		def match_fields(item, fields):
+			return any(
+				query.casefold() in item.get(field, '').casefold()
+				for field in fields
+			)
+
+		types = [
+			('playlists', ['description', 'name'], self.playlists),
+			('podcasts', ['author', 'description', 'title'], self.podcasts),
+			('songs', ['album', 'albumArtist', 'artist', 'composer', 'genre', 'title'], self.songs),
+			('stations', ['byline', 'description', 'name'], self.stations)
+		]
+
+		results = {}
+
+		for type_, fields, func in types:
+			if (not kwargs) or (type_ in kwargs):
+				results[type_] = [
+					item
+					for item in func()
+					if match_fields(item, fields)
+				][:max_results]
+
+		return results
 
 	def search_suggestion(self, query):
 		"""Get search query suggestions for query.
