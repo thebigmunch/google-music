@@ -779,8 +779,6 @@ class MobileClient(GoogleMusicClient):
 		Parameters:
 			query (str): Search text.
 			max_results (int, Optional): Maximum number of results per type to retrieve.
-				Google only accepts values up to 100.
-				Setting to ``None`` allows up to 1000 results per type but won't return playlist results.
 				Default: ``100``
 			kwargs (bool, Optional): Any of ``playlists``, ``podcasts``,
 				``songs``, ``stations``, ``videos`` set to ``True``
