@@ -11,7 +11,8 @@
 
 ## Usage
 
-See the [docs](https://google-music.readthedocs.io).
+For the release version, see the [stable docs](https://google-music.readthedocs.io/en/stable/).  
+For the development version, see the [latest docs](https://google-music.readthedocs.io/en/latest/).
 
 
 ## Appreciation
