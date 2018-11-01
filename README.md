@@ -1,5 +1,7 @@
 # google-music
 
+[![Read the Docs](https://img.shields.io/readthedocs/google-music.svg)](https://google-music.readthedocs.io)
+
 [google-music](https://github.com/thebigmunch/google-music) is an API wrapper library for Google Music using my sans-I/O library,
 [google-music-proto](https://github.com/thebigmunch/google-music-proto).
 
