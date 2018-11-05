@@ -30,7 +30,7 @@ setup(
 	install_requires=[
 		'appdirs>=1.4',
 		'audio-metadata>=0.1',
-		'google-music-proto>=1.3',
+		'google-music-proto>=2.0',
 		'protobuf>=3.5',
 		'requests-oauthlib>=1.0',
 		'tenacity>=5.0'

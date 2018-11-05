@@ -10,7 +10,7 @@ __title__ = 'google-music'
 __summary__ = 'A Google Music API wrapper.'
 __url__ = 'https://github.com/thebigmunch/google-music'
 
-__version__ = '1.1.0'
+__version__ = '2.0.0'
 __version_info__ = tuple(int(i) for i in __version__.split('.') if i.isdigit())
 
 __author__ = 'thebigmunch'
