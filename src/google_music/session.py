@@ -19,7 +19,7 @@ def ensure_token_directory(token_dir):
 			raise
 
 
-def dump_token(username, client, token):
+def dump_token(token, username, client):
 	token_path = os.path.join(TOKEN_DIR, username, f'{client}.token')
 	ensure_token_directory(os.path.dirname(token_path))
 

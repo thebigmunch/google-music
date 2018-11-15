@@ -26,10 +26,12 @@ class GoogleMusicClient:
 				token = load_token(username, self.client)
 				token['expires_at'] = time.time() - 10
 
-				self.session.token = token
+				self.token = token
 			except FileNotFoundError:
 				authorization_url, state = self.session.authorization_url(
-					AUTHORIZATION_BASE_URL, access_type='offline', prompt='consent'
+					AUTHORIZATION_BASE_URL,
+					access_type='offline',
+					prompt='select_account'
 				)
 
 				code = input(
@@ -38,8 +40,7 @@ class GoogleMusicClient:
 				token = self.session.fetch_token(TOKEN_URL, client_secret=self.client_secret, code=code)
 
 		self.session.refresh_token(TOKEN_URL)
-		self.token = token
-		self._update_token(token)
+		self._update_token()
 
 	@retry(reraise=True, stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, max=10))
 	def _call(self, call_cls, *args, **kwargs):
@@ -60,14 +61,22 @@ class GoogleMusicClient:
 
 		return call.parse_response(response.headers, response.content)
 
-	def _update_token(self, token):
-		dump_token(self.username, self.client, token)
+	def _update_token(self):
+		dump_token(self.token, self.username, self.client)
 
 	@property
 	def is_authenticated(self):
 		"""The authentication status of the client instance."""
 
 		return self.session.authorized
+
+	@property
+	def token(self):
+		return self.session.token
+
+	@token.setter
+	def token(self, token):
+		self.session.token = token
 
 	@property
 	def username(self):
