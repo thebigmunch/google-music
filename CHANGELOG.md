@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/2.0.0...master)
 
+### Fixed
+
+* ``MobileClient.thumbs_up_songs`` when song has no ``'rating'`` key.
+
 
 
 ## [2.0.0](https://github.com/thebigmunch/google-music/releases/tag/2.0.0) (2018-11-05)

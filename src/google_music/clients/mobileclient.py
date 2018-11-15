@@ -1619,7 +1619,7 @@ class MobileClient(GoogleMusicClient):
 			thumbs_up_songs.extend(
 				song
 				for song in self.songs()
-				if song['rating'] == '5'
+				if song.get('rating', 0) == '5'
 			)
 
 		if store is True:
