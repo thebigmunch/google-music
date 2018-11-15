@@ -40,8 +40,10 @@ class GoogleMusicClient:
 				code = input(
 					f"Visit:\n\n{authorization_url}\n\nFollow the prompts and paste provided code: "
 				)
-				token = self.session.fetch_token(
-					TOKEN_URL, client_secret=self.client_secret, code=code
+				self.session.fetch_token(
+					TOKEN_URL,
+					client_secret=self.client_secret,
+					code=code
 				)
 
 		self.session.refresh_token(TOKEN_URL)
