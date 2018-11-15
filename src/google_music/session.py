@@ -38,6 +38,6 @@ class GoogleMusicSession(OAuth2Session):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 
-		self.headers.update({
-			'User-Agent': f'{__title__}/{__version__}'
-		})
+		self.headers.update(
+			{'User-Agent': f'{__title__}/{__version__}'}
+		)

@@ -16,8 +16,11 @@ class GoogleMusicClient:
 		}
 
 		self.session = GoogleMusicSession(
-			client_id=self.client_id, scope=self.oauth_scope, redirect_uri=REDIRECT_URI,
-			auto_refresh_url=TOKEN_URL, auto_refresh_kwargs=auto_refresh_kwargs,
+			client_id=self.client_id,
+			scope=self.oauth_scope,
+			redirect_uri=REDIRECT_URI,
+			auto_refresh_url=TOKEN_URL,
+			auto_refresh_kwargs=auto_refresh_kwargs,
 			token_updater=self._update_token
 		)
 
@@ -37,12 +40,18 @@ class GoogleMusicClient:
 				code = input(
 					f"Visit:\n\n{authorization_url}\n\nFollow the prompts and paste provided code: "
 				)
-				token = self.session.fetch_token(TOKEN_URL, client_secret=self.client_secret, code=code)
+				token = self.session.fetch_token(
+					TOKEN_URL, client_secret=self.client_secret, code=code
+				)
 
 		self.session.refresh_token(TOKEN_URL)
 		self._update_token()
 
-	@retry(reraise=True, stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, max=10))
+	@retry(
+		reraise=True,
+		stop=stop_after_attempt(5),
+		wait=wait_exponential(multiplier=1, max=10)
+	)
 	def _call(self, call_cls, *args, **kwargs):
 		call = call_cls(*args, **kwargs)
 
@@ -50,8 +59,12 @@ class GoogleMusicClient:
 		params = {**call.params, **self.session.params}
 
 		response = self.session.request(
-			call.method, call.url, headers=call.headers, data=call.body,
-			params=params, allow_redirects=call.follow_redirects
+			call.method,
+			call.url,
+			headers=call.headers,
+			data=call.body,
+			params=params,
+			allow_redirects=call.follow_redirects
 		)
 
 		try:

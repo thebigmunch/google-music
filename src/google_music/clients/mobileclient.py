@@ -6,7 +6,9 @@ from uuid import getnode as get_mac
 
 import google_music_proto.mobileclient.calls as mc_calls
 from google_music_proto.mobileclient.types import (
-	ListenNowItemType, QueryResultType, StationSeedType
+	ListenNowItemType,
+	QueryResultType,
+	StationSeedType
 )
 from google_music_proto.oauth import IOS_CLIENT_ID, IOS_CLIENT_SECRET, MOBILE_SCOPE
 
@@ -146,13 +148,18 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		response = self._call(
-			mc_calls.FetchAlbum, album_id, include_description=include_description, include_tracks=include_songs
+			mc_calls.FetchAlbum,
+			album_id,
+			include_description=include_description,
+			include_tracks=include_songs
 		)
 		album_info = response.body
 
 		return album_info
 
-	def artist(self, artist_id, *, include_albums=True, num_related_artists=5, num_top_tracks=5):
+	def artist(
+		self, artist_id, *, include_albums=True, num_related_artists=5, num_top_tracks=5
+	):
 		"""Get information about an artist.
 
 		Parameters:
@@ -169,8 +176,11 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		response = self._call(
-			mc_calls.FetchArtist, artist_id, include_albums=include_albums,
-			num_related_artists=num_related_artists, num_top_tracks=num_top_tracks
+			mc_calls.FetchArtist,
+			artist_id,
+			include_albums=include_albums,
+			num_related_artists=num_related_artists,
+			num_top_tracks=num_top_tracks
 		)
 		artist_info = response.body
 
@@ -188,7 +198,10 @@ class MobileClient(GoogleMusicClient):
 			list: Podcast dicts.
 		"""
 
-		response = self._call(mc_calls.PodcastBrowse, podcast_genre_id=podcast_genre_id)
+		response = self._call(
+			mc_calls.PodcastBrowse,
+			podcast_genre_id=podcast_genre_id
+		)
 		podcast_series_list = response.body.get('series', [])
 
 		return podcast_series_list
@@ -200,7 +213,9 @@ class MobileClient(GoogleMusicClient):
 			list: Genre groups that contain sub groups.
 		"""
 
-		response = self._call(mc_calls.PodcastBrowseHierarchy)
+		response = self._call(
+			mc_calls.PodcastBrowseHierarchy
+		)
 		genres = response.body.get('groups', [])
 
 		return genres
@@ -216,7 +231,10 @@ class MobileClient(GoogleMusicClient):
 			list: Station dicts.
 		"""
 
-		response = self._call(mc_calls.BrowseStations, station_category_id)
+		response = self._call(
+			mc_calls.BrowseStations,
+			station_category_id
+		)
 		stations = response.body.get('stations', [])
 
 		return stations
@@ -228,7 +246,9 @@ class MobileClient(GoogleMusicClient):
 			list: Station categories that can contain subcategories.
 		"""
 
-		response = self._call(mc_calls.BrowseStationCategories)
+		response = self._call(
+			mc_calls.BrowseStationCategories
+		)
 		station_categories = response.body.get('root', {}).get('subcategories', [])
 
 		return station_categories
@@ -236,7 +256,9 @@ class MobileClient(GoogleMusicClient):
 	def config(self):
 		"""Get a listing of mobile client configuration settings."""
 
-		response = self._call(mc_calls.Config)
+		response = self._call(
+			mc_calls.Config
+		)
 		config_list = response.body.get('data', {}).get('entries', [])
 
 		return config_list
@@ -249,7 +271,10 @@ class MobileClient(GoogleMusicClient):
 			device (dict): A device dict as returned by :meth:`devices`.
 		"""
 
-		self._call(mc_calls.DeviceManagementInfoDelete, device['id'])
+		self._call(
+			mc_calls.DeviceManagementInfoDelete,
+			device['id']
+		)
 
 	# TODO: Set device dict as property of MobileClient?
 	def device_set(self, device):
@@ -269,7 +294,9 @@ class MobileClient(GoogleMusicClient):
 	def devices(self):
 		"""Get a listing of devices registered to the Google Music account."""
 
-		response = self._call(mc_calls.DeviceManagementInfo)
+		response = self._call(
+			mc_calls.DeviceManagementInfo
+		)
 		registered_devices = response.body.get('data', {}).get('items', [])
 
 		return registered_devices
@@ -285,7 +312,10 @@ class MobileClient(GoogleMusicClient):
 			list: Genre dicts.
 		"""
 
-		response = self._call(mc_calls.ExploreGenres, parent_genre_id)
+		response = self._call(
+			mc_calls.ExploreGenres,
+			parent_genre_id
+		)
 		genre_list = response.body.get('genres', [])
 
 		return genre_list
@@ -303,7 +333,11 @@ class MobileClient(GoogleMusicClient):
 			dict: Explore tabs content.
 		"""
 
-		response = self._call(mc_calls.ExploreTabs, num_items=num_items, genre_id=genre_id)
+		response = self._call(
+			mc_calls.ExploreTabs,
+			num_items=num_items,
+			genre_id=genre_id
+		)
 		tab_list = response.body.get('tabs', [])
 
 		explore_tabs = {}
@@ -315,7 +349,9 @@ class MobileClient(GoogleMusicClient):
 	def listen_now_dismissed_items(self):
 		"""Get a listing of items dismissed from Listen Now tab."""
 
-		response = self._call(mc_calls.ListenNowGetDismissedItems)
+		response = self._call(
+			mc_calls.ListenNowGetDismissedItems
+		)
 		dismissed_items = response.body.get('items', [])
 
 		return dismissed_items
@@ -331,12 +367,15 @@ class MobileClient(GoogleMusicClient):
 			dict: With ``albums`` and ``stations`` keys of listen now items.
 		"""
 
-		response = self._call(mc_calls.ListenNowGetListenNowItems)
+		response = self._call(
+			mc_calls.ListenNowGetListenNowItems
+		)
 		listen_now_item_list = response.body.get('listennow_items', [])
 
 		listen_now_items = defaultdict(list)
 		for item in listen_now_item_list:
-			listen_now_items[f"{ListenNowItemType(int(item['type'])).name}s"].append(item)
+			type_ = f"{ListenNowItemType(int(item['type'])).name}s"
+			listen_now_items[type_].append(item)
 
 		return dict(listen_now_items)
 
@@ -382,7 +421,11 @@ class MobileClient(GoogleMusicClient):
 		start_token = None
 
 		while True:
-			response = self._call(mc_calls.PlaylistEntryFeed, max_results=page_size, start_token=start_token)
+			response = self._call(
+				mc_calls.PlaylistEntryFeed,
+				max_results=page_size,
+				start_token=start_token
+			)
 			items = response.body.get('data', {}).get('items', [])
 
 			if items:
@@ -433,7 +476,12 @@ class MobileClient(GoogleMusicClient):
 
 		share_state = 'PUBLIC' if make_public else 'PRIVATE'
 
-		playlist = self._call(mc_calls.PlaylistsCreate, name, description, share_state).body
+		playlist = self._call(
+			mc_calls.PlaylistsCreate,
+			name,
+			description,
+			share_state
+		).body
 
 		return playlist
 
@@ -445,7 +493,10 @@ class MobileClient(GoogleMusicClient):
 			playlist (dict): A playlist dict.
 		"""
 
-		self._call(mc_calls.PlaylistsDelete, playlist['id'])
+		self._call(
+			mc_calls.PlaylistsDelete,
+			playlist['id']
+		)
 
 	def playlist_edit(self, playlist, *, name=None, description=None, public=None):
 		"""Edit playlist(s).
@@ -461,18 +512,30 @@ class MobileClient(GoogleMusicClient):
 			dict: Playlist information.
 		"""
 
-		if all(value is None for value in (name, description, public)):
-			raise ValueError('At least one of name, description, or public must be provided')
+		if all(
+			value is None
+			for value in (name, description, public)
+		):
+			raise ValueError(
+				'At least one of name, description, or public must be provided'
+			)
 
 		playlist_id = playlist['id']
-
 		playlist = self.playlist(playlist_id)
 
 		name = name if name is not None else playlist['name']
-		description = description if description is not None else playlist['description']
+		description = (
+			description if description is not None else playlist['description']
+		)
 		share_state = 'PUBLIC' if public else playlist['accessControlled']
 
-		playlist = self._call(mc_calls.PlaylistsUpdate, playlist_id, name, description, share_state).body
+		playlist = self._call(
+			mc_calls.PlaylistsUpdate,
+			playlist_id,
+			name,
+			description,
+			share_state
+		).body
 
 		return playlist
 
@@ -528,7 +591,11 @@ class MobileClient(GoogleMusicClient):
 		start_token = None
 
 		while True:
-			response = self._call(mc_calls.PlaylistFeed, max_results=page_size, start_token=start_token)
+			response = self._call(
+				mc_calls.PlaylistFeed,
+				max_results=page_size,
+				start_token=start_token
+			)
 			items = response.body.get('data', {}).get('items', [])
 
 			if items:
@@ -550,7 +617,11 @@ class MobileClient(GoogleMusicClient):
 			dict: Podcast series information.
 		"""
 
-		podcast_info = self._call(mc_calls.PodcastFetchSeries, podcast_series_id, max_episodes=max_episodes).body
+		podcast_info = self._call(
+			mc_calls.PodcastFetchSeries,
+			podcast_series_id,
+			max_episodes=max_episodes
+		).body
 
 		return podcast_info
 
@@ -596,7 +667,10 @@ class MobileClient(GoogleMusicClient):
 
 		while True:
 			response = self._call(
-				mc_calls.PodcastSeries, device_id, max_results=page_size, start_token=start_token
+				mc_calls.PodcastSeries,
+				device_id,
+				max_results=page_size,
+				start_token=start_token
 			)
 			items = response.body.get('data', {}).get('items', [])
 
@@ -628,7 +702,10 @@ class MobileClient(GoogleMusicClient):
 			dict: Podcast episode information.
 		"""
 
-		response = self._call(mc_calls.PodcastFetchEpisode, podcast_episode_id)
+		response = self._call(
+			mc_calls.PodcastFetchEpisode,
+			podcast_episode_id
+		)
 		podcast_episode_info = [
 			podcast_episode
 			for podcast_episode in response.body
@@ -652,7 +729,10 @@ class MobileClient(GoogleMusicClient):
 			device_id = self.device_id
 
 		podcast_episode_list = []
-		for chunk in self.podcast_episodes_iter(device_id=device_id, page_size=49995):
+		for chunk in self.podcast_episodes_iter(
+			device_id=device_id,
+			page_size=49995
+		):
 			podcast_episode_list.extend(chunk)
 
 		return podcast_episode_list
@@ -679,7 +759,10 @@ class MobileClient(GoogleMusicClient):
 
 		while True:
 			response = self._call(
-				mc_calls.PodcastEpisode, device_id, max_results=page_size, start_token=start_token
+				mc_calls.PodcastEpisode,
+				device_id,
+				max_results=page_size,
+				start_token=start_token
 			)
 			items = response.body.get('data', {}).get('items', [])
 
@@ -722,10 +805,18 @@ class MobileClient(GoogleMusicClient):
 
 		results = defaultdict(list)
 
-		for type_, results_ in self.search_library(query, max_results=max_results, **kwargs).items():
+		for type_, results_ in self.search_library(
+			query,
+			max_results=max_results,
+			**kwargs
+		).items():
 			results[type_].extend(results_)
 
-		for type_, results_ in self.search_google(query, max_results=max_results, **kwargs).items():
+		for type_, results_ in self.search_google(
+			query,
+			max_results=max_results,
+			**kwargs
+		).items():
 			results[type_].extend(results_)
 
 		return dict(results)
@@ -753,7 +844,12 @@ class MobileClient(GoogleMusicClient):
 			Free account search is restricted so may not contain hits for all result types.
 		"""
 
-		response = self._call(mc_calls.Query, query, max_results=max_results, **kwargs)
+		response = self._call(
+			mc_calls.Query,
+			query,
+			max_results=max_results,
+			**kwargs
+		)
 
 		clusters = response.body.get('clusterDetail', [])
 		results = defaultdict(list)
@@ -797,10 +893,26 @@ class MobileClient(GoogleMusicClient):
 			)
 
 		types = [
-			('playlists', ['description', 'name'], self.playlists),
-			('podcasts', ['author', 'description', 'title'], self.podcasts),
-			('songs', ['album', 'albumArtist', 'artist', 'composer', 'genre', 'title'], self.songs),
-			('stations', ['byline', 'description', 'name'], self.stations)
+			(
+				'playlists',
+				['description', 'name'],
+				self.playlists
+			),
+			(
+				'podcasts',
+				['author', 'description', 'title'],
+				self.podcasts
+			),
+			(
+				'songs',
+				['album', 'albumArtist', 'artist', 'composer', 'genre', 'title'],
+				self.songs
+			),
+			(
+				'stations',
+				['byline', 'description', 'name'],
+				self.stations
+			),
 		]
 
 		results = {}
@@ -825,7 +937,10 @@ class MobileClient(GoogleMusicClient):
 			list: Suggested query strings.
 		"""
 
-		response = self._call(mc_calls.QuerySuggestion, query)
+		response = self._call(
+			mc_calls.QuerySuggestion,
+			query
+		)
 		suggested_queries = response.body.get('suggested_queries', [])
 
 		return [
@@ -833,7 +948,9 @@ class MobileClient(GoogleMusicClient):
 			for suggested_query in suggested_queries
 		]
 
-	def shuffle_album(self, album, *, num_songs=100, only_library=False, recently_played=None):
+	def shuffle_album(
+		self, album, *, num_songs=100, only_library=False, recently_played=None
+	):
 		"""Get a listing of album shuffle/mix songs.
 
 		Parameters:
@@ -851,15 +968,20 @@ class MobileClient(GoogleMusicClient):
 
 		station_info = {
 			'seed': {
-				'albumId': album['albumId'], 'seedType': str(StationSeedType.album.value)
+				'albumId': album['albumId'],
+				'seedType': str(StationSeedType.album.value)
 			},
-			'num_entries': num_songs, 'library_content_only': only_library
+			'num_entries': num_songs,
+			'library_content_only': only_library,
 		}
 
 		if recently_played is not None:
 			station_info['recently_played'] = recently_played
 
-		response = self._call(mc_calls.RadioStationFeed, station_infos=[station_info])
+		response = self._call(
+			mc_calls.RadioStationFeed,
+			station_infos=[station_info]
+		)
 		station_feed = response.body.get('data', {}).get('stations', [])
 
 		try:
@@ -869,7 +991,15 @@ class MobileClient(GoogleMusicClient):
 
 		return station.get('tracks', [])
 
-	def shuffle_artist(self, artist, *, num_songs=100, only_library=False, recently_played=None, only_artist=False):
+	def shuffle_artist(
+		self,
+		artist,
+		*,
+		num_songs=100,
+		only_library=False,
+		recently_played=None,
+		only_artist=False
+	):
 		"""Get a listing of artist shuffle/mix songs.
 
 		Parameters:
@@ -889,22 +1019,28 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		station_info = {
-			'num_entries': num_songs, 'library_content_only': only_library
+			'num_entries': num_songs,
+			'library_content_only': only_library
 		}
 
 		if only_artist:
 			station_info['seed'] = {
-				'artistId': artist['artistId'], 'seedType': str(StationSeedType.artist_only.value)
+				'artistId': artist['artistId'],
+				'seedType': str(StationSeedType.artist_only.value)
 			}
 		else:
 			station_info['seed'] = {
-				'artistId': artist['artistId'], 'seedType': str(StationSeedType.artist_related.value)
+				'artistId': artist['artistId'],
+				'seedType': str(StationSeedType.artist_related.value)
 			}
 
 		if recently_played is not None:
 			station_info['recently_played'] = recently_played
 
-		response = self._call(mc_calls.RadioStationFeed, station_infos=[station_info])
+		response = self._call(
+			mc_calls.RadioStationFeed,
+			station_infos=[station_info]
+		)
 		station_feed = response.body.get('data', {}).get('stations', [])
 
 		try:
@@ -914,7 +1050,9 @@ class MobileClient(GoogleMusicClient):
 
 		return station.get('tracks', [])
 
-	def shuffle_genre(self, genre, *, num_songs=100, only_library=False, recently_played=None):
+	def shuffle_genre(
+		self, genre, *, num_songs=100, only_library=False, recently_played=None
+	):
 		"""Get a listing of genre shuffle/mix songs.
 
 		Parameters:
@@ -930,14 +1068,21 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		station_info = {
-			'seed': {'genreId': genre['id'], 'seedType': str(StationSeedType.genre.value)}, 'num_entries': num_songs,
+			'seed': {
+				'genreId': genre['id'],
+				'seedType': str(StationSeedType.genre.value),
+			},
+			'num_entries': num_songs,
 			'library_content_only': only_library
 		}
 
 		if recently_played is not None:
 			station_info['recently_played'] = recently_played
 
-		response = self._call(mc_calls.RadioStationFeed, station_infos=[station_info])
+		response = self._call(
+			mc_calls.RadioStationFeed,
+			station_infos=[station_info]
+		)
 		station_feed = response.body.get('data', {}).get('stations', [])
 
 		try:
@@ -947,7 +1092,9 @@ class MobileClient(GoogleMusicClient):
 
 		return station.get('tracks', [])
 
-	def shuffle_song(self, song, *, num_songs=100, only_library=False, recently_played=None):
+	def shuffle_song(
+		self, song, *, num_songs=100, only_library=False, recently_played=None
+	):
 		"""Get a listing of song shuffle/mix songs.
 
 		Parameters:
@@ -964,13 +1111,20 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		station_info = {
-			'num_entries': num_songs, 'library_content_only': only_library
+			'num_entries': num_songs,
+			'library_content_only': only_library
 		}
 
 		if 'storeId' in song:
-			station_info['seed'] = {'trackId': song['storeId'], 'seedType': str(StationSeedType.store_track.value)}
+			station_info['seed'] = {
+				'trackId': song['storeId'],
+				'seedType': str(StationSeedType.store_track.value)
+			}
 		else:
-			station_info['seed'] = {'trackLockerId': song['id'], 'seedType': str(StationSeedType.library_track.value)}
+			station_info['seed'] = {
+				'trackLockerId': song['id'],
+				'seedType': str(StationSeedType.library_track.value)
+			}
 
 		if recently_played is not None:
 			station_info['recently_played'] = recently_played
@@ -992,7 +1146,10 @@ class MobileClient(GoogleMusicClient):
 			tz_offset (int, Optional): A time zone offset from UTC in seconds.
 		"""
 
-		response = self._call(mc_calls.ListenNowSituations, tz_offset)
+		response = self._call(
+			mc_calls.ListenNowSituations,
+			tz_offset
+		)
 		situation_list = response.body.get('situations', [])
 
 		return situation_list
@@ -1008,7 +1165,10 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		if song_id.startswith('T'):
-			song_info = self._call(mc_calls.FetchTrack, song_id).body
+			song_info = self._call(
+				mc_calls.FetchTrack,
+				song_id
+			).body
 		else:
 			song_info = next(
 				(
@@ -1044,7 +1204,10 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		mutations = [mc_calls.TrackBatch.add(song) for song in songs]
-		response = self._call(mc_calls.TrackBatch, mutations)
+		response = self._call(
+			mc_calls.TrackBatch,
+			mutations
+		)
 
 		success_ids = [
 			res['id']
@@ -1077,7 +1240,10 @@ class MobileClient(GoogleMusicClient):
 		"""
 
 		mutations = [mc_calls.TrackBatch.delete(song['id']) for song in songs]
-		response = self._call(mc_calls.TrackBatch, mutations)
+		response = self._call(
+			mc_calls.TrackBatch,
+			mutations
+		)
 
 		success_ids = [
 			res['id']
@@ -1114,7 +1280,10 @@ class MobileClient(GoogleMusicClient):
 		song_duration = song['durationMillis']
 
 		event = mc_calls.ActivityRecordRealtime.play(song_id, song_duration)
-		response = self._call(mc_calls.ActivityRecordRealtime, event)
+		response = self._call(
+			mc_calls.ActivityRecordRealtime,
+			event
+		)
 
 		return True if response.body['eventResults'][0]['code'] == 'OK' else False
 
@@ -1137,7 +1306,10 @@ class MobileClient(GoogleMusicClient):
 			song_id = song['id']
 
 		event = mc_calls.ActivityRecordRealtime.rate(song_id, rating)
-		response = self._call(mc_calls.ActivityRecordRealtime, event)
+		response = self._call(
+			mc_calls.ActivityRecordRealtime,
+			event
+		)
 
 		return True if response.body['eventResults'][0]['code'] == 'OK' else False
 
@@ -1169,7 +1341,11 @@ class MobileClient(GoogleMusicClient):
 		start_token = None
 
 		while True:
-			response = self._call(mc_calls.TrackFeed, max_results=page_size, start_token=start_token)
+			response = self._call(
+				mc_calls.TrackFeed,
+				max_results=page_size,
+				start_token=start_token
+			)
 			items = response.body.get('data', {}).get('items', [])
 
 			if items:
@@ -1204,7 +1380,10 @@ class MobileClient(GoogleMusicClient):
 		if recently_played is not None:
 			station_info['recently_played'] = recently_played
 
-		response = self._call(mc_calls.RadioStationFeed, station_infos=[station_info])
+		response = self._call(
+			mc_calls.RadioStationFeed,
+			station_infos=[station_info]
+		)
 		station_feed = response.body.get('data', {}).get('stations', [])
 
 		try:
@@ -1230,7 +1409,11 @@ class MobileClient(GoogleMusicClient):
 			list: Station information dicts.
 		"""
 
-		response = self._call(mc_calls.RadioStationFeed, num_entries=num_songs, num_stations=num_stations)
+		response = self._call(
+			mc_calls.RadioStationFeed,
+			num_entries=num_songs,
+			num_stations=num_stations
+		)
 		station_feed = response.body.get('data', {}).get('stations', [])
 
 		return station_feed
@@ -1247,7 +1430,11 @@ class MobileClient(GoogleMusicClient):
 
 		station_id = station['id']
 
-		station = self.station(station_id, num_songs=num_songs, recently_played=recently_played)
+		station = self.station(
+			station_id,
+			num_songs=num_songs,
+			recently_played=recently_played
+		)
 
 		return station.get('tracks', [])
 
@@ -1269,7 +1456,10 @@ class MobileClient(GoogleMusicClient):
 		station_list = []
 		for chunk in self.stations_iter(page_size=49995):
 			for station in chunk:
-				if (generated and not station.get('inLibrary')) or (library and station.get('inLibrary')):
+				if (
+					(generated and not station.get('inLibrary'))
+					or (library and station.get('inLibrary'))
+				):
 					station_list.append(station)
 
 		return station_list
@@ -1289,7 +1479,11 @@ class MobileClient(GoogleMusicClient):
 		start_token = None
 
 		while True:
-			response = self._call(mc_calls.RadioStation, max_results=page_size, start_token=start_token)
+			response = self._call(
+				mc_calls.RadioStation,
+				max_results=page_size,
+				start_token=start_token
+			)
 			yield response.body.get('data', {}).get('items', [])
 
 			start_token = response.body.get('nextPageToken')
@@ -1319,7 +1513,12 @@ class MobileClient(GoogleMusicClient):
 		if device_id is None:
 			device_id = self.device_id
 
-		stream_url = self.stream_url(item, device_id=device_id, quality=quality, session_token=session_token)
+		stream_url = self.stream_url(
+			item,
+			device_id=device_id,
+			quality=quality,
+			session_token=session_token
+		)
 		response = self.session.get(stream_url)
 		audio = response.content
 
@@ -1350,18 +1549,41 @@ class MobileClient(GoogleMusicClient):
 
 		if 'episodeId' in item:  # Podcast episode.
 			response = self._call(
-				mc_calls.PodcastEpisodeStreamURL, item['episodeId'], quality=quality, device_id=device_id
+				mc_calls.PodcastEpisodeStreamURL,
+				item['episodeId'],
+				quality=quality,
+				device_id=device_id
 			)
 		elif 'wentryid' in item:  # Free account station song.
 			response = self._call(
-				mc_calls.RadioStationTrackStreamURL, item['storeId'], item['wentryid'], session_token, quality=quality, device_id=device_id
+				mc_calls.RadioStationTrackStreamURL,
+				item['storeId'],
+				item['wentryid'],
+				session_token,
+				quality=quality,
+				device_id=device_id
 			)
 		elif 'trackId' in item:  # Playlist song.
-			response = self._call(mc_calls.TrackStreamURL, item['trackId'], quality=quality, device_id=device_id)
+			response = self._call(
+				mc_calls.TrackStreamURL,
+				item['trackId'],
+				quality=quality,
+				device_id=device_id
+			)
 		elif 'storeId' in item and self.is_subscribed:  # Store song.
-			response = self._call(mc_calls.TrackStreamURL, item['storeId'], quality=quality, device_id=device_id)
+			response = self._call(
+				mc_calls.TrackStreamURL,
+				item['storeId'],
+				quality=quality,
+				device_id=device_id
+			)
 		elif 'id' in item:  # Library song.
-			response = self._call(mc_calls.TrackStreamURL, item['id'], quality=quality, device_id=device_id)
+			response = self._call(
+				mc_calls.TrackStreamURL,
+				item['id'],
+				quality=quality,
+				device_id=device_id
+			)
 		else:
 			# TODO: Create an exception for not being subscribed or use a better builtin exception for this case.
 			if 'storeId' in item and not self.is_subscribed:

@@ -21,7 +21,12 @@ def mobileclient(username='', device_id=None, *, token=None, locale='en_US'):
 		MobileClient: An authenticated :class:`~google_music.MobileClient` instance.
 	"""
 
-	return MobileClient(username, device_id, token=token, locale=locale)
+	return MobileClient(
+		username,
+		device_id,
+		token=token,
+		locale=locale
+	)
 
 
 def musicmanager(username='', uploader_id=None, *, token=None):
@@ -40,4 +45,8 @@ def musicmanager(username='', uploader_id=None, *, token=None):
 		MusicManager: An authenticated :class:`~google_music.MusicManager` instance.
 	"""
 
-	return MusicManager(username, uploader_id, token=token)
+	return MusicManager(
+		username,
+		uploader_id,
+		token=token
+	)

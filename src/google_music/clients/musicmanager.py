@@ -12,7 +12,9 @@ import google_music_proto.musicmanager.calls as mm_calls
 from google_music_proto.musicmanager.pb import locker_pb2, upload_pb2
 from google_music_proto.musicmanager.utils import transcode_to_mp3
 from google_music_proto.oauth import (
-	MUSICMANAGER_CLIENT_ID, MUSICMANAGER_CLIENT_SECRET, MUSICMANAGER_SCOPE
+	MUSICMANAGER_CLIENT_ID,
+	MUSICMANAGER_CLIENT_SECRET,
+	MUSICMANAGER_SCOPE
 )
 from tenacity import stop_after_attempt
 
@@ -50,7 +52,7 @@ class MusicManager(GoogleMusicClient):
 
 				mac_string = create_mac_string(mac_int)
 				uploader_id = ':'.join(
-					mac_string[x:x + 2]
+					mac_string[x : x + 2]
 					for x in range(0, 12, 2)
 				)
 
@@ -94,9 +96,14 @@ class MusicManager(GoogleMusicClient):
 
 		song_id = song['id']
 
-		response = self._call(mm_calls.Export, self.uploader_id, song_id)
+		response = self._call(
+			mm_calls.Export,
+			self.uploader_id,
+			song_id)
 		audio = response.body
-		suggested_filename = unquote(response.headers['Content-Disposition'].split("filename*=UTF-8''")[-1])
+		suggested_filename = unquote(
+			response.headers['Content-Disposition'].split("filename*=UTF-8''")[-1]
+		)
 
 		return (audio, suggested_filename)
 
@@ -107,7 +114,10 @@ class MusicManager(GoogleMusicClient):
 			tuple: Number of uploaded tracks, number of tracks allowed.
 		"""
 
-		response = self._call(mm_calls.ClientState, self.uploader_id)
+		response = self._call(
+			mm_calls.ClientState,
+			self.uploader_id
+		)
 		client_state = response.body.clientstate_response
 
 		return (client_state.total_track_count, client_state.locker_track_limit)
@@ -164,7 +174,12 @@ class MusicManager(GoogleMusicClient):
 			)
 
 		while True:
-			response = self._call(mm_calls.ExportIDs, self.uploader_id, continuation_token=continuation_token, export_type=export_type)
+			response = self._call(
+				mm_calls.ExportIDs,
+				self.uploader_id,
+				continuation_token=continuation_token,
+				export_type=export_type
+			)
 
 			items = [
 				track_info_to_dict(track_info)
@@ -181,7 +196,15 @@ class MusicManager(GoogleMusicClient):
 
 	# TODO: Is there a better return value?
 	# TODO: Can more of this code be moved into calls and still leave viable control flow?
-	def upload(self, song, *, album_art_path=None, transcode_lossless=True, transcode_lossy=True, transcode_quality='320k'):
+	def upload(
+		self,
+		song,
+		*,
+		album_art_path=None,
+		transcode_lossless=True,
+		transcode_lossy=True,
+		transcode_quality='320k'
+	):
 		"""Upload a song to a Google Music library.
 
 		Parameters:
@@ -228,7 +251,11 @@ class MusicManager(GoogleMusicClient):
 		result = {'filepath': song.filepath}
 
 		track_info = mm_calls.Metadata.get_track_info(song)
-		response = self._call(mm_calls.Metadata, self.uploader_id, [track_info])
+		response = self._call(
+			mm_calls.Metadata,
+			self.uploader_id,
+			[track_info]
+		)
 
 		metadata_response = response.body.metadata_response
 
@@ -236,8 +263,17 @@ class MusicManager(GoogleMusicClient):
 			sample_request = metadata_response.signed_challenge_info[0]
 
 			try:
-				track_sample = mm_calls.Sample.generate_sample(song, track_info, sample_request, external_art=external_art)
-				response = self._call(mm_calls.Sample, self.uploader_id, [track_sample])
+				track_sample = mm_calls.Sample.generate_sample(
+					song,
+					track_info,
+					sample_request,
+					external_art=external_art
+				)
+				response = self._call(
+					mm_calls.Sample,
+					self.uploader_id,
+					[track_sample]
+				)
 				track_sample_response = response.body.sample_response.track_sample_response[0]
 			except (OSError, ValueError, subprocess.CalledProcessError):
 				raise  # TODO
@@ -247,15 +283,21 @@ class MusicManager(GoogleMusicClient):
 		response_code = track_sample_response.response_code
 
 		if response_code == upload_pb2.TrackSampleResponse.MATCHED:
-			result.update({
-				'success': True,
-				'reason': 'Matched',
-				'song_id': track_sample_response.server_track_id
-			})
+			result.update(
+				{
+					'success': True,
+					'reason': 'Matched',
+					'song_id': track_sample_response.server_track_id
+				}
+			)
 		elif response_code == upload_pb2.TrackSampleResponse.UPLOAD_REQUESTED:
 			server_track_id = track_sample_response.server_track_id
 
-			self._call(mm_calls.UploadState, self.uploader_id, 'START')
+			self._call(
+				mm_calls.UploadState,
+				self.uploader_id,
+				'START'
+			)
 
 			attempts = 0
 			should_retry = True
@@ -263,8 +305,15 @@ class MusicManager(GoogleMusicClient):
 			while should_retry and attempts <= 10:
 				# Call with tenacity.retry_with to disable automatic retries.
 				response = self._call.retry_with(stop=stop_after_attempt(1))(
-					self, mm_calls.ScottyAgentPost, self.uploader_id, server_track_id,
-					track_info, song, external_art=external_art, total_song_count=1, total_uploaded_count=0
+					self,
+					mm_calls.ScottyAgentPost,
+					self.uploader_id,
+					server_track_id,
+					track_info,
+					song,
+					external_art=external_art,
+					total_song_count=1,
+					total_uploaded_count=0
 				)
 
 				session_response = response.body
@@ -273,7 +322,12 @@ class MusicManager(GoogleMusicClient):
 					break
 
 				try:
-					status_code = session_response['errorMessage']['additionalInfo']['uploader_service.GoogleRupioAdditionalInfo']['completionInfo']['customerSpecificInfo']['ResponseCode']  # noqa
+					# WHY, GOOGLE?! WHY???????????
+					status_code = session_response['errorMessage']['additionalInfo'][
+						'uploader_service.GoogleRupioAdditionalInfo'
+					]['completionInfo']['customerSpecificInfo'][
+						'ResponseCode'
+					]
 				except KeyError:
 					status_code = None
 
@@ -294,10 +348,12 @@ class MusicManager(GoogleMusicClient):
 
 				time.sleep(2)  # Give the server time to sync.
 			else:
-				result.update({
-					'success': False,
-					'reason': f'Could not get upload session: {reason}'
-				})
+				result.update(
+					{
+						'success': False,
+						'reason': f'Could not get upload session: {reason}'
+					}
+				)
 
 			if 'success' not in result:
 				transfer = session_response['sessionStatus']['externalFieldTransfers'][0]
@@ -306,9 +362,19 @@ class MusicManager(GoogleMusicClient):
 				content_type = transfer.get('content_type', 'audio/mpeg')
 				original_content_type = track_info.original_content_type
 
-				transcode = isinstance(song, (audio_metadata.FLAC, audio_metadata.WAV)) and transcode_lossless
+				transcode = (
+					isinstance(song, (audio_metadata.FLAC, audio_metadata.WAV))
+					and transcode_lossless
+				)
 
-				if transcode or original_content_type == locker_pb2.Track.MP3 or (original_content_type == locker_pb2.Track.FLAC and not transcode_lossless):
+				if (
+					transcode
+					or original_content_type == locker_pb2.Track.MP3
+					or (
+						original_content_type == locker_pb2.Track.FLAC
+						and not transcode_lossless
+					)
+				):
 					if transcode:
 						audio_file = transcode_to_mp3(song)
 						content_type = 'audio/mpeg'
@@ -316,37 +382,52 @@ class MusicManager(GoogleMusicClient):
 						with open(song.filepath, 'rb') as f:
 							audio_file = f.read()
 
-					upload_response = self._call(mm_calls.ScottyAgentPut, upload_url, audio_file, content_type=content_type).body
+					upload_response = self._call(
+						mm_calls.ScottyAgentPut,
+						upload_url,
+						audio_file,
+						content_type=content_type
+					).body
 
 					if upload_response.get('sessionStatus', {}).get('state'):
-						result.update({
-							'success': True,
-							'reason': 'Uploaded',
-							'song_id': track_sample_response.server_track_id
-						})
+						result.update(
+							{
+								'success': True,
+								'reason': 'Uploaded',
+								'song_id': track_sample_response.server_track_id
+							}
+						)
 					else:
-						result.update({
-							'success': False,
-							'reason': upload_response,  # TODO: Better error details.
-						})
+						result.update(
+							{
+								'success': False,
+								'reason': upload_response  # TODO: Better error details.
+							}
+						)
 				else:
 					# Do not upload files if transcode option set to False.
-					result.update({
-						'success': False,
-						'reason': 'Transcoding disabled for file type.'
-					})
+					result.update(
+						{
+							'success': False,
+							'reason': 'Transcoding disabled for file type.'
+						}
+					)
 
 				self._call(mm_calls.UploadState, self.uploader_id, 'STOPPED')
 		else:
 			response_codes = upload_pb2._TRACKSAMPLERESPONSE.enum_types[0]
-			response_type = response_codes.values_by_number[track_sample_response.response_code].name
+			response_type = response_codes.values_by_number[
+				track_sample_response.response_code
+			].name
 
 			reason = response_type
 
-			result.update({
-				'success': False,
-				'reason': f'{reason}'
-			})
+			result.update(
+				{
+					'success': False,
+					'reason': f'{reason}'
+				}
+			)
 
 			if response_type == 'ALREADY_EXISTS':
 				result['song_id'] = track_sample_response.server_track_id
