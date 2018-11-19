@@ -374,7 +374,7 @@ class MobileClient(GoogleMusicClient):
 
 		listen_now_items = defaultdict(list)
 		for item in listen_now_item_list:
-			type_ = f"{ListenNowItemType(int(item['type'])).name}s"
+			type_ = f"{ListenNowItemType(item['type']).name}s"
 			listen_now_items[type_].append(item)
 
 		return dict(listen_now_items)
@@ -855,7 +855,7 @@ class MobileClient(GoogleMusicClient):
 		results = defaultdict(list)
 
 		for cluster in clusters:
-			result_type = f"{QueryResultType(int(cluster['cluster']['type'])).name}s"
+			result_type = QueryResultType(cluster['cluster']['type']).name
 
 			entries = cluster.get('entries', [])
 			if len(entries) > 0:
@@ -865,7 +865,7 @@ class MobileClient(GoogleMusicClient):
 						for key in entry
 						if key not in ['cluster', 'score', 'type']
 					)
-					results[result_type].append(entry[item_key])
+					results[f"{result_type}s"].append(entry[item_key])
 
 		return dict(results)
 
@@ -969,7 +969,7 @@ class MobileClient(GoogleMusicClient):
 		station_info = {
 			'seed': {
 				'albumId': album['albumId'],
-				'seedType': str(StationSeedType.album.value)
+				'seedType': StationSeedType.album.value
 			},
 			'num_entries': num_songs,
 			'library_content_only': only_library,
@@ -1026,12 +1026,12 @@ class MobileClient(GoogleMusicClient):
 		if only_artist:
 			station_info['seed'] = {
 				'artistId': artist['artistId'],
-				'seedType': str(StationSeedType.artist_only.value)
+				'seedType': StationSeedType.artist_only.value
 			}
 		else:
 			station_info['seed'] = {
 				'artistId': artist['artistId'],
-				'seedType': str(StationSeedType.artist_related.value)
+				'seedType': StationSeedType.artist_related.value
 			}
 
 		if recently_played is not None:
@@ -1070,7 +1070,7 @@ class MobileClient(GoogleMusicClient):
 		station_info = {
 			'seed': {
 				'genreId': genre['id'],
-				'seedType': str(StationSeedType.genre.value),
+				'seedType': StationSeedType.genre.value,
 			},
 			'num_entries': num_songs,
 			'library_content_only': only_library
@@ -1118,12 +1118,12 @@ class MobileClient(GoogleMusicClient):
 		if 'storeId' in song:
 			station_info['seed'] = {
 				'trackId': song['storeId'],
-				'seedType': str(StationSeedType.store_track.value)
+				'seedType': StationSeedType.store_track.value
 			}
 		else:
 			station_info['seed'] = {
 				'trackLockerId': song['id'],
-				'seedType': str(StationSeedType.library_track.value)
+				'seedType': StationSeedType.library_track.value
 			}
 
 		if recently_played is not None:
