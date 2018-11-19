@@ -40,7 +40,7 @@ class MusicManager(GoogleMusicClient):
 	client_secret = MUSICMANAGER_CLIENT_SECRET
 	oauth_scope = MUSICMANAGER_SCOPE
 
-	def __init__(self, username='', uploader_id=None, *, token=None):
+	def __init__(self, username=None, uploader_id=None, *, token=None):
 		if self.login(username, token=token):
 			if uploader_id is None:
 				mac_int = get_mac()

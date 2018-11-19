@@ -20,7 +20,7 @@ def ensure_token_directory(token_dir):
 
 
 def dump_token(token, username, client):
-	token_path = os.path.join(TOKEN_DIR, username, f'{client}.token')
+	token_path = os.path.join(TOKEN_DIR, username or '', f'{client}.token')
 	ensure_token_directory(os.path.dirname(token_path))
 
 	with open(token_path, 'w') as f:
@@ -28,7 +28,7 @@ def dump_token(token, username, client):
 
 
 def load_token(username, client):
-	with open(os.path.join(TOKEN_DIR, username, f'{client}.token'), 'r') as f:
+	with open(os.path.join(TOKEN_DIR, username or '', f'{client}.token'), 'r') as f:
 		token = json.load(f)
 
 		return token

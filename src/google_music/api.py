@@ -3,7 +3,7 @@ __all__ = ['mobileclient', 'musicmanager']
 from .clients import MobileClient, MusicManager
 
 
-def mobileclient(username='', device_id=None, *, token=None, locale='en_US'):
+def mobileclient(username=None, device_id=None, *, token=None, locale='en_US'):
 	"""Create and authenticate a Google Music mobile client.
 
 	>>> import google_music
@@ -29,7 +29,7 @@ def mobileclient(username='', device_id=None, *, token=None, locale='en_US'):
 	)
 
 
-def musicmanager(username='', uploader_id=None, *, token=None):
+def musicmanager(username=None, uploader_id=None, *, token=None):
 	"""Create and authenticate a Google Music Music Manager client.
 
 	>>> import google_music
