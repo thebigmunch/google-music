@@ -386,7 +386,7 @@ class MobileClient(GoogleMusicClient):
 		if 'groups' in new_releases_tab:
 			for group in new_releases_tab['groups']:
 				for entity in group['entities']:
-					entity.pop('kind')
+					del entity['kind']
 					new_releases.append(entity.popitem()[1])
 
 		return new_releases
