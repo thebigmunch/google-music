@@ -1426,6 +1426,9 @@ class MobileClient(GoogleMusicClient):
 			num_songs (int, Optional): The maximum number of songs to return from the station. Default: ``25``
 			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
 				where ``id`` is a song ID and ``type`` is 0 for a library song and 1 for a store song.
+
+		Returns:
+			list: Station song dicts.
 		"""
 
 		station_id = station['id']
