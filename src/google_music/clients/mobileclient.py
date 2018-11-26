@@ -5,6 +5,7 @@ from operator import itemgetter
 from uuid import getnode as get_mac
 
 import google_music_proto.mobileclient.calls as mc_calls
+import more_itertools
 from google_music_proto.mobileclient.types import (
 	ListenNowItemType,
 	QueryResultType,
@@ -13,7 +14,7 @@ from google_music_proto.mobileclient.types import (
 from google_music_proto.oauth import IOS_CLIENT_ID, IOS_CLIENT_SECRET, MOBILE_SCOPE
 
 from .base import GoogleMusicClient
-from ..utils import create_mac_string
+from ..utils import create_mac_string, get_ple_prev_next
 
 # TODO: 'max_results', 'start_token', 'updated_min', 'quality', etc.
 # TODO: Playlist edits.
@@ -391,21 +392,23 @@ class MobileClient(GoogleMusicClient):
 
 		return new_releases
 
+	# TODO: Remove on next major release in favor of playlist_songs.
 	def playlist_entries(self):
-		"""Get a listing of playlist entries for all library playlists.
+		"""Get a listing of playlist songs for all user playlists.
 
 		Returns:
-			list: Playlist entry dicts.
+			list: Playlist song dicts.
 		"""
 
-		playlist_entry_list = []
+		playlist_entries_list = []
 		for chunk in self.playlist_entries_iter(page_size=49995):
-			playlist_entry_list.extend(chunk)
+			playlist_entries_list.extend(chunk)
 
-		return playlist_entry_list
+		return playlist_entries_list
 
+	# TODO: Remove on next major release in favor of playlist_songs.
 	def playlist_entries_iter(self, *, start_token=None, page_size=250):
-		"""Get a paged iterator of playlist entries for all library playlists.
+		"""Get a paged iterator of playlist songs for all user playlists.
 
 		Parameters:
 			start_token (str): The token of the page to return.
@@ -415,7 +418,7 @@ class MobileClient(GoogleMusicClient):
 				Default: ``250``
 
 		Yields:
-			list: Playlist entry dicts.
+			list: Playlist song dicts.
 		"""
 
 		start_token = None
@@ -435,28 +438,392 @@ class MobileClient(GoogleMusicClient):
 			if start_token is None:
 				break
 
-	# TODO: Rename and add shared playlist method or combine for shared playlists.
+	def playlist_song(self, playlist_song_id):
+		"""Get information about a playlist song.
+
+		Note:
+			This returns the playlist entry information only.
+			For full song metadata, use :meth:`song` with
+			the ``'trackId'`` field.
+
+		Parameters:
+			playlist_song_id (str): A playlist song ID.
+
+		Returns:
+			dict: Playlist song information.
+		"""
+
+		playlist_song_info = next(
+			(
+				playlist_song
+				for playlist in self.playlists(include_songs=True)
+				for playlist_song in playlist['tracks']
+				if playlist_song['id'] == playlist_song_id
+			),
+			None
+		)
+
+		return playlist_song_info
+
+	def playlist_song_add(
+		self,
+		song,
+		playlist,
+		*,
+		after=None,
+		before=None,
+		index=None,
+		position=None
+	):
+		"""Add a song to a playlist.
+
+		Note:
+			* Provide no optional arguments to add to end.
+			* Provide playlist song dicts for ``after`` and/or ``before``.
+			* Provide a zero-based ``index`` (can be negative).
+			* Provide a one-based ``position``.
+
+		Parameters:
+			song (dict): A song dict.
+			playlist (dict): A playlist dict.
+			after (dict, Optional): A playlist song dict ``songs`` will follow.
+			before (dict, Optional): A playlist song dict ``songs`` will precede.
+			index (int, Optional): The zero-based index position to insert ``song``.
+			position (int, Optional): The one-based position to insert ``song``.
+
+		Returns:
+			dict: Playlist dict including songs.
+		"""
+
+		prev, next_ = get_ple_prev_next(
+			self.playlist_songs(playlist),
+			after=after,
+			before=before,
+			index=index,
+			position=position
+		)
+
+		if 'storeId' in song:
+			song_id = song['storeId']
+		elif 'trackId' in song:
+			song_id = song['trackId']
+		else:
+			song_id = song['id']
+
+		mutation = mc_calls.PlaylistEntriesBatch.create(
+			song_id, playlist['id'],
+			preceding_entry_id=prev.get('id'),
+			following_entry_id=next_.get('id')
+		)
+		self._call(mc_calls.PlaylistEntriesBatch, mutation)
+
+		return self.playlist(playlist['id'], include_songs=True)
+
+	def playlist_songs_add(
+		self,
+		songs,
+		playlist,
+		*,
+		after=None,
+		before=None,
+		index=None,
+		position=None
+	):
+		"""Add songs to a playlist.
+
+		Note:
+			* Provide no optional arguments to add to end.
+			* Provide playlist song dicts for ``after`` and/or ``before``.
+			* Provide a zero-based ``index`` (can be negative).
+			* Provide a one-based ``position``.
+
+		Parameters:
+			songs (list): A list of song dicts.
+			playlist (dict): A playlist dict.
+			after (dict, Optional): A playlist song dict ``songs`` will follow.
+			before (dict, Optional): A playlist song dict ``songs`` will precede.
+			index (int, Optional): The zero-based index position to insert ``songs``.
+			position (int, Optional): The one-based position to insert ``songs``.
+
+		Returns:
+			dict: Playlist dict including songs.
+		"""
+
+		playlist_songs = self.playlist_songs(playlist)
+
+		prev, next_ = get_ple_prev_next(
+			playlist_songs,
+			after=after,
+			before=before,
+			index=index,
+			position=position
+		)
+
+		songs_len = len(songs)
+		for i, song in enumerate(songs):
+			if 'storeId' in song:
+				song_id = song['storeId']
+			elif 'trackId' in song:
+				song_id = song['trackId']
+			else:
+				song_id = song['id']
+
+			mutation = mc_calls.PlaylistEntriesBatch.create(
+				song_id, playlist['id'],
+				preceding_entry_id=prev.get('id'),
+				following_entry_id=next_.get('id')
+			)
+			response = self._call(mc_calls.PlaylistEntriesBatch, mutation)
+			result = response.body['mutate_response'][0]
+
+			# TODO: Proper exception on failure.
+			if result['response_code'] != 'OK':
+				break
+
+			if i < songs_len - 1:
+				prev = self.playlist_song(result['id'])
+				_, next_ = get_ple_prev_next(
+					self.playlist_songs(playlist),
+					after=prev
+				)
+
+		return self.playlist(playlist['id'], include_songs=True)
+
+	def playlist_song_delete(self, playlist_song):
+		"""Delete song from playlist.
+
+		Parameters:
+			playlist_song (str): A playlist song dict.
+
+		Returns:
+			dict: Playlist dict including songs.
+		"""
+
+		self.playlist_songs_delete([playlist_song])
+
+		return self.playlist(playlist_song['playlistId'], include_songs=True)
+
+	def playlist_songs_delete(self, playlist_songs):
+		"""Delete songs from playlist.
+
+		Parameters:
+			playlist_songs (list): A list of playlist song dicts.
+
+		Returns:
+			dict: Playlist dict including songs.
+		"""
+
+		if not more_itertools.all_equal(
+			playlist_song['playlistId']
+			for playlist_song in playlist_songs
+		):
+			raise ValueError(
+				"All 'playlist_songs' must be from the same playlist."
+			)
+
+		mutations = [mc_calls.PlaylistEntriesBatch.delete(playlist_song['id']) for playlist_song in playlist_songs]
+		self._call(mc_calls.PlaylistEntriesBatch, mutations)
+
+		return self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
+
+	def playlist_song_move(
+		self,
+		playlist_song,
+		*,
+		after=None,
+		before=None,
+		index=None,
+		position=None
+	):
+		"""Move a song in a playlist.
+
+		Note:
+			* Provide no optional arguments to move to end.
+			* Provide playlist song dicts for ``after`` and/or ``before``.
+			* Provide a zero-based ``index`` (can be negative).
+			* Provide a one-based ``position``.
+
+		Parameters:
+			playlist_song (dict): A playlist song dict.
+			after (dict, Optional): A playlist song dict ``songs`` will follow.
+			before (dict, Optional): A playlist song dict ``songs`` will precede.
+			index (int, Optional): The zero-based index position to insert ``song``.
+			position (int, Optional): The one-based position to insert ``song``.
+
+		Returns:
+			dict: Playlist dict including songs.
+		"""
+
+		playlist_songs = self.playlist(
+			playlist_song['playlistId'],
+			include_songs=True
+		)['tracks']
+
+		prev, next_ = get_ple_prev_next(
+			playlist_songs,
+			after=after,
+			before=before,
+			index=index,
+			position=position
+		)
+
+		mutation = mc_calls.PlaylistEntriesBatch.update(
+			playlist_song,
+			preceding_entry_id=prev.get('id'),
+			following_entry_id=next_.get('id')
+		)
+		self._call(mc_calls.PlaylistEntriesBatch, mutation)
+
+		return self.playlist(playlist_song['playlistId'], include_songs=True)
+
+	def playlist_songs_move(
+		self,
+		playlist_songs,
+		*,
+		after=None,
+		before=None,
+		index=None,
+		position=None
+	):
+		"""Move songs in a playlist.
+
+		Note:
+			* Provide no optional arguments to move to end.
+			* Provide playlist song dicts for ``after`` and/or ``before``.
+			* Provide a zero-based ``index`` (can be negative).
+			* Provide a one-based ``position``.
+
+		Parameters:
+			playlist_songs (list): A list of playlist song dicts.
+			after (dict, Optional): A playlist song dict ``songs`` will follow.
+			before (dict, Optional): A playlist song dict ``songs`` will precede.
+			index (int, Optional): The zero-based index position to insert ``songs``.
+			position (int, Optional): The one-based position to insert ``songs``.
+
+		Returns:
+			dict: Playlist dict including songs.
+		"""
+
+		if not more_itertools.all_equal(
+			playlist_song['playlistId']
+			for playlist_song in playlist_songs
+		):
+			raise ValueError(
+				"All 'playlist_songs' must be from the same playlist."
+			)
+
+		playlist = self.playlist(
+			playlist_songs[0]['playlistId'],
+			include_songs=True
+		)
+
+		prev, next_ = get_ple_prev_next(
+			playlist['tracks'],
+			after=after,
+			before=before,
+			index=index,
+			position=position
+		)
+
+		playlist_songs_len = len(playlist_songs)
+		for i, playlist_song in enumerate(playlist_songs):
+			mutation = mc_calls.PlaylistEntriesBatch.update(
+				playlist_song,
+				preceding_entry_id=prev.get('id'),
+				following_entry_id=next_.get('id')
+			)
+			response = self._call(mc_calls.PlaylistEntriesBatch, mutation)
+			result = response.body['mutate_response'][0]
+
+			# TODO: Proper exception on failure.
+			if result['response_code'] != 'OK':
+				break
+
+			if i < playlist_songs_len - 1:
+				prev = self.playlist_song(result['id'])
+				_, next_ = get_ple_prev_next(
+					self.playlist_songs(playlist),
+					after=prev
+				)
+
+		return self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
+
+	def playlist_songs(self, playlist):
+		"""Get a listing of songs from a playlist.
+
+		Paramters:
+			playlist (dict): A playlist dict.
+
+		Returns:
+			list: Playlist song dicts.
+		"""
+
+		playlist_type = playlist.get('type')
+
+		playlist_song_list = []
+		if playlist_type in ('USER_GENERATED', None):
+			start_token = None
+			playlist_song_list = []
+			while True:
+				response = self._call(
+					mc_calls.PlaylistEntryFeed,
+					max_results=49995,
+					start_token=start_token
+				)
+				items = response.body.get('data', {}).get('items', [])
+
+				if items:
+					playlist_song_list.extend(items)
+
+				start_token = response.body.get('nextPageToken')
+				if start_token is None:
+					break
+		elif playlist_type == 'SHARED':
+			playlist_share_token = playlist['shareToken']
+
+			start_token = None
+			playlist_song_list = []
+			while True:
+				response = self._call(
+					mc_calls.PlaylistEntriesShared,
+					playlist_share_token,
+					max_results=49995,
+					start_token=start_token
+				)
+				entry = response.body['entries'][0]
+				items = entry.get('playlistEntry', [])
+
+				if items:
+					playlist_song_list.extend(items)
+
+				start_token = entry.get('nextPageToken')
+				if start_token is None:
+					break
+
+		playlist_song_list.sort(key=itemgetter('absolutePosition'))
+
+		return playlist_song_list
+
 	def playlist(self, playlist_id, *, include_songs=False):
 		"""Get information about a playlist.
 
 		Parameters:
 			playlist_id (str): A playlist ID.
-			include_songs (bool, Optional): Include songs from the playlist in the returned dict.
+			include_songs (bool, Optional): Include songs from
+				the playlist in the returned dict.
 				Default: ``False``
 
 		Returns:
 			dict: Playlist information.
 		"""
 
-		playlists = self.playlists(include_songs=include_songs)
-
 		playlist_info = next(
 			(
 				playlist
-				for playlist in playlists
+				for playlist in self.playlists(include_songs=include_songs)
 				if playlist['id'] == playlist_id
 			),
-			{}
+			None
 		)
 
 		return playlist_info
@@ -552,25 +919,11 @@ class MobileClient(GoogleMusicClient):
 
 		playlist_list = []
 		for chunk in self.playlists_iter(page_size=49995):
-			playlist_list.extend(chunk)
+			for playlist in chunk:
+				if include_songs:
+					playlist['tracks'] = self.playlist_songs(playlist)
 
-		if include_songs:
-			playlist_entries = self.playlist_entries()
-
-			for playlist in playlist_list:
-				playlist_type = playlist.get('type')
-
-				if playlist_type in ('USER_GENERATED', None):
-					pl_entries = sorted(
-						(
-							pl_entry
-							for pl_entry in playlist_entries
-							if pl_entry['playlistId'] == playlist['id']
-						),
-						key=itemgetter('absolutePosition')
-					)
-
-					playlist['tracks'] = pl_entries
+				playlist_list.append(playlist)
 
 		return playlist_list
 
@@ -1622,7 +1975,7 @@ class MobileClient(GoogleMusicClient):
 			thumbs_up_songs.extend(
 				song
 				for song in self.songs()
-				if song.get('rating', 0) == '5'
+				if song.get('rating', '0') == '5'
 			)
 
 		if store is True:

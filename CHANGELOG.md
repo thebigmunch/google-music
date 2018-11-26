@@ -8,6 +8,19 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/2.0.0...master)
 
+### Added
+
+* Playlist song functionality:
+	* ``MobileClient.playlist_song``
+	* ``MobileClient.playlist_song_add``
+	* ``MobileClient.playlist_songs_add``
+	* ``MobileClient.playlist_song_delete``
+	* ``MobileClient.playlist_songs_delete``
+	* ``MobileClient.playlist_song_move``
+	* ``MobileClient.playlist_songs_move``
+	* ``MobileClient.playlist_songs``
+	* Shared playlist support.
+
 ### Fixed
 
 * ``MobileClient.thumbs_up_songs`` when song has no ``'rating'`` key.
