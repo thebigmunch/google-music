@@ -8,10 +8,15 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/2.1.0...master)
 
-## Changed
+### Changed
 
 * Method of generating default uploader ID for ``MusicManager``
 (see [#2](https://github.com/thebigmunch/google-music/issues/2) for explanation).
+
+### Removed
+
+* Transcoding options from ``MusicManager.upload``.
+  They didn't exactly work correctly on Google's end.
 
 
 ## [2.1.0](https://github.com/thebigmunch/google-music/releases/tag/2.1.0) (2018-11-26)

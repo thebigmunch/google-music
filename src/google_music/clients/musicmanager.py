@@ -197,10 +197,7 @@ class MusicManager(GoogleMusicClient):
 		self,
 		song,
 		*,
-		album_art_path=None,
-		transcode_lossless=True,
-		transcode_lossy=True,
-		transcode_quality='320k'
+		album_art_path=None
 	):
 		"""Upload a song to a Google Music library.
 
@@ -208,13 +205,6 @@ class MusicManager(GoogleMusicClient):
 			song (os.PathLike or str or audio_metadata.Format): The path to an audio file or an instance of :class:`audio_metadata.Format`.
 			album_art_path (str or list, Optional): The absolute or relative path to external album art file.
 				If relative, can be a list of file names to check in the directory of the music file.
-			transcode_lossless (bool, Optional): Transcode lossless files to upload as MP3.
-				Default: ``True``
-			transcode_lossy (bool, Optional): Transcode lossy files to upload as MP3.
-				Default: ``True``
-			transcode_quality (str or int, Optional): Transcode quality option to pass to ffmpeg/avconv.
-				See `ffmpeg documentation <https://trac.ffmpeg.org/wiki/Encode/MP3#VBREncoding>`__ for examples.
-				Default: ``'320k'``
 
 		Returns:
 			dict: A result dict with keys: ``'filepath'``, ``'success'``, ``'reason'``, and ``'song_id'`` (if successful).
@@ -360,21 +350,16 @@ class MusicManager(GoogleMusicClient):
 				original_content_type = track_info.original_content_type
 
 				transcode = (
-					isinstance(song, (audio_metadata.FLAC, audio_metadata.WAV))
-					and transcode_lossless
+					isinstance(song, audio_metadata.WAV)
+					or original_content_type != locker_pb2.Track.MP3
 				)
 
 				if (
 					transcode
 					or original_content_type == locker_pb2.Track.MP3
-					or (
-						original_content_type == locker_pb2.Track.FLAC
-						and not transcode_lossless
-					)
 				):
 					if transcode:
-						audio_file = transcode_to_mp3(song)
-						content_type = 'audio/mpeg'
+						audio_file = transcode_to_mp3(song, quality='320k')
 					else:
 						with open(song.filepath, 'rb') as f:
 							audio_file = f.read()
