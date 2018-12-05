@@ -102,7 +102,7 @@ class GoogleMusicClient:
 
 		return self._username
 
-	def login(self, username='', *, token=None):
+	def login(self, username, *, token=None):
 		"""Log in to Google Music.
 
 		Parameters:

@@ -1,15 +1,15 @@
-__all__ = ['create_mac_string', 'is_valid_mac']
-
-import re
-
-mac_re = re.compile(r'^([\dA-F]{2}[:]){5}([\dA-F]{2})$')
+__all__ = ['create_mac_string', 'get_ple_prev_next']
 
 
-def create_mac_string(mac_int):
+def create_mac_string(mac_int, *, delimiter=':'):
 	mac = hex(mac_int)[2:].upper()
 	pad = max(12 - len(mac), 0)
+	mac += '0' * pad
 
-	return mac + '0' * pad
+	return delimiter.join(
+		mac[x : x + 2]
+		for x in range(0, 12, 2)
+	)
 
 
 def get_ple_prev_next(
@@ -76,7 +76,3 @@ def get_ple_prev_next(
 			next_ = playlist_songs[index]
 
 	return prev, next_
-
-
-def is_valid_mac(mac_string):
-	return bool(mac_re.match(mac_string))

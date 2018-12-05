@@ -1,9 +1,9 @@
 __all__ = ['MusicManager']
 
 import os
+import socket
 import subprocess
 import time
-from socket import gethostname
 from urllib.parse import unquote
 from uuid import getnode as get_mac
 
@@ -19,7 +19,7 @@ from google_music_proto.oauth import (
 from tenacity import stop_after_attempt
 
 from .base import GoogleMusicClient
-from ..utils import create_mac_string, is_valid_mac
+from ..utils import create_mac_string
 
 
 class MusicManager(GoogleMusicClient):
@@ -41,25 +41,22 @@ class MusicManager(GoogleMusicClient):
 	oauth_scope = MUSICMANAGER_SCOPE
 
 	def __init__(self, username=None, uploader_id=None, *, token=None):
+		username = username or ''
+
 		if self.login(username, token=token):
 			if uploader_id is None:
 				mac_int = get_mac()
-
 				if (mac_int >> 40) % 2:
 					raise OSError("A valid MAC address could not be obtained.")
-				else:
-					mac_int = (mac_int + 1) % (1 << 48)
 
 				mac_string = create_mac_string(mac_int)
-				uploader_id = ':'.join(
-					mac_string[x : x + 2]
-					for x in range(0, 12, 2)
-				)
 
-			if not is_valid_mac(uploader_id):
-				raise ValueError("uploader_id must be a valid MAC address.")
+				if username:
+					uploader_id = f"{mac_string}-{username}"
+				else:
+					uploader_id = mac_string
 
-			uploader_name = f"{gethostname()} ({self.session.headers['User-Agent']})"
+			uploader_name = f"{socket.gethostname()} ({self.session.headers['User-Agent']})"
 
 			self._upauth(uploader_id, uploader_name)
 

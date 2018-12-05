@@ -54,7 +54,9 @@ class MobileClient(GoogleMusicClient):
 	client_secret = IOS_CLIENT_SECRET
 	oauth_scope = MOBILE_SCOPE
 
-	def __init__(self, username, device_id=None, *, token=None, locale='en_US'):
+	def __init__(self, username=None, device_id=None, *, token=None, locale='en_US'):
+		username = username or ''
+
 		if self.login(username, token=token):
 			self.locale = locale
 			self.tier = 'fr'
@@ -65,7 +67,7 @@ class MobileClient(GoogleMusicClient):
 				if (mac_int >> 40) % 2:
 					raise OSError("A valid MAC address could not be obtained.")
 
-				self.device_id = create_mac_string(mac_int)
+				self.device_id = create_mac_string(mac_int, delimiter='')
 			else:
 				self.device_id = device_id
 
