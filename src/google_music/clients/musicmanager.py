@@ -203,8 +203,7 @@ class MusicManager(GoogleMusicClient):
 
 		Parameters:
 			song (os.PathLike or str or audio_metadata.Format): The path to an audio file or an instance of :class:`audio_metadata.Format`.
-			album_art_path (str or list, Optional): The absolute or relative path to external album art file.
-				If relative, can be a list of file names to check in the directory of the music file.
+			album_art_path (os.PathLike or str, Optional): The relative filename or absolute filepath to external album art.
 
 		Returns:
 			dict: A result dict with keys: ``'filepath'``, ``'success'``, ``'reason'``, and ``'song_id'`` (if successful).
@@ -216,24 +215,18 @@ class MusicManager(GoogleMusicClient):
 			except audio_metadata.UnsupportedFormat:
 				raise ValueError("'song' must be FLAC, MP3, or WAV.")
 
-		if album_art_path is not None:
-			with open(album_art_path, 'rb') as image_file:
-				external_art = image_file.read()
+		if album_art_path:
+			if not os.path.isabs(album_art_path):
+				base_dir = os.path.dirname(song.filepath)
+				album_art_path = os.path.join(base_dir, album_art_path)
+
+			if os.path.isfile(album_art_path):
+				with open(album_art_path, 'rb') as image_file:
+					external_art = image_file.read()
+			else:
+				external_art = None
 		else:
 			external_art = None
-
-		if isinstance(album_art_path, list):
-			base_dir = os.path.dirname(song.filepath)
-
-			try:
-				rel_path = next(
-					path
-					for path in album_art_path
-					if os.path.isfile(os.path.join(base_dir, path))
-				)
-				album_art_path = os.path.join(base_dir, rel_path)
-			except StopIteration:
-				album_art_path = None
 
 		result = {'filepath': song.filepath}
 
