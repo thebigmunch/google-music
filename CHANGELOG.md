@@ -19,6 +19,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 * Transcoding options from ``MusicManager.upload``.
   They didn't exactly work correctly on Google's end.
+* ``MobileClient.playlist_entries``.
+* ``MobileClient.playlist_entries_iter``.
 
 
 ## [2.1.0](https://github.com/thebigmunch/google-music/releases/tag/2.1.0) (2018-11-26)

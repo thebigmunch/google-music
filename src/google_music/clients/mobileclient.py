@@ -17,11 +17,8 @@ from .base import GoogleMusicClient
 from ..utils import create_mac_string, get_ple_prev_next
 
 # TODO: 'max_results', 'start_token', 'updated_min', 'quality', etc.
-# TODO: Playlist edits.
 # TODO: Podcast edits.
 # TODO: Station create/edit.
-# TODO: Shared playlists and playlist entries.
-# TODO: Playlist entries batch.
 # TODO: Difference between shuffles and instant mixes?
 # TODO: Situations are now returned through a protobuf call?
 
@@ -393,52 +390,6 @@ class MobileClient(GoogleMusicClient):
 					new_releases.append(entity.popitem()[1])
 
 		return new_releases
-
-	# TODO: Remove on next major release in favor of playlist_songs.
-	def playlist_entries(self):
-		"""Get a listing of playlist songs for all user playlists.
-
-		Returns:
-			list: Playlist song dicts.
-		"""
-
-		playlist_entries_list = []
-		for chunk in self.playlist_entries_iter(page_size=49995):
-			playlist_entries_list.extend(chunk)
-
-		return playlist_entries_list
-
-	# TODO: Remove on next major release in favor of playlist_songs.
-	def playlist_entries_iter(self, *, start_token=None, page_size=250):
-		"""Get a paged iterator of playlist songs for all user playlists.
-
-		Parameters:
-			start_token (str): The token of the page to return.
-				Default: Not sent to get first page.
-			page_size (int, Optional): The maximum number of results per returned page.
-				Max allowed is ``49995``.
-				Default: ``250``
-
-		Yields:
-			list: Playlist song dicts.
-		"""
-
-		start_token = None
-
-		while True:
-			response = self._call(
-				mc_calls.PlaylistEntryFeed,
-				max_results=page_size,
-				start_token=start_token
-			)
-			items = response.body.get('data', {}).get('items', [])
-
-			if items:
-				yield items
-
-			start_token = response.body.get('nextPageToken')
-			if start_token is None:
-				break
 
 	def playlist_song(self, playlist_song_id):
 		"""Get information about a playlist song.
