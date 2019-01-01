@@ -1,9 +1,9 @@
 __all__ = ['MusicManager']
 
-import os
 import socket
 import subprocess
 import time
+from pathlib import Path
 from urllib.parse import unquote
 from uuid import getnode as get_mac
 
@@ -216,19 +216,17 @@ class MusicManager(GoogleMusicClient):
 				raise ValueError("'song' must be FLAC, MP3, or WAV.")
 
 		if album_art_path:
-			if not os.path.isabs(album_art_path):
-				base_dir = os.path.dirname(song.filepath)
-				album_art_path = os.path.join(base_dir, album_art_path)
+			album_art_path = Path(album_art_path).resolve()
 
-			if os.path.isfile(album_art_path):
-				with open(album_art_path, 'rb') as image_file:
+			if album_art_path.is_file():
+				with album_art_path.open('rb') as image_file:
 					external_art = image_file.read()
 			else:
 				external_art = None
 		else:
 			external_art = None
 
-		result = {'filepath': song.filepath}
+		result = {'filepath': Path(song.filepath)}
 
 		track_info = mm_calls.Metadata.get_track_info(song)
 		response = self._call(
