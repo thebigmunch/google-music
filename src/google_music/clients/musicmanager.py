@@ -355,28 +355,37 @@ class MusicManager(GoogleMusicClient):
 						with open(song.filepath, 'rb') as f:
 							audio_file = f.read()
 
-					upload_response = self._call(
-						mm_calls.ScottyAgentPut,
-						upload_url,
-						audio_file,
-						content_type=content_type
-					).body
-
-					if upload_response.get('sessionStatus', {}).get('state'):
-						result.update(
-							{
-								'success': True,
-								'reason': 'Uploaded',
-								'song_id': track_sample_response.server_track_id
-							}
-						)
-					else:
+					# Google Music allows a maximum file size of 300 MiB.
+					if len(audio_file) >= 300 * 1024 * 1024:
 						result.update(
 							{
 								'success': False,
-								'reason': upload_response  # TODO: Better error details.
+								'reason': 'Maximum allowed file size is 300 MiB.'
 							}
 						)
+					else:
+						upload_response = self._call(
+							mm_calls.ScottyAgentPut,
+							upload_url,
+							audio_file,
+							content_type=content_type
+						).body
+
+						if upload_response.get('sessionStatus', {}).get('state'):
+							result.update(
+								{
+									'success': True,
+									'reason': 'Uploaded',
+									'song_id': track_sample_response.server_track_id
+								}
+							)
+						else:
+							result.update(
+								{
+									'success': False,
+									'reason': upload_response  # TODO: Better error details.
+								}
+							)
 				else:
 					# Do not upload files if transcode option set to False.
 					result.update(

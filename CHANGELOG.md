@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 (see [#2](https://github.com/thebigmunch/google-music/issues/2) for explanation).
 * ``album_art_path`` argument to ``MusicManager.upload`` must
   now be a relative filename or absolute filepath, not a list.
+* ``MusicManager.upload`` now stops before attempting to upload
+  files that exceed Google Music's size limit (300 MiB).
 
 ### Removed
 
