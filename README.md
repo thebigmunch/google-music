@@ -1,6 +1,7 @@
 # google-music
 
-[![Read the Docs](https://img.shields.io/readthedocs/google-music.svg)](https://google-music.readthedocs.io)
+[![Read the Docs - Stable](https://img.shields.io/readthedocs/google-music/stable.svg?label=stable%20docs)](https://google-music.readthedocs.io/en/stable/)
+[![Read the Docs - Latest](https://img.shields.io/readthedocs/google-music/latest.svg?label=latest%20docs)](https://google-music.readthedocs.io/en/latest/)
 
 [google-music](https://github.com/thebigmunch/google-music) is an API wrapper library for Google Music using my sans-I/O library,
 [google-music-proto](https://github.com/thebigmunch/google-music-proto).
