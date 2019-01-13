@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/2.1.0...master)
 
+### Added
+
+* ``no_sample`` parameter to ``MusicManager.upload`` for
+  sending empty audio sample to avoid ffmpeg/avconv dependency.
+
 ### Changed
 
 * Method of generating default uploader ID for ``MusicManager``

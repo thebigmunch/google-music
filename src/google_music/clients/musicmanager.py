@@ -197,13 +197,20 @@ class MusicManager(GoogleMusicClient):
 		self,
 		song,
 		*,
-		album_art_path=None
+		album_art_path=None,
+		no_sample=False
 	):
 		"""Upload a song to a Google Music library.
 
 		Parameters:
-			song (os.PathLike or str or audio_metadata.Format): The path to an audio file or an instance of :class:`audio_metadata.Format`.
-			album_art_path (os.PathLike or str, Optional): The relative filename or absolute filepath to external album art.
+			song (os.PathLike or str or audio_metadata.Format):
+				The path to an audio file or an instance of :class:`audio_metadata.Format`.
+			album_art_path (os.PathLike or str, Optional):
+				The relative filename or absolute filepath to external album art.
+			no_sample(bool, Optional):
+				Don't generate an audio sample from song;
+				send empty audio sample.
+				Default: Create an audio sample using ffmpeg/avconv.
 
 		Returns:
 			dict: A result dict with keys: ``'filepath'``, ``'success'``, ``'reason'``, and ``'song_id'`` (if successful).
@@ -245,7 +252,8 @@ class MusicManager(GoogleMusicClient):
 					song,
 					track_info,
 					sample_request,
-					external_art=external_art
+					external_art=external_art,
+					no_sample=no_sample
 				)
 				response = self._call(
 					mm_calls.Sample,
