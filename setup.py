@@ -29,12 +29,22 @@ setup(
 
 	install_requires=[
 		'appdirs>=1.4',
-		'audio-metadata>=0.2',
-		'google-music-proto>=2.1',
+		'audio-metadata>=0.3',
+		'google-music-proto>=2.2',
 		'protobuf>=3.5',
 		'requests-oauthlib>=1.0',
 		'tenacity>=5.0'
 	],
+
+	extras_require={
+		'doc': ['sphinx'],
+		'lint': [
+			'flake8',
+			'flake8-builtins',
+			'flake8-import-order',
+			'flake8-import-order-tbm'
+		],
+	},
 
 	packages=find_packages('src'),
 	package_dir={
