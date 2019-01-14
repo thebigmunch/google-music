@@ -28,8 +28,6 @@ class GoogleMusicClient:
 			try:
 				token = load_token(username, self.client)
 				token['expires_at'] = time.time() - 10
-
-				self.token = token
 			except FileNotFoundError:
 				authorization_url, state = self.session.authorization_url(
 					AUTHORIZATION_BASE_URL,
@@ -40,13 +38,17 @@ class GoogleMusicClient:
 				code = input(
 					f"Visit:\n\n{authorization_url}\n\nFollow the prompts and paste provided code: "
 				)
-				self.session.fetch_token(
+				token = self.session.fetch_token(
 					TOKEN_URL,
 					client_secret=self.client_secret,
 					code=code
 				)
 
-		self.session.refresh_token(TOKEN_URL)
+		self.token = self.session.refresh_token(
+			TOKEN_URL,
+			refresh_token=token.get('refresh_token')
+		)
+
 		self._update_token()
 
 	@retry(
