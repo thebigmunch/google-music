@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](https://semver.org).
 ## [Unreleased](https://github.com/thebigmunch/google-music/tree/master)
 
 [Commits](https://github.com/thebigmunch/google-music/compare/3.0.0...master)
+### Fixed
+
+* Token path creation.
 
 
 ## [3.0.0](https://github.com/thebigmunch/google-music/releases/tag/3.0.0) (2019-01-15)

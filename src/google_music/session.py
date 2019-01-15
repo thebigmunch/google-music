@@ -16,7 +16,7 @@ def dump_token(token, username, client):
 	token_path = TOKEN_DIR / username / f'{client}.token'
 
 	try:
-		token_path.mkdir(parents=True)
+		token_path.parent.mkdir(parents=True)
 	except FileExistsError:
 		pass
 
