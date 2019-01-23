@@ -1,7 +1,9 @@
 # google-music
 
-[![Read the Docs - Stable](https://img.shields.io/readthedocs/google-music/stable.svg?label=Read%20the%20Docs%20%28Stable%29)](https://google-music.readthedocs.io/en/stable/)
-[![Read the Docs - Latest](https://img.shields.io/readthedocs/google-music/latest.svg?label=Read%20the%20Docs%20%28Latest%29)](https://google-music.readthedocs.io/en/latest/)
+[![PyPI](https://img.shields.io/pypi/v/google-music.svg?label=PyPI)](https://pypi.org/project/google-music/)
+![](https://img.shields.io/badge/Python-3.6%2B-blue.svg)  
+[![Docs - Stable](https://img.shields.io/readthedocs/google-music/stable.svg?label=Docs%20%28Stable%29)](https://google-music.readthedocs.io/en/stable/)
+[![Docs - Latest](https://img.shields.io/readthedocs/google-music/latest.svg?label=Docs%20%28Latest%29)](https://google-music.readthedocs.io/en/latest/)
 
 [google-music](https://github.com/thebigmunch/google-music) is an API wrapper library for Google Music using my sans-I/O library,
 [google-music-proto](https://github.com/thebigmunch/google-music-proto).
