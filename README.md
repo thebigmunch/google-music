@@ -11,7 +11,7 @@
 
 ## Installation
 
-``pip install google-music``
+``pip install -U google-music``
 
 
 ## Usage
