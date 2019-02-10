@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/3.0.1...master)
 
+### Added
+
+* ``MobileClient.playlist_subscribe``
+* ``MobileClient.playlist_unsubscribe``
+
 
 ## [3.0.1](https://github.com/thebigmunch/google-music/releases/tag/3.0.1) (2019-01-15)
 

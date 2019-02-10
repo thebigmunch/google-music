@@ -29,7 +29,7 @@ class GoogleMusicClient:
 				token = load_token(username, self.client)
 				token['expires_at'] = time.time() - 10
 			except FileNotFoundError:
-				authorization_url, state = self.session.authorization_url(
+				authorization_url, _ = self.session.authorization_url(
 					AUTHORIZATION_BASE_URL,
 					access_type='offline',
 					prompt='select_account'

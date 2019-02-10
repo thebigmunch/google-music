@@ -859,6 +859,43 @@ class MobileClient(GoogleMusicClient):
 
 		return playlist
 
+	def playlist_subscribe(self, playlist):
+		"""Subscribe to a public playlist.
+
+		Parameters:
+			playlist (dict): A public playlist dict.
+
+		Returns:
+			dict: Playlist information.
+		"""
+
+		mutation = mc_calls.PlaylistBatch.create(
+			playlist['name'],
+			playlist['description'],
+			'SHARED',
+			owner_name=playlist.get('ownerName', ''),
+			share_token=playlist['shareToken']
+		)
+
+		response_body = self._call(
+			mc_calls.PlaylistBatch,
+			mutation
+		).body
+
+		playlist_id = response_body['mutate_response'][0]['id']
+
+		return self.playlist(playlist_id)
+
+	# TODO: Check success/failure?
+	def playlist_unsubscribe(self, playlist):
+		"""Unsubscribe from a public playlist.
+
+		Parameters:
+			playlist (dict): A public playlist dict.
+		"""
+
+		self.playlist_delete(playlist)
+
 	def playlists(self, *, include_songs=False):
 		"""Get a listing of library playlists.
 
