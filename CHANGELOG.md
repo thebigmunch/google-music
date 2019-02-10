@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 * ``MobileClient.playlist_subscribe``
 * ``MobileClient.playlist_unsubscribe``
+* Ability to add songs to playlist on creation
+  with ``MobileClient.playlist_create``.
 
 ### Fixed
 

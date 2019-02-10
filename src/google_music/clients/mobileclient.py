@@ -795,14 +795,23 @@ class MobileClient(GoogleMusicClient):
 
 		return playlist_info
 
-	def playlist_create(self, name, description='', *, make_public=False):
+	def playlist_create(
+		self,
+		name,
+		description='',
+		*,
+		make_public=False,
+		songs=None
+	):
 		"""Create a playlist.
 
 		Parameters:
 			name (str): Name to give the playlist.
 			description (str): Description to give the playlist.
-			make_public (bool): If ``True`` and account has a subscription, make playlist public.
+			make_public (bool, Optional): If ``True`` and account has a subscription,
+				make playlist public.
 				Default: ``False``
+			songs (list, Optional): A list of song dicts to add to the playlist.
 
 		Returns:
 			dict: Playlist information.
@@ -816,6 +825,9 @@ class MobileClient(GoogleMusicClient):
 			description,
 			share_state
 		).body
+
+		if songs:
+			playlist = self.playlist_songs_add(songs, playlist)
 
 		return playlist
 
@@ -838,8 +850,9 @@ class MobileClient(GoogleMusicClient):
 		Parameters:
 			playlist (dict): A playlist dict.
 			name (str): Name to give the playlist.
-			description (str): Description to give the playlist.
-			make_public (bool): If ``True`` and account has a subscription, make playlist public.
+			description (str, Optional): Description to give the playlist.
+			make_public (bool, Optional): If ``True`` and account has a subscription,
+				make playlist public.
 				Default: ``False``
 
 		Returns:
