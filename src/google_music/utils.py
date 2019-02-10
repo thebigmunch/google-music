@@ -20,28 +20,30 @@ def get_ple_prev_next(
 	index=None,
 	position=None
 ):
+	pl_songs_len = len(playlist_songs)
+
 	if (
 		(after or before)
 		and position
 	):
-			raise ValueError(
-				"Must provide one or both of 'after'/'before' or one of 'index'/'position'."
-			)
+		raise ValueError(
+			"Must provide one or both of 'after'/'before' or one of 'index'/'position'."
+		)
 
 	if (
 		index is not None
-		and index not in range(-(len(playlist_songs)), len(playlist_songs) + 1)
+		and index not in range(0, pl_songs_len + 1)
 	):
 		raise ValueError(
-			f"'index' must be between {-len(playlist_songs)} and {len(playlist_songs)}."
+			f"'index' must be between 0 and {pl_songs_len}."
 		)
 
 	if (
 		position is not None
-		and position not in range(1, len(playlist_songs) + 2)
+		and position not in range(1, pl_songs_len + 2)
 	):
 		raise ValueError(
-			f"'position' must be between 1 and {len(playlist_songs) + 1}."
+			f"'position' must be between 1 and {pl_songs_len + 1}."
 		)
 
 	prev = after or {}
@@ -60,19 +62,17 @@ def get_ple_prev_next(
 				prev = playlist_songs[index]
 	else:
 		if position is not None:
-			if position == len(playlist_songs) + 1:
-				index = len(playlist_songs)
-			else:
-				index = position - 1
-		elif index is None or index == len(playlist_songs):
-			index = len(playlist_songs)
-		elif index < 0:
-			index = index % len(playlist_songs)
+			index = position - 1
+		elif (
+			index is None
+			or index == pl_songs_len
+		):
+			index = pl_songs_len
 
 		if index != 0:
 			prev = playlist_songs[index - 1]
 
-		if index != len(playlist_songs):
+		if index != pl_songs_len:
 			next_ = playlist_songs[index]
 
 	return prev, next_

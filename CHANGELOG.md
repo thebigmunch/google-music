@@ -13,6 +13,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * ``MobileClient.playlist_subscribe``
 * ``MobileClient.playlist_unsubscribe``
 
+### Fixed
+
+* Reliability of adding/moving multiple playlist songs.
+
 
 ## [3.0.1](https://github.com/thebigmunch/google-music/releases/tag/3.0.1) (2019-01-15)
 

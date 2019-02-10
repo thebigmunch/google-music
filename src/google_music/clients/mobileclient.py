@@ -433,8 +433,12 @@ class MobileClient(GoogleMusicClient):
 		Note:
 			* Provide no optional arguments to add to end.
 			* Provide playlist song dicts for ``after`` and/or ``before``.
-			* Provide a zero-based ``index`` (can be negative).
+			* Provide a zero-based ``index``.
 			* Provide a one-based ``position``.
+
+			Songs are inserted *at* given index or position.
+			It's also possible to add to the end by using
+			``len(songs)`` for index or ``len(songs) + 1`` for position.
 
 		Parameters:
 			song (dict): A song dict.
@@ -487,8 +491,12 @@ class MobileClient(GoogleMusicClient):
 		Note:
 			* Provide no optional arguments to add to end.
 			* Provide playlist song dicts for ``after`` and/or ``before``.
-			* Provide a zero-based ``index`` (can be negative).
+			* Provide a zero-based ``index``.
 			* Provide a one-based ``position``.
+
+			Songs are inserted *at* given index or position.
+			It's also possible to add to the end by using
+			``len(songs)`` for index or ``len(songs) + 1`` for position.
 
 		Parameters:
 			songs (list): A list of song dicts.
@@ -534,11 +542,10 @@ class MobileClient(GoogleMusicClient):
 				break
 
 			if i < songs_len - 1:
-				prev = self.playlist_song(result['id'])
-				_, next_ = get_ple_prev_next(
-					self.playlist_songs(playlist),
-					after=prev
-				)
+				while True:
+					prev = self.playlist_song(result['id'])
+					if prev:
+						break
 
 		return self.playlist(playlist['id'], include_songs=True)
 
@@ -593,8 +600,12 @@ class MobileClient(GoogleMusicClient):
 		Note:
 			* Provide no optional arguments to move to end.
 			* Provide playlist song dicts for ``after`` and/or ``before``.
-			* Provide a zero-based ``index`` (can be negative).
+			* Provide a zero-based ``index``.
 			* Provide a one-based ``position``.
+
+			Songs are inserted *at* given index or position.
+			It's also possible to move to the end by using
+			``len(songs)`` for index or ``len(songs) + 1`` for position.
 
 		Parameters:
 			playlist_song (dict): A playlist song dict.
@@ -643,8 +654,12 @@ class MobileClient(GoogleMusicClient):
 		Note:
 			* Provide no optional arguments to move to end.
 			* Provide playlist song dicts for ``after`` and/or ``before``.
-			* Provide a zero-based ``index`` (can be negative).
+			* Provide a zero-based ``index``.
 			* Provide a one-based ``position``.
+
+			Songs are inserted *at* given index or position.
+			It's also possible to move to the end by using
+			``len(songs)`` for index or ``len(songs) + 1`` for position.
 
 		Parameters:
 			playlist_songs (list): A list of playlist song dicts.
@@ -693,11 +708,10 @@ class MobileClient(GoogleMusicClient):
 				break
 
 			if i < playlist_songs_len - 1:
-				prev = self.playlist_song(result['id'])
-				_, next_ = get_ple_prev_next(
-					self.playlist_songs(playlist),
-					after=prev
-				)
+				while True:
+					prev = self.playlist_song(result['id'])
+					if prev:
+						break
 
 		return self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
 
