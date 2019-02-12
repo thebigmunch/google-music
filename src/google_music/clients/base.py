@@ -78,8 +78,9 @@ class GoogleMusicClient:
 
 		return call.parse_response(response.headers, response.content)
 
-	def _update_token(self):
-		dump_token(self.token, self.username, self.client)
+	def _update_token(self, token=None):
+		token = token or self.token
+		dump_token(token, self.username, self.client)
 
 	@property
 	def is_authenticated(self):

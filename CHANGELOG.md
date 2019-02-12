@@ -44,6 +44,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 ### Fixed
 
 * Reliability of adding/moving multiple playlist songs.
+* Token updating on expiry.
 
 
 ## [3.0.1](https://github.com/thebigmunch/google-music/releases/tag/3.0.1) (2019-01-15)
