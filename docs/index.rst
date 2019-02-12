@@ -21,12 +21,8 @@ Create a mobile or music manager client using the high-level API.
 	>>> mc = google_music.mobileclient()
 	>>> mm = google_music.musicmanager()
 
-
-API Reference
--------------
-
 .. toctree::
-	:titlesonly:
+	:hidden:
 
 	api
 	mobileclient
