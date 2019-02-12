@@ -3,6 +3,7 @@ __all__ = ['MobileClient']
 from collections import defaultdict
 from operator import itemgetter
 from uuid import getnode as get_mac
+from uuid import uuid4
 
 import google_music_proto.mobileclient.calls as mc_calls
 import more_itertools
@@ -464,8 +465,11 @@ class MobileClient(GoogleMusicClient):
 			position=position
 		)
 
-		songs_len = len(songs)
-		for i, song in enumerate(songs):
+		prev_id = prev.get('id')
+		next_id = next_.get('id')
+
+		mutations = []
+		for song in songs:
 			if 'storeId' in song:
 				song_id = song['storeId']
 			elif 'trackId' in song:
@@ -473,23 +477,17 @@ class MobileClient(GoogleMusicClient):
 			else:
 				song_id = song['id']
 
+			ple_id = str(uuid4())
 			mutation = mc_calls.PlaylistEntriesBatch.create(
 				song_id, playlist['id'],
-				preceding_entry_id=prev.get('id'),
-				following_entry_id=next_.get('id')
+				playlist_entry_id=ple_id,
+				preceding_entry_id=prev_id,
+				following_entry_id=next_id
 			)
-			response = self._call(mc_calls.PlaylistEntriesBatch, mutation)
-			result = response.body['mutate_response'][0]
+			mutations.append(mutation)
+			prev_id = ple_id
 
-			# TODO: Proper exception on failure.
-			if result['response_code'] != 'OK':
-				break
-
-			if i < songs_len - 1:
-				while True:
-					prev = self.playlist_song(result['id'])
-					if prev:
-						break
+		self._call(mc_calls.PlaylistEntriesBatch, mutations)
 
 		return self.playlist(playlist['id'], include_songs=True)
 
@@ -513,7 +511,10 @@ class MobileClient(GoogleMusicClient):
 				"All 'playlist_songs' must be from the same playlist."
 			)
 
-		mutations = [mc_calls.PlaylistEntriesBatch.delete(playlist_song['id']) for playlist_song in playlist_songs]
+		mutations = [
+			mc_calls.PlaylistEntriesBatch.delete(playlist_song['id'])
+			for playlist_song in playlist_songs
+		]
 		self._call(mc_calls.PlaylistEntriesBatch, mutations)
 
 		return self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
@@ -572,25 +573,20 @@ class MobileClient(GoogleMusicClient):
 			position=position
 		)
 
-		playlist_songs_len = len(playlist_songs)
-		for i, playlist_song in enumerate(playlist_songs):
+		prev_id = prev.get('id')
+		next_id = next_.get('id')
+
+		mutations = []
+		for playlist_song in playlist_songs:
 			mutation = mc_calls.PlaylistEntriesBatch.update(
 				playlist_song,
-				preceding_entry_id=prev.get('id'),
-				following_entry_id=next_.get('id')
+				preceding_entry_id=prev_id,
+				following_entry_id=next_id
 			)
-			response = self._call(mc_calls.PlaylistEntriesBatch, mutation)
-			result = response.body['mutate_response'][0]
+			mutations.append(mutation)
+			prev_id = playlist_song['id']
 
-			# TODO: Proper exception on failure.
-			if result['response_code'] != 'OK':
-				break
-
-			if i < playlist_songs_len - 1:
-				while True:
-					prev = self.playlist_song(result['id'])
-					if prev:
-						break
+		self._call(mc_calls.PlaylistEntriesBatch, mutations)
 
 		return self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
 
