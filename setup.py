@@ -33,7 +33,8 @@ setup(
 		'google-music-proto>=2.5',
 		'protobuf>=3.5',
 		'requests-oauthlib>=1.0',
-		'tenacity>=5.0'
+		'tenacity>=5.0',
+		'wrapt>=1.0'
 	],
 
 	extras_require={

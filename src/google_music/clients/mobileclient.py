@@ -14,6 +14,7 @@ from google_music_proto.mobileclient.types import (
 from google_music_proto.oauth import IOS_CLIENT_ID, IOS_CLIENT_SECRET, MOBILE_SCOPE
 
 from .base import GoogleMusicClient
+from ..decorators import cast_to_list
 from ..utils import create_mac_string, get_ple_prev_next
 
 # TODO: 'max_results', 'start_token', 'updated_min', 'quality', etc.
@@ -418,64 +419,7 @@ class MobileClient(GoogleMusicClient):
 
 		return playlist_song_info
 
-	def playlist_song_add(
-		self,
-		song,
-		playlist,
-		*,
-		after=None,
-		before=None,
-		index=None,
-		position=None
-	):
-		"""Add a song to a playlist.
-
-		Note:
-			* Provide no optional arguments to add to end.
-			* Provide playlist song dicts for ``after`` and/or ``before``.
-			* Provide a zero-based ``index``.
-			* Provide a one-based ``position``.
-
-			Songs are inserted *at* given index or position.
-			It's also possible to add to the end by using
-			``len(songs)`` for index or ``len(songs) + 1`` for position.
-
-		Parameters:
-			song (dict): A song dict.
-			playlist (dict): A playlist dict.
-			after (dict, Optional): A playlist song dict ``songs`` will follow.
-			before (dict, Optional): A playlist song dict ``songs`` will precede.
-			index (int, Optional): The zero-based index position to insert ``song``.
-			position (int, Optional): The one-based position to insert ``song``.
-
-		Returns:
-			dict: Playlist dict including songs.
-		"""
-
-		prev, next_ = get_ple_prev_next(
-			self.playlist_songs(playlist),
-			after=after,
-			before=before,
-			index=index,
-			position=position
-		)
-
-		if 'storeId' in song:
-			song_id = song['storeId']
-		elif 'trackId' in song:
-			song_id = song['trackId']
-		else:
-			song_id = song['id']
-
-		mutation = mc_calls.PlaylistEntriesBatch.create(
-			song_id, playlist['id'],
-			preceding_entry_id=prev.get('id'),
-			following_entry_id=next_.get('id')
-		)
-		self._call(mc_calls.PlaylistEntriesBatch, mutation)
-
-		return self.playlist(playlist['id'], include_songs=True)
-
+	@cast_to_list(0)
 	def playlist_songs_add(
 		self,
 		songs,
@@ -499,7 +443,7 @@ class MobileClient(GoogleMusicClient):
 			``len(songs)`` for index or ``len(songs) + 1`` for position.
 
 		Parameters:
-			songs (list): A list of song dicts.
+			songs (dict or list): A song dict or a list of song dicts.
 			playlist (dict): A playlist dict.
 			after (dict, Optional): A playlist song dict ``songs`` will follow.
 			before (dict, Optional): A playlist song dict ``songs`` will precede.
@@ -549,25 +493,13 @@ class MobileClient(GoogleMusicClient):
 
 		return self.playlist(playlist['id'], include_songs=True)
 
-	def playlist_song_delete(self, playlist_song):
-		"""Delete song from playlist.
-
-		Parameters:
-			playlist_song (str): A playlist song dict.
-
-		Returns:
-			dict: Playlist dict including songs.
-		"""
-
-		self.playlist_songs_delete([playlist_song])
-
-		return self.playlist(playlist_song['playlistId'], include_songs=True)
-
+	@cast_to_list(0)
 	def playlist_songs_delete(self, playlist_songs):
 		"""Delete songs from playlist.
 
 		Parameters:
-			playlist_songs (list): A list of playlist song dicts.
+			playlist_songs (dict or list): A playlist song dict
+				or a list of playlist song dicts.
 
 		Returns:
 			dict: Playlist dict including songs.
@@ -586,60 +518,7 @@ class MobileClient(GoogleMusicClient):
 
 		return self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
 
-	def playlist_song_move(
-		self,
-		playlist_song,
-		*,
-		after=None,
-		before=None,
-		index=None,
-		position=None
-	):
-		"""Move a song in a playlist.
-
-		Note:
-			* Provide no optional arguments to move to end.
-			* Provide playlist song dicts for ``after`` and/or ``before``.
-			* Provide a zero-based ``index``.
-			* Provide a one-based ``position``.
-
-			Songs are inserted *at* given index or position.
-			It's also possible to move to the end by using
-			``len(songs)`` for index or ``len(songs) + 1`` for position.
-
-		Parameters:
-			playlist_song (dict): A playlist song dict.
-			after (dict, Optional): A playlist song dict ``songs`` will follow.
-			before (dict, Optional): A playlist song dict ``songs`` will precede.
-			index (int, Optional): The zero-based index position to insert ``song``.
-			position (int, Optional): The one-based position to insert ``song``.
-
-		Returns:
-			dict: Playlist dict including songs.
-		"""
-
-		playlist_songs = self.playlist(
-			playlist_song['playlistId'],
-			include_songs=True
-		)['tracks']
-
-		prev, next_ = get_ple_prev_next(
-			playlist_songs,
-			after=after,
-			before=before,
-			index=index,
-			position=position
-		)
-
-		mutation = mc_calls.PlaylistEntriesBatch.update(
-			playlist_song,
-			preceding_entry_id=prev.get('id'),
-			following_entry_id=next_.get('id')
-		)
-		self._call(mc_calls.PlaylistEntriesBatch, mutation)
-
-		return self.playlist(playlist_song['playlistId'], include_songs=True)
-
+	@cast_to_list(0)
 	def playlist_songs_move(
 		self,
 		playlist_songs,
@@ -1551,23 +1430,13 @@ class MobileClient(GoogleMusicClient):
 
 		return song_info
 
-	def song_add(self, song):
-		"""Add a store song to your library.
-
-		Parameters:
-			song (dict): A store song dict.
-
-		Returns:
-			str: Song's library ID.
-		"""
-
-		return self.songs_add([song])[0]
-
+	@cast_to_list(0)
 	def songs_add(self, songs):
 		"""Add store songs to your library.
 
 		Parameters:
-			songs (list): A list of store song dicts.
+			songs (list): A store song dict
+				or a list of store song dicts.
 
 		Returns:
 			list: Songs' library IDs.
@@ -1587,23 +1456,13 @@ class MobileClient(GoogleMusicClient):
 
 		return success_ids
 
-	def song_delete(self, song):
-		"""Delete song from library.
-
-		Parameters:
-			song (str): A library song dict.
-
-		Returns:
-			str: Successfully deleted song ID.
-		"""
-
-		return self.songs_delete([song])[0]
-
+	@cast_to_list(0)
 	def songs_delete(self, songs):
 		"""Delete songs from library.
 
 		Parameters:
-			song (list): A list of song dicts.
+			songs (list): A library song dict or
+				a list of library song dicts.
 
 		Returns:
 			list: Successfully deleted song IDs.
@@ -1630,58 +1489,67 @@ class MobileClient(GoogleMusicClient):
 
 		return success_ids
 
-	def song_play(self, song):
+	@cast_to_list(0)
+	def songs_play(self, songs):
 		"""Add play to song play count.
 
 		Parameters:
-			song (dict): A song dict.
+			songs (dict or list): A song dict or a list of song dicts.
 
 		Returns:
 			bool: ``True`` if successful, ``False`` if not.
 		"""
 
-		if 'storeId' in song:
-			song_id = song['storeId']
-		elif 'trackId' in song:
-			song_id = song['trackId']
-		else:
-			song_id = song['id']
+		events = []
 
-		song_duration = song['durationMillis']
+		for song in songs:
+			if 'id' in song:
+				song_id = song['id']
+			elif 'trackId' in song:
+				song_id = song['trackId']
+			else:
+				song_id = song['storeId']
 
-		event = mc_calls.ActivityRecordRealtime.play(song_id, song_duration)
-		response = self._call(
+			song_duration = song['durationMillis']
+
+			events.append(mc_calls.ActivityRecordRealtime.play(song_id, song_duration))
+
+		self._call(
 			mc_calls.ActivityRecordRealtime,
-			event
+			events
 		)
 
-		return True if response.body['eventResults'][0]['code'] == 'OK' else False
+		return [self.song(song_id) for song in songs]
 
-	def song_rate(self, song, rating):
+	@cast_to_list(0)
+	def songs_rate(self, songs, rating):
 		"""Rate song.
 
 		Parameters:
-			song (dict): A song dict.
+			songs (dict or list): A song dict or a list of song dicts.
 			rating (int): 0 (not rated), 1 (thumbs down), or 5 (thumbs up).
 
 		Returns:
 			bool: ``True`` if successful, ``False`` if not.
 		"""
 
-		if 'storeId' in song:
-			song_id = song['storeId']
-		elif 'trackId' in song:
-			song_id = song['trackId']
-		else:
-			song_id = song['id']
+		events = []
+		for song in songs:
+			if 'id' in song:
+				song_id = song['id']
+			elif 'trackId' in song:
+				song_id = song['trackId']
+			else:
+				song_id = song['storeId']
 
-		event = mc_calls.ActivityRecordRealtime.rate(song_id, rating)
-		response = self._call(
+			events.append(mc_calls.ActivityRecordRealtime.rate(song_id, rating))
+
+		self._call(
 			mc_calls.ActivityRecordRealtime,
-			event
+			events
 		)
 
-		return True if response.body['eventResults'][0]['code'] == 'OK' else False
+		return [self.song(song_id) for song in songs]
 
 	def songs(self):
 		"""Get a listing of library songs.
@@ -1974,7 +1842,7 @@ class MobileClient(GoogleMusicClient):
 		return stream_url
 
 	def thumbs_up_songs(self, *, library=True, store=True):
-		"""Get a listing of 'Thumbs Up' store songs.
+		"""Get a listing of 'Thumbs Up' songs.
 
 		Parameters:
 			library (bool, Optional): Include 'Thumbs Up' songs from library.

@@ -14,6 +14,32 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * ``MobileClient.playlist_unsubscribe``
 * Ability to add songs to playlist on creation
   with ``MobileClient.playlist_create``.
+* ``MobileClient.songs_play``
+* ``MobileClient.songs_rate``
+
+### Changed
+
+* The following methods accept single items
+  as well as lists of items:
+	* ``MobileClient.playlist_songs_add``
+	* ``MobileClient.playlist_songs_delete``
+	* ``MobileClient.playlist_songs_move``
+	* ``MobileClient.songs_add``
+	* ``MobileClient.songs_delete``
+	* ``MobileClient.songs_move``
+	* ``MobileClient.songs_play``
+	* ``MobileClient.songs_rate``
+
+### Removed
+
+* ``MobileClient.playlist_song_add``
+* ``MobileClient.playlist_song_delete``
+* ``MobileClient.playlist_song_move``
+* ``MobileClient.song_add``
+* ``MobileClient.song_delete``
+* ``MobileClient.song_move``
+* ``MobileClient.song_play``
+* ``MobileClient.song_rate``
 
 ### Fixed
 
