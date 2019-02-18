@@ -1,21 +1,37 @@
-__all__ = ['mobileclient', 'musicmanager']
+__all__ = [
+	'mobileclient',
+	'musicmanager',
+]
 
 from .clients import MobileClient, MusicManager
 
 
-def mobileclient(username=None, device_id=None, *, token=None, locale='en_US'):
+def mobileclient(
+	username=None,
+	device_id=None,
+	*,
+	token=None,
+	locale='en_US'
+):
 	"""Create and authenticate a Google Music mobile client.
 
 	>>> import google_music
 	>>> mc = google_music.mobileclient('username')
 
 	Parameters:
-		username (str, Optional): Your Google Music username.
-			This is used to store OAuth credentials for different accounts separately.
-		device_id (str, Optional): A mobile device ID. Default: MAC address is used.
-		token (dict, Optional): An OAuth token compatible with ``requests-oauthlib``.
-		locale (str, Optional): `ICU <http://www.localeplanet.com/icu/>`__ locale used to localize some
-			responses. This must be a locale supported by Android. Default: `'en_US'``.
+		username (str, Optional):
+			Your Google Music username.
+			Used to store OAuth tokens for multiple accounts separately.
+		device_id (str, Optional):
+			A mobile device ID.
+			Default: MAC address is used.
+		token (dict, Optional):
+			An OAuth token compatible with ``requests-oauthlib``.
+		locale (str, Optional):
+			`ICU <http://www.localeplanet.com/icu/>`__
+			locale used to localize some responses.
+			This must be a locale supported by Android.
+			Default: `'en_US'``.
 
 	Returns:
 		MobileClient: An authenticated :class:`~google_music.MobileClient` instance.
@@ -29,24 +45,29 @@ def mobileclient(username=None, device_id=None, *, token=None, locale='en_US'):
 	)
 
 
-def musicmanager(username=None, uploader_id=None, *, token=None):
+def musicmanager(
+	username=None,
+	uploader_id=None,
+	*,
+	token=None
+):
 	"""Create and authenticate a Google Music Music Manager client.
 
 	>>> import google_music
 	>>> mm = google_music.musicmanager('username')
 
 	Parameters:
-		username (str, Optional): Your Google Music username.
-			This is used to store OAuth credentials for different accounts separately.
-		device_id (str, Optional): A mobile device ID. Default: MAC address is used.
-		token (dict, Optional): An OAuth token compatible with ``requests-oauthlib``.
+		username (str, Optional):
+			Your Google Music username.
+			Used to store OAuth tokens for multiple accounts separately.
+		uploader_id (str, Optional):
+			A unique uploader ID.
+			Default: MAC address and username used.
+		token (dict, Optional):
+			An OAuth token compatible with ``requests-oauthlib``.
 
 	Returns:
 		MusicManager: An authenticated :class:`~google_music.MusicManager` instance.
 	"""
 
-	return MusicManager(
-		username,
-		uploader_id,
-		token=token
-	)
+	return MusicManager(username, uploader_id, token=token)

@@ -34,17 +34,13 @@ def get_ple_prev_next(
 		index is not None
 		and index not in range(0, pl_songs_len + 1)
 	):
-		raise ValueError(
-			f"'index' must be between 0 and {pl_songs_len}."
-		)
+		raise ValueError(f"'index' must be between 0 and {pl_songs_len}.")
 
 	if (
 		position is not None
 		and position not in range(1, pl_songs_len + 2)
 	):
-		raise ValueError(
-			f"'position' must be between 1 and {pl_songs_len + 1}."
-		)
+		raise ValueError(f"'position' must be between 1 and {pl_songs_len + 1}.")
 
 	prev = after or {}
 	next_ = before or {}

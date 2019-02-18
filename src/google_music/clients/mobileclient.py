@@ -10,7 +10,7 @@ import more_itertools
 from google_music_proto.mobileclient.types import (
 	ListenNowItemType,
 	QueryResultType,
-	StationSeedType
+	StationSeedType,
 )
 from google_music_proto.oauth import IOS_CLIENT_ID, IOS_CLIENT_SECRET, MOBILE_SCOPE
 
@@ -38,13 +38,18 @@ class MobileClient(GoogleMusicClient):
 		or :meth:`stream_url`.
 
 	Parameters:
-		username (str, Optional): Your Google Music username.
-			This is used to store OAuth credentials for different accounts separately.
-		device_id (str, Optional): A mobile device ID.
-			Default: An ID is generated from your system's MAC address.
-		token (dict, Optional): An OAuth token compatible with ``requests-oauthlib``.
-		locale (str, Optional): `ICU <http://www.localeplanet.com/icu/>`__ locale used to
-			localize some responses. This must be a locale supported by Android.
+		username (str, Optional):
+			Your Google Music username.
+			Used to store OAuth tokens for multiple accounts separately.
+		device_id (str, Optional):
+			A mobile device ID.
+			Default: MAC address is used.
+		token (dict, Optional):
+			An OAuth token compatible with ``requests-oauthlib``.
+		locale (str, Optional):
+			`ICU <http://www.localeplanet.com/icu/>`__
+			locale used to localize some responses.
+			This must be a locale supported by Android.
 			Default: `'en_US'``.
 	"""
 
@@ -111,8 +116,9 @@ class MobileClient(GoogleMusicClient):
 
 		Can be changed after instantiation.
 
-		`ICU <http://www.localeplanet.com/icu/>`__ locale used to localize some
-		responses. This must be a locale supported by Android.
+		`ICU <http://www.localeplanet.com/icu/>`__
+		locale used to localize some responses.
+		This must be a locale supported by Android.
 		"""
 
 		return self.session.params.get('hl')
@@ -134,15 +140,21 @@ class MobileClient(GoogleMusicClient):
 
 	@tier.setter
 	def tier(self, tier):
-		self.session.params.update({'tier': tier})
+		self.session.params.update(
+			{'tier': tier}
+		)
 
 	def album(self, album_id, *, include_description=True, include_songs=True):
 		"""Get information about an album.
 
 		Parameters:
-			album_id (str): An album ID. Album IDs start with a 'B'.
-			include_description (bool, Optional): Include description of the album in the returned dict.
-			include_songs (bool, Optional): Include songs from the album in the returned dict.
+			album_id (str):
+				An album ID.
+				Album IDs start with a 'B'.
+			include_description (bool, Optional):
+				Include description of the album in the returned dict.
+			include_songs (bool, Optional):
+				Include songs from the album in the returned dict.
 				Default: ``True``.
 
 		Returns:
@@ -153,7 +165,7 @@ class MobileClient(GoogleMusicClient):
 			mc_calls.FetchAlbum,
 			album_id,
 			include_description=include_description,
-			include_tracks=include_songs
+			include_tracks=include_songs,
 		)
 		album_info = response.body
 
@@ -165,12 +177,17 @@ class MobileClient(GoogleMusicClient):
 		"""Get information about an artist.
 
 		Parameters:
-			artist_id (str): An artist ID. Artist IDs start with an 'A'.
-			include_albums (bool, Optional): Include albums by the artist in returned dict.
+			artist_id (str):
+				An artist ID.
+				Artist IDs start with an 'A'.
+			include_albums (bool, Optional):
+				Include albums by the artist in returned dict.
 				Default: ``True``.
-			num_related_artists (int, Optional): Include up to given number of related artists in returned dict.
+			num_related_artists (int, Optional):
+				Include up to given number of related artists in returned dict.
 				Default: ``5``.
-			num_top_tracks (int, Optional): Include up to given number of top tracks in returned dict.
+			num_top_tracks (int, Optional):
+				Include up to given number of top tracks in returned dict.
 				Default: ``5``.
 
 		Returns:
@@ -182,7 +199,7 @@ class MobileClient(GoogleMusicClient):
 			artist_id,
 			include_albums=include_albums,
 			num_related_artists=num_related_artists,
-			num_top_tracks=num_top_tracks
+			num_top_tracks=num_top_tracks,
 		)
 		artist_info = response.body
 
@@ -192,7 +209,8 @@ class MobileClient(GoogleMusicClient):
 		"""Get the podcasts for a genre from the Podcasts browse tab.
 
 		Parameters:
-			podcast_genre_id (str, Optional): A podcast genre ID as found
+			podcast_genre_id (str, Optional):
+				A podcast genre ID as found
 				in :meth:`browse_podcasts_genres`.
 				Default: ``'JZCpodcasttopchartall'``.
 
@@ -215,9 +233,7 @@ class MobileClient(GoogleMusicClient):
 			list: Genre groups that contain sub groups.
 		"""
 
-		response = self._call(
-			mc_calls.PodcastBrowseHierarchy
-		)
+		response = self._call(mc_calls.PodcastBrowseHierarchy)
 		genres = response.body.get('groups', [])
 
 		return genres
@@ -226,7 +242,8 @@ class MobileClient(GoogleMusicClient):
 		"""Get the stations for a category from Browse Stations.
 
 		Parameters:
-			station_category_id (str): A station category ID as
+			station_category_id (str):
+				A station category ID as
 				found with :meth:`browse_stations_categories`.
 
 		Returns:
@@ -248,9 +265,7 @@ class MobileClient(GoogleMusicClient):
 			list: Station categories that can contain subcategories.
 		"""
 
-		response = self._call(
-			mc_calls.BrowseStationCategories
-		)
+		response = self._call(mc_calls.BrowseStationCategories)
 		station_categories = response.body.get('root', {}).get('subcategories', [])
 
 		return station_categories
@@ -258,9 +273,7 @@ class MobileClient(GoogleMusicClient):
 	def config(self):
 		"""Get a listing of mobile client configuration settings."""
 
-		response = self._call(
-			mc_calls.Config
-		)
+		response = self._call(mc_calls.Config)
 		config_list = response.body.get('data', {}).get('entries', [])
 
 		return config_list
@@ -296,9 +309,7 @@ class MobileClient(GoogleMusicClient):
 	def devices(self):
 		"""Get a listing of devices registered to the Google Music account."""
 
-		response = self._call(
-			mc_calls.DeviceManagementInfo
-		)
+		response = self._call(mc_calls.DeviceManagementInfo)
 		registered_devices = response.body.get('data', {}).get('items', [])
 
 		return registered_devices
@@ -307,7 +318,8 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of song genres.
 
 		Parameters:
-			parent_genre_id (str, Optional): A genre ID.
+			parent_genre_id (str, Optional):
+				A genre ID.
 				If given, a listing of this genre's sub-genres is returned.
 
 		Returns:
@@ -326,9 +338,11 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of explore tabs.
 
 		Parameters:
-			num_items (int, Optional): Number of items per tab to return.
+			num_items (int, Optional):
+				Number of items per tab to return.
 				Default: ``100``
-			genre_id (genre_id, Optional): Genre ID from :meth:`explore_genres` to explore.
+			genre_id (genre_id, Optional):
+				Genre ID from :meth:`explore_genres` to explore.
 				Default: ``None``.
 
 		Returns:
@@ -351,9 +365,7 @@ class MobileClient(GoogleMusicClient):
 	def listen_now_dismissed_items(self):
 		"""Get a listing of items dismissed from Listen Now tab."""
 
-		response = self._call(
-			mc_calls.ListenNowGetDismissedItems
-		)
+		response = self._call(mc_calls.ListenNowGetDismissedItems)
 		dismissed_items = response.body.get('items', [])
 
 		return dismissed_items
@@ -369,9 +381,7 @@ class MobileClient(GoogleMusicClient):
 			dict: With ``albums`` and ``stations`` keys of listen now items.
 		"""
 
-		response = self._call(
-			mc_calls.ListenNowGetListenNowItems
-		)
+		response = self._call(mc_calls.ListenNowGetListenNowItems)
 		listen_now_item_list = response.body.get('listennow_items', [])
 
 		listen_now_items = defaultdict(list)
@@ -479,17 +489,24 @@ class MobileClient(GoogleMusicClient):
 
 			ple_id = str(uuid4())
 			mutation = mc_calls.PlaylistEntriesBatch.create(
-				song_id, playlist['id'],
+				song_id,
+				playlist['id'],
 				playlist_entry_id=ple_id,
 				preceding_entry_id=prev_id,
-				following_entry_id=next_id
+				following_entry_id=next_id,
 			)
 			mutations.append(mutation)
 			prev_id = ple_id
 
-		self._call(mc_calls.PlaylistEntriesBatch, mutations)
+		self._call(
+			mc_calls.PlaylistEntriesBatch,
+			mutations
+		)
 
-		return self.playlist(playlist['id'], include_songs=True)
+		return self.playlist(
+			playlist['id'],
+			include_songs=True
+		)
 
 	@cast_to_list(0)
 	def playlist_songs_delete(self, playlist_songs):
@@ -507,17 +524,20 @@ class MobileClient(GoogleMusicClient):
 			playlist_song['playlistId']
 			for playlist_song in playlist_songs
 		):
-			raise ValueError(
-				"All 'playlist_songs' must be from the same playlist."
-			)
+			raise ValueError("All 'playlist_songs' must be from the same playlist.")
 
 		mutations = [
 			mc_calls.PlaylistEntriesBatch.delete(playlist_song['id'])
 			for playlist_song in playlist_songs
 		]
-		self._call(mc_calls.PlaylistEntriesBatch, mutations)
+		self._call(
+			mc_calls.PlaylistEntriesBatch,
+			mutations)
 
-		return self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
+		return self.playlist(
+			playlist_songs[0]['playlistId'],
+			include_songs=True
+		)
 
 	@cast_to_list(0)
 	def playlist_songs_move(
@@ -556,21 +576,16 @@ class MobileClient(GoogleMusicClient):
 			playlist_song['playlistId']
 			for playlist_song in playlist_songs
 		):
-			raise ValueError(
-				"All 'playlist_songs' must be from the same playlist."
-			)
+			raise ValueError("All 'playlist_songs' must be from the same playlist.")
 
-		playlist = self.playlist(
-			playlist_songs[0]['playlistId'],
-			include_songs=True
-		)
+		playlist = self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
 
 		prev, next_ = get_ple_prev_next(
 			playlist['tracks'],
 			after=after,
 			before=before,
 			index=index,
-			position=position
+			position=position,
 		)
 
 		prev_id = prev.get('id')
@@ -586,9 +601,15 @@ class MobileClient(GoogleMusicClient):
 			mutations.append(mutation)
 			prev_id = playlist_song['id']
 
-		self._call(mc_calls.PlaylistEntriesBatch, mutations)
+		self._call(
+			mc_calls.PlaylistEntriesBatch,
+			mutations
+		)
 
-		return self.playlist(playlist_songs[0]['playlistId'], include_songs=True)
+		return self.playlist(
+			playlist['id'],
+			include_songs=True
+		)
 
 	def playlist_songs(self, playlist):
 		"""Get a listing of songs from a playlist.
@@ -610,7 +631,7 @@ class MobileClient(GoogleMusicClient):
 				response = self._call(
 					mc_calls.PlaylistEntryFeed,
 					max_results=49995,
-					start_token=start_token
+					start_token=start_token,
 				)
 				items = response.body.get('data', {}).get('items', [])
 
@@ -630,7 +651,7 @@ class MobileClient(GoogleMusicClient):
 					mc_calls.PlaylistEntriesShared,
 					playlist_share_token,
 					max_results=49995,
-					start_token=start_token
+					start_token=start_token,
 				)
 				entry = response.body['entries'][0]
 				items = entry.get('playlistEntry', [])
@@ -651,8 +672,8 @@ class MobileClient(GoogleMusicClient):
 
 		Parameters:
 			playlist_id (str): A playlist ID.
-			include_songs (bool, Optional): Include songs from
-				the playlist in the returned dict.
+			include_songs (bool, Optional):
+				Include songs from the playlist in the returned dict.
 				Default: ``False``
 
 		Returns:
@@ -675,7 +696,7 @@ class MobileClient(GoogleMusicClient):
 		name,
 		description='',
 		*,
-		make_public=False,
+		public=False,
 		songs=None
 	):
 		"""Create a playlist.
@@ -683,7 +704,8 @@ class MobileClient(GoogleMusicClient):
 		Parameters:
 			name (str): Name to give the playlist.
 			description (str): Description to give the playlist.
-			make_public (bool, Optional): If ``True`` and account has a subscription,
+			public (bool, Optional):
+				If ``True`` and account has a subscription,
 				make playlist public.
 				Default: ``False``
 			songs (list, Optional): A list of song dicts to add to the playlist.
@@ -692,7 +714,7 @@ class MobileClient(GoogleMusicClient):
 			dict: Playlist information.
 		"""
 
-		share_state = 'PUBLIC' if make_public else 'PRIVATE'
+		share_state = 'PUBLIC' if public else 'PRIVATE'
 
 		playlist = self._call(
 			mc_calls.PlaylistsCreate,
@@ -702,7 +724,10 @@ class MobileClient(GoogleMusicClient):
 		).body
 
 		if songs:
-			playlist = self.playlist_songs_add(songs, playlist)
+			playlist = self.playlist_songs_add(
+				songs,
+				playlist
+			)
 
 		return playlist
 
@@ -719,14 +744,23 @@ class MobileClient(GoogleMusicClient):
 			playlist['id']
 		)
 
-	def playlist_edit(self, playlist, *, name=None, description=None, public=None):
+	def playlist_edit(
+		self,
+		playlist,
+		*,
+		name=None,
+		description=None,
+		public=None
+	):
 		"""Edit playlist(s).
 
 		Parameters:
 			playlist (dict): A playlist dict.
 			name (str): Name to give the playlist.
-			description (str, Optional): Description to give the playlist.
-			make_public (bool, Optional): If ``True`` and account has a subscription,
+			description (str, Optional):
+				Description to give the playlist.
+			public (bool, Optional):
+				If ``True`` and account has a subscription,
 				make playlist public.
 				Default: ``False``
 
@@ -776,7 +810,7 @@ class MobileClient(GoogleMusicClient):
 			playlist['description'],
 			'SHARED',
 			owner_name=playlist.get('ownerName', ''),
-			share_token=playlist['shareToken']
+			share_token=playlist['shareToken'],
 		)
 
 		response_body = self._call(
@@ -802,7 +836,8 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of library playlists.
 
 		Parameters:
-			include_songs (bool, Optional): Include songs in the returned playlist dicts.
+			include_songs (bool, Optional):
+				Include songs in the returned playlist dicts.
 				Default: ``False``.
 
 		Returns:
@@ -855,7 +890,8 @@ class MobileClient(GoogleMusicClient):
 
 		Parameters:
 			podcast_series_id (str): A podcast series ID.
-			max_episodes (int, Optional): Include up to given number of episodes in returned dict.
+			max_episodes (int, Optional):
+				Include up to given number of episodes in returned dict.
 				Default: ``50``
 
 		Returns:
@@ -874,8 +910,9 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of subsribed podcast series.
 
 		Paramaters:
-			device_id (str, Optional): A mobile device ID.
-				Default: Use ``device_id`` of the :class:`MobileClient` instance.
+			device_id (str, Optional):
+				A mobile device ID.
+				Default: Use :attr:`device_id`.
 
 		Returns:
 			list: Podcast series dict.
@@ -894,9 +931,11 @@ class MobileClient(GoogleMusicClient):
 		"""Get a paged iterator of subscribed podcast series.
 
 		Parameters:
-			device_id (str, Optional): A mobile device ID.
-				Default: Use ``device_id`` of the :class:`MobileClient` instance.
-			page_size (int, Optional): The maximum number of results per returned page.
+			device_id (str, Optional):
+				A mobile device ID.
+				Default: Use :attr:`device_id`.
+			page_size (int, Optional):
+				The maximum number of results per returned page.
 				Max allowed is ``49995``.
 				Default: ``250``
 
@@ -915,7 +954,7 @@ class MobileClient(GoogleMusicClient):
 				mc_calls.PodcastSeries,
 				device_id,
 				max_results=page_size,
-				start_token=start_token
+				start_token=start_token,
 			)
 			items = response.body.get('data', {}).get('items', [])
 
@@ -974,10 +1013,7 @@ class MobileClient(GoogleMusicClient):
 			device_id = self.device_id
 
 		podcast_episode_list = []
-		for chunk in self.podcast_episodes_iter(
-			device_id=device_id,
-			page_size=49995
-		):
+		for chunk in self.podcast_episodes_iter(device_id=device_id, page_size=49995):
 			podcast_episode_list.extend(chunk)
 
 		return podcast_episode_list
@@ -986,9 +1022,11 @@ class MobileClient(GoogleMusicClient):
 		"""Get a paged iterator of podcast episode for all subscribed podcasts.
 
 		Parameters:
-			device_id (str, Optional): A mobile device ID.
-				Default: Use ``device_id`` of the :class:`MobileClient` instance.
-			page_size (int, Optional): The maximum number of results per returned page.
+			device_id (str, Optional):
+				A mobile device ID.
+				Default: Use :attr:`device_id`.
+			page_size (int, Optional):
+				The maximum number of results per returned page.
 				Max allowed is ``49995``.
 				Default: ``250``
 
@@ -1007,7 +1045,7 @@ class MobileClient(GoogleMusicClient):
 				mc_calls.PodcastEpisode,
 				device_id,
 				max_results=page_size,
-				start_token=start_token
+				start_token=start_token,
 			)
 			items = response.body.get('data', {}).get('items', [])
 
@@ -1028,24 +1066,42 @@ class MobileClient(GoogleMusicClient):
 
 		Parameters:
 			query (str): Search text.
-			max_results (int, Optional): Maximum number of results per type per
-				location to retrieve. I.e up to 100 Google and 100 library
+			max_results (int, Optional):
+				Maximum number of results per type per location to retrieve.
+				I.e up to 100 Google and 100 library
 				for a total of 200 for the default value.
 				Google only accepts values up to 100.
 				Default: ``100``
-			kwargs (bool, Optional): Any of ``albums``, ``artists``, ``genres``,
-				``playlists``, ``podcasts``, ``situations``, ``songs``, ``stations``,
-				``videos`` set to ``True`` will include that result type in the
-				returned dict.
+			kwargs (bool, Optional):
+				Any of:
+					- ``albums``
+					- ``artists``
+					- ``genres``
+					- ``playlists``
+					- ``podcasts``
+					- ``situations``
+					- ``songs``
+					- ``stations``
+					- ``videos``
+
+				set to ``True`` will include that result type in the returned dict.
 				Setting none of them will include all result types in the returned dict.
 
 		Returns:
-			dict: A dict of results separated into keys: ``'albums'``, ``'artists'``,
-				``'genres'``, ``'playlists'``, ```'podcasts'``, ``'situations'``,
-				``'songs'``, ``'stations'``, ``'videos'``.
+			dict: A dict of results separated into keys:
+				- ``'albums'``
+				- ``'artists'``
+				- ``'genres'``
+				- ``'playlists'``
+				- ```'podcasts'``
+				- ``'situations'``,
+				- ``'songs'``
+				- ``'stations'``
+				- ``'videos'``
 
 		Note:
-			Free account search is restricted so may not contain hits for all result types.
+			Free account search is restricted
+			so may not contain hits for all result types.
 		"""
 
 		results = defaultdict(list)
@@ -1071,22 +1127,40 @@ class MobileClient(GoogleMusicClient):
 
 		Parameters:
 			query (str): Search text.
-			max_results (int, Optional): Maximum number of results per type to retrieve.
+			max_results (int, Optional):
+				Maximum number of results per type to retrieve.
 				Google only accepts values up to 100.
 				Default: ``100``
-			kwargs (bool, Optional): Any of ``albums``, ``artists``, ``genres``,
-				``playlists``, ``podcasts``, ``situations``, ``songs``, ``stations``,
-				``videos`` set to ``True`` will include that result type in the
-				returned dict.
+			kwargs (bool, Optional):
+				Any of:
+					- ``albums``
+					- ``artists``
+					- ``genres``
+					- ``playlists``
+					- ``podcasts``
+					- ``situations``
+					- ``songs``
+					- ``stations``
+					- ``videos``
+
+				set to ``True`` will include that result type in the returned dict.
 				Setting none of them will include all result types in the returned dict.
 
 		Returns:
-			dict: A dict of results separated into keys: ``'albums'``, ``'artists'``,
-				``'genres'``, ``'playlists'``, ```'podcasts'``, ``'situations'``,
-				``'songs'``, ``'stations'``, ``'videos'``.
+			dict: A dict of results separated into keys:
+					- ``albums``
+					- ``artists``
+					- ``genres``
+					- ``playlists``
+					- ``podcasts``
+					- ``situations``
+					- ``songs``
+					- ``stations``
+					- ``videos``
 
 		Note:
-			Free account search is restricted so may not contain hits for all result types.
+			Free account search is restricted
+			so may not contain hits for all result types.
 		"""
 
 		response = self._call(
@@ -1119,44 +1193,52 @@ class MobileClient(GoogleMusicClient):
 
 		Parameters:
 			query (str): Search text.
-			max_results (int, Optional): Maximum number of results per type to retrieve.
+			max_results (int, Optional):
+				Maximum number of results per type to retrieve.
 				Default: ``100``
-			kwargs (bool, Optional): Any of ``playlists``, ``podcasts``,
-				``songs``, ``stations``, ``videos`` set to ``True``
-				will include that result type in the returned dict.
+			kwargs (bool, Optional):
+				Any of:
+					- ``playlists``
+					- ``podcasts``
+					- ``songs``
+					- ``stations``
+
+				set to ``True`` will include that result type in the returned dict.
 				Setting none of them will include all result types in the returned dict.
 
 		Returns:
 			dict: A dict of results separated into keys:
-				``'playlists'``, ``'podcasts'``, ``'songs'``, ``'stations'``.
+				- ``'playlists'``
+				- ``'podcasts'``
+				- ``'songs'``
+				- ``'stations'``
 		"""
 
 		def match_fields(item, fields):
 			return any(
-				query.casefold() in item.get(field, '').casefold()
-				for field in fields
+				query.casefold() in item.get(field, '').casefold() for field in fields
 			)
 
 		types = [
 			(
 				'playlists',
 				['description', 'name'],
-				self.playlists
+				self.playlists,
 			),
 			(
 				'podcasts',
 				['author', 'description', 'title'],
-				self.podcasts
+				self.podcasts,
 			),
 			(
 				'songs',
 				['album', 'albumArtist', 'artist', 'composer', 'genre', 'title'],
-				self.songs
+				self.songs,
 			),
 			(
 				'stations',
 				['byline', 'description', 'name'],
-				self.stations
+				self.stations,
 			),
 		]
 
@@ -1182,10 +1264,7 @@ class MobileClient(GoogleMusicClient):
 			list: Suggested query strings.
 		"""
 
-		response = self._call(
-			mc_calls.QuerySuggestion,
-			query
-		)
+		response = self._call(mc_calls.QuerySuggestion, query)
 		suggested_queries = response.body.get('suggested_queries', [])
 
 		return [
@@ -1194,18 +1273,27 @@ class MobileClient(GoogleMusicClient):
 		]
 
 	def shuffle_album(
-		self, album, *, num_songs=100, only_library=False, recently_played=None
+		self,
+		album,
+		*,
+		num_songs=100,
+		only_library=False,
+		recently_played=None
 	):
 		"""Get a listing of album shuffle/mix songs.
 
 		Parameters:
 			album (dict): An album dict.
-			num_songs (int, Optional): The maximum number of songs to return from the station.
+			num_songs (int, Optional):
+				The maximum number of songs to return from the station.
 				Default: ``100``
-			only_library (bool, Optional): Only return content from library.
+			only_library (bool, Optional):
+				Only return content from library.
 				Default: False
-			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
-				where ``id`` is a song ID and ``type`` is 0 for a library song and 1 for a store song.
+			recently_played (list, Optional):
+				A list of dicts in the form of {'id': '', 'type'} where
+				``id`` is a song ID and
+				``type`` is 0 for a library song and 1 for a store song.
 
 		Returns:
 			list: List of album shuffle/mix songs.
@@ -1214,7 +1302,7 @@ class MobileClient(GoogleMusicClient):
 		station_info = {
 			'seed': {
 				'albumId': album['albumId'],
-				'seedType': StationSeedType.album.value
+				'seedType': StationSeedType.album.value,
 			},
 			'num_entries': num_songs,
 			'library_content_only': only_library,
@@ -1249,15 +1337,20 @@ class MobileClient(GoogleMusicClient):
 
 		Parameters:
 			artist (dict): An artist dict.
-			num_songs (int, Optional): The maximum number of songs to return from the station.
+			num_songs (int, Optional):
+				The maximum number of songs to return from the station.
 				Default: ``100``
-			only_library (bool, Optional): Only return content from library.
+			only_library (bool, Optional):
+				Only return content from library.
 				Default: False
-			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
-				where ``id`` is a song ID and ``type`` is 0 for a library song and 1 for a store song.
-			only_artist (bool, Optional): If ``True``, only return songs from the artist,
-					else return songs from artist and related artists.
-					Default: ``False``
+			recently_played (list, Optional):
+				A list of dicts in the form of {'id': '', 'type'} where
+				``id`` is a song ID and
+				``type`` is 0 for a library song and 1 for a store song.
+			only_artist (bool, Optional):
+				If ``True``, only return songs from the artist,
+				else return songs from artist and related artists.
+				Default: ``False``
 
 		Returns:
 			list: List of artist shuffle/mix songs.
@@ -1265,18 +1358,18 @@ class MobileClient(GoogleMusicClient):
 
 		station_info = {
 			'num_entries': num_songs,
-			'library_content_only': only_library
+			'library_content_only': only_library,
 		}
 
 		if only_artist:
 			station_info['seed'] = {
 				'artistId': artist['artistId'],
-				'seedType': StationSeedType.artist_only.value
+				'seedType': StationSeedType.artist_only.value,
 			}
 		else:
 			station_info['seed'] = {
 				'artistId': artist['artistId'],
-				'seedType': StationSeedType.artist_related.value
+				'seedType': StationSeedType.artist_related.value,
 			}
 
 		if recently_played is not None:
@@ -1296,7 +1389,12 @@ class MobileClient(GoogleMusicClient):
 		return station.get('tracks', [])
 
 	def shuffle_genre(
-		self, genre, *, num_songs=100, only_library=False, recently_played=None
+		self,
+		genre,
+		*,
+		num_songs=100,
+		only_library=False,
+		recently_played=None
 	):
 		"""Get a listing of genre shuffle/mix songs.
 
@@ -1318,7 +1416,7 @@ class MobileClient(GoogleMusicClient):
 				'seedType': StationSeedType.genre.value,
 			},
 			'num_entries': num_songs,
-			'library_content_only': only_library
+			'library_content_only': only_library,
 		}
 
 		if recently_played is not None:
@@ -1338,18 +1436,27 @@ class MobileClient(GoogleMusicClient):
 		return station.get('tracks', [])
 
 	def shuffle_song(
-		self, song, *, num_songs=100, only_library=False, recently_played=None
+		self,
+		song,
+		*,
+		num_songs=100,
+		only_library=False,
+		recently_played=None
 	):
 		"""Get a listing of song shuffle/mix songs.
 
 		Parameters:
 			song (dict): A song dict.
-			num_songs (int, Optional): The maximum number of songs to return from the station.
+			num_songs (int, Optional):
+				The maximum number of songs to return from the station.
 				Default: ``100``
-			only_library (bool, Optional): Only return content from library.
+			only_library (bool, Optional):
+				Only return content from library.
 				Default: False
-			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
-				where ``id`` is a song ID and ``type`` is 0 for a library song and 1 for a store song.
+			recently_played (list, Optional):
+				A list of dicts in the form of {'id': '', 'type'} where
+				``id`` is a song ID and
+				``type`` is 0 for a library song and 1 for a store song.
 
 		Returns:
 			list: List of artist shuffle/mix songs.
@@ -1357,18 +1464,18 @@ class MobileClient(GoogleMusicClient):
 
 		station_info = {
 			'num_entries': num_songs,
-			'library_content_only': only_library
+			'library_content_only': only_library,
 		}
 
 		if 'storeId' in song:
 			station_info['seed'] = {
 				'trackId': song['storeId'],
-				'seedType': StationSeedType.store_track.value
+				'seedType': StationSeedType.store_track.value,
 			}
 		else:
 			station_info['seed'] = {
 				'trackLockerId': song['id'],
-				'seedType': StationSeedType.library_track.value
+				'seedType': StationSeedType.library_track.value,
 			}
 
 		if recently_played is not None:
@@ -1388,7 +1495,7 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of situations.
 
 		Parameters:
-			tz_offset (int, Optional): A time zone offset from UTC in seconds.
+			tz_offset (int, Optional): A timezone offset from UTC in seconds.
 		"""
 
 		response = self._call(
@@ -1431,14 +1538,18 @@ class MobileClient(GoogleMusicClient):
 		"""Add store songs to your library.
 
 		Parameters:
-			songs (list): A store song dict
-				or a list of store song dicts.
+			songs (list):
+				A store song dict or a list of store song dicts.
 
 		Returns:
 			list: Songs' library IDs.
 		"""
 
-		mutations = [mc_calls.TrackBatch.add(song) for song in songs]
+		mutations = [
+			mc_calls.TrackBatch.add(song)
+			for song in songs
+		]
+
 		response = self._call(
 			mc_calls.TrackBatch,
 			mutations
@@ -1450,21 +1561,28 @@ class MobileClient(GoogleMusicClient):
 			if res['response_code'] == 'OK'
 		]
 
-		return success_ids
+		return [
+			self.song(success_id)
+			for success_id in success_ids
+		]
 
 	@cast_to_list(0)
 	def songs_delete(self, songs):
 		"""Delete songs from library.
 
 		Parameters:
-			songs (list): A library song dict or
-				a list of library song dicts.
+			songs (list):
+			A library song dict or a list of library song dicts.
 
 		Returns:
 			list: Successfully deleted song IDs.
 		"""
 
-		mutations = [mc_calls.TrackBatch.delete(song['id']) for song in songs]
+		mutations = [
+			mc_calls.TrackBatch.delete(song['id'])
+			for song in songs
+		]
+
 		response = self._call(
 			mc_calls.TrackBatch,
 			mutations
@@ -1490,7 +1608,8 @@ class MobileClient(GoogleMusicClient):
 		"""Add play to song play count.
 
 		Parameters:
-			songs (dict or list): A song dict or a list of song dicts.
+			songs (dict or list):
+				A song dict or a list of song dicts.
 
 		Returns:
 			bool: ``True`` if successful, ``False`` if not.
@@ -1508,22 +1627,31 @@ class MobileClient(GoogleMusicClient):
 
 			song_duration = song['durationMillis']
 
-			events.append(mc_calls.ActivityRecordRealtime.play(song_id, song_duration))
+			events.append(
+				mc_calls.ActivityRecordRealtime.play(
+					song_id,
+					song_duration
+				)
+			)
 
 		self._call(
 			mc_calls.ActivityRecordRealtime,
-			events
-		)
+			events)
 
-		return [self.song(song_id) for song in songs]
+		return [
+			self.song(song_id)
+			for song in songs
+		]
 
 	@cast_to_list(0)
 	def songs_rate(self, songs, rating):
 		"""Rate song.
 
 		Parameters:
-			songs (dict or list): A song dict or a list of song dicts.
-			rating (int): 0 (not rated), 1 (thumbs down), or 5 (thumbs up).
+			songs (dict or list):
+				A song dict or a list of song dicts.
+			rating (int):
+				0 (not rated), 1 (thumbs down), or 5 (thumbs up).
 
 		Returns:
 			bool: ``True`` if successful, ``False`` if not.
@@ -1538,14 +1666,22 @@ class MobileClient(GoogleMusicClient):
 			else:
 				song_id = song['storeId']
 
-			events.append(mc_calls.ActivityRecordRealtime.rate(song_id, rating))
+			events.append(
+				mc_calls.ActivityRecordRealtime.rate(
+					song_id,
+					rating
+				)
+			)
 
 		self._call(
 			mc_calls.ActivityRecordRealtime,
 			events
 		)
 
-		return [self.song(song_id) for song in songs]
+		return [
+			self.song(song_id)
+			for song in songs
+		]
 
 	def songs(self):
 		"""Get a listing of library songs.
@@ -1564,7 +1700,8 @@ class MobileClient(GoogleMusicClient):
 		"""Get a paged iterator of library songs.
 
 		Parameters:
-			page_size (int, Optional): The maximum number of results per returned page.
+			page_size (int, Optional):
+				The maximum number of results per returned page.
 				Max allowed is ``49995``.
 				Default: ``250``
 
@@ -1595,11 +1732,16 @@ class MobileClient(GoogleMusicClient):
 		"""Get information about a station.
 
 		Parameters:
-			station_id (str): A station ID. Use 'IFL' for I'm Feeling Lucky.
-			num_songs (int, Optional): The maximum number of songs to return from the station.
+			station_id (str):
+				A station ID.
+				Use 'IFL' for I'm Feeling Lucky.
+			num_songs (int, Optional):
+				The maximum number of songs to return from the station.
 				Default: ``25``
-			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
-				where ``id`` is a song ID and ``type`` is 0 for a library song and 1 for a store song.
+			recently_played (list, Optional):
+				A list of dicts in the form of {'id': '', 'type'} where
+				``id`` is a song ID and
+				``type`` is 0 for a library song and 1 for a store song.
 
 		Returns:
 			dict: Station information.
@@ -1608,7 +1750,7 @@ class MobileClient(GoogleMusicClient):
 		station_info = {
 			'station_id': station_id,
 			'num_entries': num_songs,
-			'library_content_only': False
+			'library_content_only': False,
 		}
 
 		if recently_played is not None:
@@ -1635,8 +1777,10 @@ class MobileClient(GoogleMusicClient):
 			A Google Music subscription is required.
 
 		Parameters:
-			num_songs (int, Optional): The total number of songs to return. Default: ``25``
-			num_stations (int, Optional): The number of stations to return when no station_infos is provided.
+			num_songs (int, Optional):
+				The total number of songs to return. Default: ``25``
+			num_stations (int, Optional):
+				The number of stations to return when no station_infos is provided.
 				Default: ``5``
 
 		Returns:
@@ -1657,9 +1801,13 @@ class MobileClient(GoogleMusicClient):
 
 		Parameters:
 			station (str): A station dict.
-			num_songs (int, Optional): The maximum number of songs to return from the station. Default: ``25``
-			recently_played (list, Optional): A list of dicts in the form of {'id': '', 'type'}
-				where ``id`` is a song ID and ``type`` is 0 for a library song and 1 for a store song.
+			num_songs (int, Optional):
+				The maximum number of songs to return from the station.
+				Default: ``25``
+			recently_played (list, Optional):
+				A list of dicts in the form of {'id': '', 'type'} where
+				``id`` is a song ID and
+				``type`` is 0 for a library song and 1 for a store song.
 
 		Returns:
 			list: Station song dicts.
@@ -1705,7 +1853,8 @@ class MobileClient(GoogleMusicClient):
 		"""Get a paged iterator of library stations.
 
 		Parameters:
-			page_size (int, Optional): The maximum number of results per returned page.
+			page_size (int, Optional):
+				The maximum number of results per returned page.
 				Max allowed is ``49995``.
 				Default: ``250``
 
@@ -1727,21 +1876,38 @@ class MobileClient(GoogleMusicClient):
 			if start_token is None:
 				break
 
-	def stream(self, item, *, device_id=None, quality='hi', session_token=None):
+	def stream(
+		self,
+		item,
+		*,
+		device_id=None,
+		quality='hi',
+		session_token=None
+	):
 		"""Get MP3 stream of a podcast episode, library song, station_song, or store song.
 
 		Note:
 			Streaming requires a ``device_id`` from a valid, linked mobile device.
 
 		Parameters:
-			item (str): A podcast episode, library song, station_song, or store song.
+			item (str):
+				A podcast episode, library song, station_song, or store song.
 				A Google Music subscription is required to stream store songs.
-			device_id (str, Optional): A mobile device ID.
-				Default: Use ``device_id`` of the :class:`MobileClient` instance.
-			quality (str, Optional): Stream quality is one of ``'hi'`` (320Kbps), ``'med'`` (160Kbps), or ``'low'`` (128Kbps).
+			device_id (str, Optional):
+				A mobile device ID.
+				Default: Use :attr:`device_id`.
+			quality (str, Optional):
+				Stream quality is one of:
+					- ``'hi'`` (320Kbps)
+					- ``'med'`` (160Kbps)
+					- ``'low'`` (128Kbps)
+
 				Default: ``'hi'``.
-			session_token (str): Session token from a station dict required for unsubscribed users to stream a station song.
-				station['sessionToken'] as returend by :meth:`station` only exists for free accounts.
+			session_token (str, Optional):
+				Session token from a station dict required for
+				unsubscribed users to stream a station song.
+				station['sessionToken'] as returend by :meth:`station`
+				only exists for free accounts.
 
 		Returns:
 			bytes: An MP3 file.
@@ -1761,21 +1927,38 @@ class MobileClient(GoogleMusicClient):
 
 		return audio
 
-	def stream_url(self, item, *, device_id=None, quality='hi', session_token=None):
+	def stream_url(
+		self,
+		item,
+		*,
+		device_id=None,
+		quality='hi',
+		session_token=None
+	):
 		"""Get a URL to stream a podcast episode, library song, station_song, or store song.
 
 		Note:
 			Streaming requires a ``device_id`` from a valid, linked mobile device.
 
 		Parameters:
-			item (str): A podcast episode, library song, station_song, or store song.
+			item (str):
+				A podcast episode, library song, station_song, or store song.
 				A Google Music subscription is required to stream store songs.
-			device_id (str, Optional): A mobile device ID.
-				Default: Use ``device_id`` of the :class:`MobileClient` instance.
-			quality (str, Optional): Stream quality is one of ``'hi'`` (320Kbps), ``'med'`` (160Kbps), or ``'low'`` (128Kbps).
+			device_id (str, Optional):
+				A mobile device ID.
+				Default: Use :attr:`device_id`.
+			quality (str, Optional):
+				Stream quality is one of:
+					- ``'hi'`` (320Kbps)
+					- ``'med'`` (160Kbps)
+					- ``'low'`` (128Kbps)
+
 				Default: ``'hi'``.
-			session_token (str): Session token from a station dict required for unsubscribed users to stream a station song.
-				station['sessionToken'] as returend by :meth:`station` only exists for free accounts.
+			session_token (str):
+				Session token from a station dict required for
+				unsubscribed users to stream a station song.
+				station['sessionToken'] as returend by :meth:`station`
+				only exists for free accounts.
 
 		Returns:
 			str: A URL to an MP3 file.
@@ -1789,7 +1972,7 @@ class MobileClient(GoogleMusicClient):
 				mc_calls.PodcastEpisodeStreamURL,
 				item['episodeId'],
 				quality=quality,
-				device_id=device_id
+				device_id=device_id,
 			)
 		elif 'wentryid' in item:  # Free account station song.
 			response = self._call(
@@ -1798,28 +1981,28 @@ class MobileClient(GoogleMusicClient):
 				item['wentryid'],
 				session_token,
 				quality=quality,
-				device_id=device_id
+				device_id=device_id,
 			)
 		elif 'trackId' in item:  # Playlist song.
 			response = self._call(
 				mc_calls.TrackStreamURL,
 				item['trackId'],
 				quality=quality,
-				device_id=device_id
+				device_id=device_id,
 			)
 		elif 'storeId' in item and self.is_subscribed:  # Store song.
 			response = self._call(
 				mc_calls.TrackStreamURL,
 				item['storeId'],
 				quality=quality,
-				device_id=device_id
+				device_id=device_id,
 			)
 		elif 'id' in item:  # Library song.
 			response = self._call(
 				mc_calls.TrackStreamURL,
 				item['id'],
 				quality=quality,
-				device_id=device_id
+				device_id=device_id,
 			)
 		else:
 			# TODO: Create an exception for not being subscribed or use a better builtin exception for this case.
@@ -1841,9 +2024,11 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of 'Thumbs Up' songs.
 
 		Parameters:
-			library (bool, Optional): Include 'Thumbs Up' songs from library.
+			library (bool, Optional):
+				Include 'Thumbs Up' songs from library.
 				Default: True
-			generated (bool, Optional): Include 'Thumbs Up' songs from store.
+			generated (bool, Optional):
+				Include 'Thumbs Up' songs from store.
 				Default: True
 
 		Returns:
@@ -1877,10 +2062,14 @@ class MobileClient(GoogleMusicClient):
 		"""Get a listing of top charts for a top chart genre.
 
 		Parameters:
-			genre_id (str): A top chart genre ID as found with :meth:`top_charts_genres`.
+			genre_id (str):
+				A top chart genre ID as found with :meth:`top_charts_genres`.
 		"""
 
-		response = self._call(mc_calls.BrowseTopChartForGenre, genre_id)
+		response = self._call(
+			mc_calls.BrowseTopChartForGenre,
+			genre_id
+		)
 		top_chart_for_genre = response.body
 
 		return top_chart_for_genre

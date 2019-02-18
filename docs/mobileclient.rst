@@ -1,7 +1,7 @@
 :class:`MobileClient <google_music.clients.MobileClient>` --- Mobile API client
 ===============================================================================
 
-.. currentmodule:: google_music.clients
+.. currentmodule:: google_music.clients.mobileclient
 
 .. autoclass:: MobileClient
 	:no-members:

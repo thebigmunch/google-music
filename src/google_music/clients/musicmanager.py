@@ -14,7 +14,7 @@ from google_music_proto.musicmanager.utils import transcode_to_mp3
 from google_music_proto.oauth import (
 	MUSICMANAGER_CLIENT_ID,
 	MUSICMANAGER_CLIENT_SECRET,
-	MUSICMANAGER_SCOPE
+	MUSICMANAGER_SCOPE,
 )
 from tenacity import stop_after_attempt
 
@@ -29,10 +29,14 @@ class MusicManager(GoogleMusicClient):
 	>>> mm = MusicManager('username')
 
 	Parameters:
-		username (str, Optional): Your Google Music username.
-			This is used to store OAuth credentials for different accounts separately.
-		uploader_id (str, Optional): A unique uploader ID. Default: MAC address incremented by 1 is used.
-		token (dict, Optional): An OAuth token compatible with ``requests-oauthlib``.
+		username (str, Optional):
+			Your Google Music username.
+			Used to store OAuth tokens for multiple accounts separately.
+		uploader_id (str, Optional):
+			A unique uploader ID.
+			Default: MAC address and username used.
+		token (dict, Optional):
+			An OAuth token compatible with ``requests-oauthlib``.
 	"""
 
 	client = 'musicmanager'
@@ -56,7 +60,9 @@ class MusicManager(GoogleMusicClient):
 				else:
 					uploader_id = mac_string
 
-			uploader_name = f"{socket.gethostname()} ({self.session.headers['User-Agent']})"
+			uploader_name = (
+				f"{socket.gethostname()} ({self.session.headers['User-Agent']})"
+			)
 
 			self._upauth(uploader_id, uploader_name)
 
@@ -96,7 +102,8 @@ class MusicManager(GoogleMusicClient):
 		response = self._call(
 			mm_calls.Export,
 			self.uploader_id,
-			song_id)
+			song_id
+		)
 		audio = response.body
 		suggested_filename = unquote(
 			response.headers['Content-Disposition'].split("filename*=UTF-8''")[-1]
@@ -155,9 +162,13 @@ class MusicManager(GoogleMusicClient):
 		"""Get a paged iterator of Music Library songs.
 
 		Parameters:
-			continuation_token (str, Optional): The token of the page to return.
+			continuation_token (str, Optional):
+				The token of the page to return.
 				Default: Not sent to get first page.
-			export_type (int, Optional): The type of tracks to return. 1 for all tracks, 2 for promotional and purchased.
+			export_type (int, Optional):
+				The type of tracks to return.
+				1 for all tracks,
+				2 for promotional and purchased.
 				Default: ``1``
 
 		Yields:
@@ -175,7 +186,7 @@ class MusicManager(GoogleMusicClient):
 				mm_calls.ExportIDs,
 				self.uploader_id,
 				continuation_token=continuation_token,
-				export_type=export_type
+				export_type=export_type,
 			)
 
 			items = [
@@ -193,18 +204,13 @@ class MusicManager(GoogleMusicClient):
 
 	# TODO: Is there a better return value?
 	# TODO: Can more of this code be moved into calls and still leave viable control flow?
-	def upload(
-		self,
-		song,
-		*,
-		album_art_path=None,
-		no_sample=False
-	):
+	def upload(self, song, *, album_art_path=None, no_sample=False):
 		"""Upload a song to a Google Music library.
 
 		Parameters:
 			song (os.PathLike or str or audio_metadata.Format):
-				The path to an audio file or an instance of :class:`audio_metadata.Format`.
+				The path to an audio file or
+				an instance of :class:`audio_metadata.Format`.
 			album_art_path (os.PathLike or str, Optional):
 				The relative filename or absolute filepath to external album art.
 			no_sample(bool, Optional):
@@ -238,8 +244,7 @@ class MusicManager(GoogleMusicClient):
 		track_info = mm_calls.Metadata.get_track_info(song)
 		response = self._call(
 			mm_calls.Metadata,
-			self.uploader_id,
-			[track_info]
+			self.uploader_id, [track_info]
 		)
 
 		metadata_response = response.body.metadata_response
@@ -253,14 +258,16 @@ class MusicManager(GoogleMusicClient):
 					track_info,
 					sample_request,
 					external_art=external_art,
-					no_sample=no_sample
+					no_sample=no_sample,
 				)
 				response = self._call(
 					mm_calls.Sample,
 					self.uploader_id,
 					[track_sample]
 				)
-				track_sample_response = response.body.sample_response.track_sample_response[0]
+				track_sample_response = response.body.sample_response.track_sample_response[
+					0
+				]
 			except (OSError, ValueError, subprocess.CalledProcessError):
 				raise  # TODO
 		else:
@@ -273,7 +280,7 @@ class MusicManager(GoogleMusicClient):
 				{
 					'success': True,
 					'reason': 'Matched',
-					'song_id': track_sample_response.server_track_id
+					'song_id': track_sample_response.server_track_id,
 				}
 			)
 		elif response_code == upload_pb2.TrackSampleResponse.UPLOAD_REQUESTED:
@@ -299,7 +306,7 @@ class MusicManager(GoogleMusicClient):
 					song,
 					external_art=external_art,
 					total_song_count=1,
-					total_uploaded_count=0
+					total_uploaded_count=0,
 				)
 
 				session_response = response.body
@@ -311,9 +318,7 @@ class MusicManager(GoogleMusicClient):
 					# WHY, GOOGLE?! WHY???????????
 					status_code = session_response['errorMessage']['additionalInfo'][
 						'uploader_service.GoogleRupioAdditionalInfo'
-					]['completionInfo']['customerSpecificInfo'][
-						'ResponseCode'
-					]
+					]['completionInfo']['customerSpecificInfo']['ResponseCode']
 				except KeyError:
 					status_code = None
 
@@ -337,7 +342,7 @@ class MusicManager(GoogleMusicClient):
 				result.update(
 					{
 						'success': False,
-						'reason': f'Could not get upload session: {reason}'
+						'reason': f'Could not get upload session: {reason}',
 					}
 				)
 
@@ -368,7 +373,7 @@ class MusicManager(GoogleMusicClient):
 						result.update(
 							{
 								'success': False,
-								'reason': 'Maximum allowed file size is 300 MiB.'
+								'reason': 'Maximum allowed file size is 300 MiB.',
 							}
 						)
 					else:
@@ -376,7 +381,7 @@ class MusicManager(GoogleMusicClient):
 							mm_calls.ScottyAgentPut,
 							upload_url,
 							audio_file,
-							content_type=content_type
+							content_type=content_type,
 						).body
 
 						if upload_response.get('sessionStatus', {}).get('state'):
@@ -384,14 +389,14 @@ class MusicManager(GoogleMusicClient):
 								{
 									'success': True,
 									'reason': 'Uploaded',
-									'song_id': track_sample_response.server_track_id
+									'song_id': track_sample_response.server_track_id,
 								}
 							)
 						else:
 							result.update(
 								{
 									'success': False,
-									'reason': upload_response  # TODO: Better error details.
+									'reason': upload_response,  # TODO: Better error details.
 								}
 							)
 				else:
@@ -399,7 +404,7 @@ class MusicManager(GoogleMusicClient):
 					result.update(
 						{
 							'success': False,
-							'reason': 'Transcoding disabled for file type.'
+							'reason': 'Transcoding disabled for file type.',
 						}
 					)
 

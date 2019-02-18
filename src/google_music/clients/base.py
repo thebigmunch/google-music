@@ -12,7 +12,7 @@ class GoogleMusicClient:
 	def _oauth(self, username, *, token=None):
 		auto_refresh_kwargs = {
 			'client_id': self.client_id,
-			'client_secret': self.client_secret
+			'client_secret': self.client_secret,
 		}
 
 		self.session = GoogleMusicSession(
@@ -21,7 +21,7 @@ class GoogleMusicClient:
 			redirect_uri=REDIRECT_URI,
 			auto_refresh_url=TOKEN_URL,
 			auto_refresh_kwargs=auto_refresh_kwargs,
-			token_updater=self._update_token
+			token_updater=self._update_token,
 		)
 
 		if not token:
@@ -32,11 +32,12 @@ class GoogleMusicClient:
 				authorization_url, _ = self.session.authorization_url(
 					AUTHORIZATION_BASE_URL,
 					access_type='offline',
-					prompt='select_account'
+					prompt='select_account',
 				)
 
 				code = input(
-					f"Visit:\n\n{authorization_url}\n\nFollow the prompts and paste provided code: "
+					f"Visit:\n\n{authorization_url}\n\n"
+					"Follow the prompts and paste provided code: "
 				)
 				token = self.session.fetch_token(
 					TOKEN_URL,
@@ -54,7 +55,7 @@ class GoogleMusicClient:
 	@retry(
 		reraise=True,
 		stop=stop_after_attempt(5),
-		wait=wait_exponential(multiplier=1, max=10)
+		wait=wait_exponential(multiplier=1, max=10),
 	)
 	def _call(self, call_cls, *args, **kwargs):
 		call = call_cls(*args, **kwargs)
@@ -68,7 +69,7 @@ class GoogleMusicClient:
 			headers=call.headers,
 			data=call.body,
 			params=params,
-			allow_redirects=call.follow_redirects
+			allow_redirects=call.follow_redirects,
 		)
 
 		try:
@@ -109,11 +110,14 @@ class GoogleMusicClient:
 		"""Log in to Google Music.
 
 		Parameters:
-			username (str, Optional): Your Google Music username.
-				Used for keeping stored OAuth tokens for multiple accounts separate.
-			device_id (str, Optional): A mobile device ID or music manager uploader ID.
+			username (str, Optional):
+				Your Google Music username.
+				Used to store OAuth tokens for multiple accounts separately.
+			device_id (str, Optional):
+				A mobile device ID or music manager uploader ID.
 				Default: MAC address is used.
-			token (dict, Optional): An OAuth token compatible with ``requests-oauthlib``.
+			token (dict, Optional):
+				An OAuth token compatible with ``requests-oauthlib``.
 
 		Returns:
 			bool: ``True`` if successfully authenticated, ``False`` if not.
@@ -138,9 +142,11 @@ class GoogleMusicClient:
 		"""Log in to Google Music with a different user.
 
 		Parameters:
-			username (str, Optional): Your Google Music username.
-				Used for keeping stored OAuth tokens for multiple accounts separate.
-			token (dict, Optional): An OAuth token compatible with ``requests-oauthlib``.
+			username (str, Optional):
+				Your Google Music username.
+				Used to store OAuth tokens for multiple accounts separately.
+			token (dict, Optional):
+				An OAuth token compatible with ``requests-oauthlib``.
 
 		Returns:
 			bool: ``True`` if successfully authenticated, ``False`` if not.
