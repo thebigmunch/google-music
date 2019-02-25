@@ -13,14 +13,14 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * ``MobileClient.playlist_subscribe``
 * ``MobileClient.playlist_unsubscribe``
 * Ability to add songs to playlist on creation
-  with ``MobileClient.playlist_create``.
+	with ``MobileClient.playlist_create``.
 * ``MobileClient.songs_play``
 * ``MobileClient.songs_rate``
 
 ### Changed
 
 * The following methods accept single items
-  as well as lists of items:
+	as well as lists of items:
 	* ``MobileClient.playlist_songs_add``
 	* ``MobileClient.playlist_songs_delete``
 	* ``MobileClient.playlist_songs_move``
@@ -63,21 +63,21 @@ This project adheres to [Semantic Versioning](https://semver.org).
 ### Added
 
 * ``no_sample`` parameter to ``MusicManager.upload`` for
-  sending empty audio sample to avoid ffmpeg/avconv dependency.
+	sending empty audio sample to avoid ffmpeg/avconv dependency.
 
 ### Changed
 
 * Method of generating default uploader ID for ``MusicManager``
 (see [#2](https://github.com/thebigmunch/google-music/issues/2) for explanation).
 * ``album_art_path`` argument to ``MusicManager.upload`` must
-  now be a relative filename or absolute filepath, not a list.
+	now be a relative filename or absolute filepath, not a list.
 * ``MusicManager.upload`` now stops before attempting to upload
-  files that exceed Google Music's size limit (300 MiB).
+	files that exceed Google Music's size limit (300 MiB).
 
 ### Removed
 
 * Transcoding options from ``MusicManager.upload``.
-  They didn't exactly work correctly on Google's end.
+	They didn't exactly work correctly on Google's end.
 * ``MobileClient.playlist_entries``.
 * ``MobileClient.playlist_entries_iter``.
 
@@ -119,7 +119,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * ``MobileClient.podcasts_iter``
 * ``MobileClient.podcast_episdode_iter``
 * ``generated`` and ``library`` parameters to ``MobileClient.stations``
-  to control returned station types.
+	to control returned station types.
 * ``MobileClient.new_releases`` to get explore tab new releases.
 * Support for I'm Feeling Lucky Radio.
 * ``MobileClient.playlist_delete``
@@ -142,16 +142,16 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Rename ``MobileClient.browse_top_chart_for_genre`` to ``top_charts_for_genre``.
 * ``MobileClient.explore_tabs`` now returns dict with lowercased keys.
 * ``MobileClient.listen_now_items`` now returns a dict with ``albums`` and ``stations``
-  keys containing those types of listen now items.
+	keys containing those types of listen now items.
 * Rename ``MobileClient.browse_station_categories`` to ``browse_stations_categories``.
 * Rename ``MobileClient.browse_podcast_genres`` to ``browse_podcasts_genres``.
 * Rename ``MobileClient.delete_song(s)`` to ``song(s)_delete``.
 * Rename ``MobileClient.promoted_songs`` to ``thumbs_up_songs``.
 * ``MobileClient.thumbs_up_songs`` now returns both
-  library and store 'Thumbs Up' songs.
+	library and store 'Thumbs Up' songs.
 * Rename ``MobileClient.add_store_song(s)`` to ``song(s)_add``.
 * ``MobileClient.search`` now returns results from both
-  Google Music and user's library as done in the official client.
+	Google Music and user's library as done in the official client.
 
 ### Removed
 
@@ -173,11 +173,11 @@ This project adheres to [Semantic Versioning](https://semver.org).
 ### Changed
 
 * Return plain dict from ``Mobileclient.search``.
-  This was mistakenly left as defaultdict.
+	This was mistakenly left as defaultdict.
 * Only return item dicts from search results.
-  Previously, entire search result with metadata was returned.
+	Previously, entire search result with metadata was returned.
 * Return value for ``Mobileclient.song_rate``.
-  ``True`` if successful, ``False`` if not.
+	``True`` if successful, ``False`` if not.
 
 
 ## [1.0.0](https://github.com/thebigmunch/google-music/releases/tag/1.0.0) (2018-10-19)
