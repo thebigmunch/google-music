@@ -9,6 +9,7 @@ from uuid import getnode as get_mac
 
 import audio_metadata
 import google_music_proto.musicmanager.calls as mm_calls
+import requests
 from google_music_proto.musicmanager.pb import locker_pb2, upload_pb2
 from google_music_proto.musicmanager.utils import transcode_to_mp3
 from google_music_proto.oauth import (
@@ -296,48 +297,51 @@ class MusicManager(GoogleMusicClient):
 			should_retry = True
 
 			while should_retry and attempts <= 10:
-				# Call with tenacity.retry_with to disable automatic retries.
-				response = self._call.retry_with(stop=stop_after_attempt(1))(
-					self,
-					mm_calls.ScottyAgentPost,
-					self.uploader_id,
-					server_track_id,
-					track_info,
-					song,
-					external_art=external_art,
-					total_song_count=1,
-					total_uploaded_count=0,
-				)
-
-				session_response = response.body
-
-				if 'sessionStatus' in session_response:
-					break
-
 				try:
-					# WHY, GOOGLE?! WHY???????????
-					status_code = session_response['errorMessage']['additionalInfo'][
-						'uploader_service.GoogleRupioAdditionalInfo'
-					]['completionInfo']['customerSpecificInfo']['ResponseCode']
-				except KeyError:
-					status_code = None
-
-				if status_code == 503:  # Upload server still syncing.
+					# Call with tenacity.retry_with to disable automatic retries.
+					response = self._call.retry_with(stop=stop_after_attempt(1))(
+						self,
+						mm_calls.ScottyAgentPost,
+						self.uploader_id,
+						server_track_id,
+						track_info,
+						song,
+						external_art=external_art,
+						total_song_count=1,
+						total_uploaded_count=0,
+					)
+				except requests.RequestException as e:
 					should_retry = True
-					reason = "Server syncing"
-				elif status_code == 200:  # Song is already uploaded.
-					should_retry = False
-					reason = "Already uploaded"
-				elif status_code == 404:  # Rejected.
-					should_retry = False
-					reason = "Rejected"
+					reason = e.response
 				else:
-					should_retry = True
-					reason = "Unkown error"
+					session_response = response.body
 
-				attempts += 1
+					if 'sessionStatus' in session_response:
+						break
 
-				time.sleep(2)  # Give the server time to sync.
+					try:
+						# WHY, GOOGLE?! WHY???????????
+						status_code = session_response['errorMessage']['additionalInfo'][
+							'uploader_service.GoogleRupioAdditionalInfo'
+						]['completionInfo']['customerSpecificInfo']['ResponseCode']
+					except KeyError:
+						status_code = None
+
+					if status_code == 503:  # Upload server still syncing.
+						should_retry = True
+						reason = "Server syncing"
+					elif status_code == 200:  # Song is already uploaded.
+						should_retry = False
+						reason = "Already uploaded"
+					elif status_code == 404:  # Rejected.
+						should_retry = False
+						reason = "Rejected"
+					else:
+						should_retry = True
+						reason = "Unkown error"
+				finally:
+					attempts += 1
+					time.sleep(2)  # Give the server time to sync.
 			else:
 				result.update(
 					{

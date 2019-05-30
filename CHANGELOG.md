@@ -29,6 +29,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 	* ``MobileClient.songs_move``
 	* ``MobileClient.songs_play``
 	* ``MobileClient.songs_rate``
+* Handle exceptions when requesting an upload session.
 
 ### Removed
 
