@@ -177,10 +177,10 @@ class MusicManager(GoogleMusicClient):
 		"""
 
 		def track_info_to_dict(track_info):
-			return dict(
-				(field.name, value)
+			return {
+				field.name: value
 				for field, value in track_info.ListFields()
-			)
+			}
 
 		while True:
 			response = self._call(
