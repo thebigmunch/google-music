@@ -45,7 +45,7 @@ class MobileClient(GoogleMusicClient):
 			A mobile device ID.
 			Default: MAC address is used.
 		token (dict, Optional):
-			An OAuth token compatible with ``requests-oauthlib``.
+			An OAuth token compatible with ``oauthlib``.
 		locale (str, Optional):
 			`ICU <http://www.localeplanet.com/icu/>`__
 			locale used to localize some responses.
@@ -59,8 +59,6 @@ class MobileClient(GoogleMusicClient):
 	oauth_scope = MOBILE_SCOPE
 
 	def __init__(self, username=None, device_id=None, *, token=None, locale='en_US'):
-		username = username or ''
-
 		if self.login(username, token=token):
 			self.locale = locale
 			self.tier = 'fr'

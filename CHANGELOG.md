@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/3.1.0...master)
 
+### Changed
+
+* Switch from requests to [httpx](https://github.com/encode/httpx).
+
 
 ## [3.1.0](https://github.com/thebigmunch/google-music/releases/tag/3.1.0) (2019-07-22)
 

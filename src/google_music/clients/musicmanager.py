@@ -9,7 +9,6 @@ from uuid import getnode as get_mac
 
 import audio_metadata
 import google_music_proto.musicmanager.calls as mm_calls
-import requests
 from google_music_proto.musicmanager.pb import locker_pb2, upload_pb2
 from google_music_proto.musicmanager.utils import transcode_to_mp3
 from google_music_proto.oauth import (
@@ -17,6 +16,7 @@ from google_music_proto.oauth import (
 	MUSICMANAGER_CLIENT_SECRET,
 	MUSICMANAGER_SCOPE,
 )
+from httpx.exceptions import HTTPError
 from tenacity import stop_after_attempt
 
 from .base import GoogleMusicClient
@@ -37,7 +37,7 @@ class MusicManager(GoogleMusicClient):
 			A unique uploader ID.
 			Default: MAC address and username used.
 		token (dict, Optional):
-			An OAuth token compatible with ``requests-oauthlib``.
+			An OAuth token compatible with ``oauthlib``.
 	"""
 
 	client = 'musicmanager'
@@ -46,8 +46,6 @@ class MusicManager(GoogleMusicClient):
 	oauth_scope = MUSICMANAGER_SCOPE
 
 	def __init__(self, username=None, uploader_id=None, *, token=None):
-		username = username or ''
-
 		if self.login(username, token=token):
 			if uploader_id is None:
 				mac_int = get_mac()
@@ -310,7 +308,7 @@ class MusicManager(GoogleMusicClient):
 						total_song_count=1,
 						total_uploaded_count=0,
 					)
-				except requests.RequestException as e:
+				except HTTPError as e:
 					should_retry = True
 					reason = e.response
 				else:

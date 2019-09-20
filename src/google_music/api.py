@@ -26,7 +26,7 @@ def mobileclient(
 			A mobile device ID.
 			Default: MAC address is used.
 		token (dict, Optional):
-			An OAuth token compatible with ``requests-oauthlib``.
+			An OAuth token compatible with ``oauthlib``.
 		locale (str, Optional):
 			`ICU <http://www.localeplanet.com/icu/>`__
 			locale used to localize some responses.
@@ -64,7 +64,7 @@ def musicmanager(
 			A unique uploader ID.
 			Default: MAC address and username used.
 		token (dict, Optional):
-			An OAuth token compatible with ``requests-oauthlib``.
+			An OAuth token compatible with ``oauthlib``.
 
 	Returns:
 		MusicManager: An authenticated :class:`~google_music.MusicManager` instance.
