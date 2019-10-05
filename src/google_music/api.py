@@ -31,7 +31,7 @@ def mobileclient(
 			`ICU <http://www.localeplanet.com/icu/>`__
 			locale used to localize some responses.
 			This must be a locale supported by Android.
-			Default: `'en_US'``.
+			Default: ``'en_US'``.
 
 	Returns:
 		MobileClient: An authenticated :class:`~google_music.MobileClient` instance.

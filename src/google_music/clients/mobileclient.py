@@ -50,7 +50,7 @@ class MobileClient(GoogleMusicClient):
 			`ICU <http://www.localeplanet.com/icu/>`__
 			locale used to localize some responses.
 			This must be a locale supported by Android.
-			Default: `'en_US'``.
+			Default: ``'en_US'``.
 	"""
 
 	client = 'mobileclient'
@@ -1074,15 +1074,15 @@ class MobileClient(GoogleMusicClient):
 				Default: ``100``
 			kwargs (bool, Optional):
 				Any of:
-					- ``albums``
-					- ``artists``
-					- ``genres``
-					- ``playlists``
-					- ``podcasts``
-					- ``situations``
-					- ``songs``
-					- ``stations``
-					- ``videos``
+					- ``'albums'``
+					- ``'artists'``
+					- ``'genres'``
+					- ``'playlists'``
+					- ``'podcasts'``
+					- ``'situations'``
+					- ``'songs'``
+					- ``'stations'``
+					- ``'videos'``
 
 				set to ``True`` will include that result type in the returned dict.
 				Setting none of them will include all result types in the returned dict.
@@ -1133,15 +1133,15 @@ class MobileClient(GoogleMusicClient):
 				Default: ``100``
 			kwargs (bool, Optional):
 				Any of:
-					- ``albums``
-					- ``artists``
-					- ``genres``
-					- ``playlists``
-					- ``podcasts``
-					- ``situations``
-					- ``songs``
-					- ``stations``
-					- ``videos``
+					- ``'albums'``
+					- ``'artists'``
+					- ``'genres'``
+					- ``'playlists'``
+					- ``'podcasts'``
+					- ``'situations'``
+					- ``'songs'``
+					- ``'stations'``
+					- ``'videos'``
 
 				set to ``True`` will include that result type in the returned dict.
 				Setting none of them will include all result types in the returned dict.
@@ -1198,10 +1198,10 @@ class MobileClient(GoogleMusicClient):
 				Default: ``100``
 			kwargs (bool, Optional):
 				Any of:
-					- ``playlists``
-					- ``podcasts``
-					- ``songs``
-					- ``stations``
+					- ``'playlists'``
+					- ``'podcasts'``
+					- ``'songs'``
+					- ``'stations'``
 
 				set to ``True`` will include that result type in the returned dict.
 				Setting none of them will include all result types in the returned dict.
