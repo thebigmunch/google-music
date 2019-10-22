@@ -20,7 +20,7 @@ homepage = "https://github.com/thebigmunch/google-music"
 python = "^3.6"
 
 appdirs = "^1.0"
-audio-metadata = "^0.5"
+audio-metadata = "^0.6"
 google-music-proto = "^2.5"
 protobuf = "^3.5"
 requests-oauthlib = "^1.0"
