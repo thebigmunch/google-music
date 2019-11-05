@@ -13,9 +13,9 @@ from google_music_proto.mobileclient.types import (
 	StationSeedType,
 )
 from google_music_proto.oauth import IOS_CLIENT_ID, IOS_CLIENT_SECRET, MOBILE_SCOPE
+from tbm_utils import cast_to_list
 
 from .base import GoogleMusicClient
-from ..decorators import cast_to_list
 from ..utils import create_mac_string, get_ple_prev_next
 
 # TODO: 'max_results', 'start_token', 'updated_min', 'quality', etc.
