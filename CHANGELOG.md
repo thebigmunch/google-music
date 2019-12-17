@@ -8,6 +8,12 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/3.2.0...master)
 
+### Fixed
+
+* Constrain ``httpx`` dependency version to ``0.7.8``.
+  This is the only version that properly
+	supports Python 3.6	and synchronous usage.
+
 
 ## [3.2.0](https://github.com/thebigmunch/google-music/releases/tag/3.2.0) (2019-11-07)
 
