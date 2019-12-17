@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 * Constrain ``httpx`` dependency version to ``0.7.8``.
   This is the only version that properly
 	supports Python 3.6	and synchronous usage.
+* Error when using ``Mobileclient.stream``.
 
 
 ## [3.2.0](https://github.com/thebigmunch/google-music/releases/tag/3.2.0) (2019-11-07)

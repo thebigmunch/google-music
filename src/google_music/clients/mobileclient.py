@@ -6,6 +6,7 @@ from uuid import getnode as get_mac
 from uuid import uuid4
 
 import google_music_proto.mobileclient.calls as mc_calls
+import httpx
 import more_itertools
 from google_music_proto.mobileclient.types import (
 	ListenNowItemType,
@@ -1920,7 +1921,7 @@ class MobileClient(GoogleMusicClient):
 			quality=quality,
 			session_token=session_token
 		)
-		response = self.session.get(stream_url)
+		response = httpx.get(stream_url)
 		audio = response.content
 
 		return audio
