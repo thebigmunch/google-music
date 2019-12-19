@@ -20,6 +20,7 @@ from httpx.exceptions import HTTPError
 from tenacity import stop_after_attempt
 
 from .base import GoogleMusicClient
+from ..token_handlers import FileTokenHandler
 from ..utils import create_mac_string
 
 
@@ -36,8 +37,16 @@ class MusicManager(GoogleMusicClient):
 		uploader_id (str, Optional):
 			A unique uploader ID.
 			Default: MAC address and username used.
+		session (:class:`~google_music.GoogleMusicSession`, Optional):
+			A session compatible with :class:`GoogleMusicSession`.
 		token (dict, Optional):
 			An OAuth token compatible with ``oauthlib``.
+		token_handler (:class:`~google_music.TokenHandler`, Optional):
+			A token handler class compatible with :class:`TokenHandler`
+			for dumping and loading the OAuth token.
+		token_handler_kwargs (dict, Optional):
+			Keyword arguments to pass to the ``token_handler``
+			class. These become attributes on the class instance.
 	"""
 
 	client = 'musicmanager'
@@ -45,8 +54,25 @@ class MusicManager(GoogleMusicClient):
 	client_secret = MUSICMANAGER_CLIENT_SECRET
 	oauth_scope = MUSICMANAGER_SCOPE
 
-	def __init__(self, username=None, uploader_id=None, *, token=None):
-		if self.login(username, token=token):
+	def __init__(
+		self,
+		username=None,
+		uploader_id=None,
+		*,
+		session=None,
+		token=None,
+		token_handler=FileTokenHandler,
+		token_handler_kwargs=None
+	):
+		super().__init__(
+			username,
+			session=session,
+			token=token,
+			token_handler=token_handler,
+			token_handler_kwargs=None
+		)
+
+		if self.login():
 			if uploader_id is None:
 				mac_int = get_mac()
 				if (mac_int >> 40) % 2:
@@ -60,7 +86,7 @@ class MusicManager(GoogleMusicClient):
 					uploader_id = mac_string
 
 			uploader_name = (
-				f"{socket.gethostname()} ({self.session.headers['User-Agent']})"
+				f"{socket.gethostname()} ({self._session.headers['User-Agent']})"
 			)
 
 			self._upauth(uploader_id, uploader_name)

@@ -27,3 +27,5 @@ Create a mobile or music manager client using the high-level API.
 	api
 	mobileclient
 	musicmanager
+	sessions
+	token-handlers

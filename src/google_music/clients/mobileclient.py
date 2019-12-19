@@ -17,6 +17,7 @@ from google_music_proto.oauth import IOS_CLIENT_ID, IOS_CLIENT_SECRET, MOBILE_SC
 from tbm_utils import cast_to_list
 
 from .base import GoogleMusicClient
+from ..token_handlers import FileTokenHandler
 from ..utils import create_mac_string, get_ple_prev_next
 
 # TODO: 'max_results', 'start_token', 'updated_min', 'quality', etc.
@@ -45,13 +46,21 @@ class MobileClient(GoogleMusicClient):
 		device_id (str, Optional):
 			A mobile device ID.
 			Default: MAC address is used.
-		token (dict, Optional):
-			An OAuth token compatible with ``oauthlib``.
 		locale (str, Optional):
 			`ICU <http://www.localeplanet.com/icu/>`__
 			locale used to localize some responses.
 			This must be a locale supported by Android.
 			Default: ``'en_US'``.
+		session (:class:`~google_music.GoogleMusicSession`, Optional):
+			A session compatible with :class:`GoogleMusicSession`.
+		token (dict, Optional):
+			An OAuth token compatible with ``oauthlib``.
+		token_handler (:class:`~google_music.TokenHandler`, Optional):
+			A token handler class compatible with :class:`TokenHandler`
+			for dumping and loading the OAuth token.
+		token_handler_kwargs (dict, Optional):
+			Keyword arguments to pass to the ``token_handler``
+			class. These become attributes on the class instance.
 	"""
 
 	client = 'mobileclient'
@@ -59,8 +68,26 @@ class MobileClient(GoogleMusicClient):
 	client_secret = IOS_CLIENT_SECRET
 	oauth_scope = MOBILE_SCOPE
 
-	def __init__(self, username=None, device_id=None, *, token=None, locale='en_US'):
-		if self.login(username, token=token):
+	def __init__(
+		self,
+		username=None,
+		device_id=None,
+		*,
+		locale='en_US',
+		session=None,
+		token=None,
+		token_handler=FileTokenHandler,
+		token_handler_kwargs=None
+	):
+		super().__init__(
+			username,
+			session=session,
+			token=token,
+			token_handler=token_handler,
+			token_handler_kwargs=None
+		)
+
+		if self.login():
 			self.locale = locale
 			self.tier = 'fr'
 
@@ -83,11 +110,11 @@ class MobileClient(GoogleMusicClient):
 	def device_id(self):
 		"""The mobile device ID of the :class:`MobileClient` instance."""
 
-		return self.session.headers.get('X-Device-ID')
+		return self._session.headers.get('X-Device-ID')
 
 	@device_id.setter
 	def device_id(self, device_id):
-		self.session.headers.update({'X-Device-ID': device_id})
+		self._session.headers.update({'X-Device-ID': device_id})
 
 	@property
 	def is_subscribed(self):
@@ -120,11 +147,11 @@ class MobileClient(GoogleMusicClient):
 		This must be a locale supported by Android.
 		"""
 
-		return self.session.params.get('hl')
+		return self._session.params.get('hl')
 
 	@locale.setter
 	def locale(self, locale):
-		self.session.params.update({'hl': locale})
+		self._session.params.update({'hl': locale})
 
 	@property
 	def tier(self):
@@ -135,11 +162,11 @@ class MobileClient(GoogleMusicClient):
 		``aa`` if subscribed, ``fr`` if not.
 		"""
 
-		return self.session.params.get('tier')
+		return self._session.params.get('tier')
 
 	@tier.setter
 	def tier(self, tier):
-		self.session.params.update(
+		self._session.params.update(
 			{'tier': tier}
 		)
 
