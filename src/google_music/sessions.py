@@ -4,7 +4,6 @@ __all__ = [
 
 import httpx
 from google_music_proto.oauth import AUTHORIZATION_BASE_URL, REDIRECT_URI, TOKEN_URL
-from httpx.middleware.basic_auth import BasicAuthMiddleware as HTTPBasicAuth
 from oauthlib.common import generate_token, urldecode
 from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient
 
@@ -31,7 +30,7 @@ class GoogleMusicSession(httpx.Client):
 		# Disable timeout by default as too low a value
 		# can cause issues with upload calls.
 		timeout = kwargs.pop('timeout', None)
-		super().__init__(http_versions=['HTTP/1.1'], timeout=timeout, **kwargs)
+		super().__init__(timeout=timeout, **kwargs)
 
 		self.params = {}
 		self.headers.update(
@@ -83,8 +82,7 @@ class GoogleMusicSession(httpx.Client):
 				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
 			data=dict(urldecode(body)),
-			auth=HTTPBasicAuth(self.client_id, self.client_secret),
-			verify=True
+			auth=httpx.BasicAuth(self.client_id, self.client_secret)
 		)
 
 		self.token = self._client.parse_request_body_response(response.text, scope=self.scope)
@@ -110,8 +108,7 @@ class GoogleMusicSession(httpx.Client):
 				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
 			data=dict(urldecode(body)),
-			auth=HTTPBasicAuth(self.client_id, self.client_secret),
-			verify=True,
+			auth=httpx.BasicAuth(self.client_id, self.client_secret),
 			withhold_token=True
 		)
 

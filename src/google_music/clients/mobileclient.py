@@ -1948,7 +1948,7 @@ class MobileClient(GoogleMusicClient):
 			quality=quality,
 			session_token=session_token
 		)
-		response = httpx.get(stream_url)
+		response = self._session.request('GET', stream_url, withhold_token=True)
 		audio = response.content
 
 		return audio
