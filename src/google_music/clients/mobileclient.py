@@ -1,5 +1,6 @@
 __all__ = ['MobileClient']
 
+import re
 from collections import defaultdict
 from operator import itemgetter
 from uuid import getnode as get_mac
@@ -2016,7 +2017,17 @@ class MobileClient(GoogleMusicClient):
 				quality=quality,
 				device_id=device_id,
 			)
-		elif 'storeId' in item and self.is_subscribed:  # Store song.
+		elif (
+			self.is_subscribed
+			and 'storeId' in item
+			and (
+				'clientId' not in item
+				or re.match(
+					r'^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$',
+					item['clientId']
+				)
+			)
+		):  # Store song.
 			response = self._call(
 				mc_calls.TrackStreamURL,
 				item['storeId'],
