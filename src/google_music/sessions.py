@@ -42,7 +42,7 @@ class GoogleMusicSession(httpx.Client):
 		self.scope = scope
 
 		self.token = token or {}
-		self._client = WebApplicationClient(self.client_id, token=self.token)
+		self.oauth_client = WebApplicationClient(self.client_id, token=self.token)
 
 	@property
 	def access_token(self):
@@ -56,7 +56,7 @@ class GoogleMusicSession(httpx.Client):
 		state = generate_token()
 
 		return (
-			self._client.prepare_request_uri(
+			self.oauth_client.prepare_request_uri(
 				self.authorization_base_url,
 				redirect_uri=self.redirect_uri,
 				scope=self.scope,
@@ -67,7 +67,7 @@ class GoogleMusicSession(httpx.Client):
 		)
 
 	def fetch_token(self, code):
-		body = self._client.prepare_request_body(
+		body = self.oauth_client.prepare_request_body(
 			code=code,
 			body='',
 			redirect_uri=self.redirect_uri,
@@ -85,14 +85,14 @@ class GoogleMusicSession(httpx.Client):
 			auth=httpx.BasicAuth(self.client_id, self.client_secret)
 		)
 
-		self.token = self._client.parse_request_body_response(response.text, scope=self.scope)
+		self.token = self.oauth_client.parse_request_body_response(response.text, scope=self.scope)
 
 		return self.token
 
 	def refresh_token(self):
 		refresh_token = self.token.get('refresh_token')
 
-		body = self._client.prepare_refresh_body(
+		body = self.oauth_client.prepare_refresh_body(
 			body='',
 			refresh_token=refresh_token,
 			scope=self.scope,
@@ -112,7 +112,7 @@ class GoogleMusicSession(httpx.Client):
 			withhold_token=True
 		)
 
-		self.token = self._client.parse_request_body_response(response.text, scope=self.scope)
+		self.token = self.oauth_client.parse_request_body_response(response.text, scope=self.scope)
 		if 'refresh_token' not in self.token:
 			self.token['refresh_token'] = refresh_token
 
@@ -129,7 +129,7 @@ class GoogleMusicSession(httpx.Client):
 	):
 		if self.token and not withhold_token:
 			try:
-				url, headers, data = self._client.add_token(
+				url, headers, data = self.oauth_client.add_token(
 					url,
 					http_method=method,
 					body=data,
@@ -137,7 +137,7 @@ class GoogleMusicSession(httpx.Client):
 				)
 			except TokenExpiredError:
 				self.refresh_token()
-				url, headers, data = self._client.add_token(
+				url, headers, data = self.oauth_client.add_token(
 					url,
 					http_method=method,
 					body=data,
