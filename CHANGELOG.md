@@ -6,7 +6,20 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased](https://github.com/thebigmunch/google-music/tree/master)
 
-[Commits](https://github.com/thebigmunch/google-music/compare/3.2.1...master)
+[Commits](https://github.com/thebigmunch/google-music/compare/3.3.0...master)
+
+
+## [3.3.0](https://github.com/thebigmunch/google-music/releases/tag/3.3.0) (2020-01-11)
+
+[Commits](https://github.com/thebigmunch/google-music/compare/3.2.1..3.3.0)
+
+### Added
+
+* Token handling customization.
+
+### Changed
+
+* Use newer version of HTTPX now that sync support as been added back.
 
 
 ## [3.2.1](https://github.com/thebigmunch/google-music/releases/tag/3.2.1) (2019-12-18)
