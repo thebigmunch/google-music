@@ -9,6 +9,7 @@ from uuid import getnode as get_mac
 
 import audio_metadata
 import google_music_proto.musicmanager.calls as mm_calls
+import httpx
 from google_music_proto.musicmanager.pb import locker_pb2, upload_pb2
 from google_music_proto.musicmanager.utils import transcode_to_mp3
 from google_music_proto.oauth import (
@@ -16,7 +17,6 @@ from google_music_proto.oauth import (
 	MUSICMANAGER_CLIENT_SECRET,
 	MUSICMANAGER_SCOPE,
 )
-from httpx.exceptions import HTTPError
 from tenacity import stop_after_attempt
 
 from .base import GoogleMusicClient
@@ -334,7 +334,7 @@ class MusicManager(GoogleMusicClient):
 						total_song_count=1,
 						total_uploaded_count=0,
 					)
-				except HTTPError as e:
+				except httpx.HTTPError as e:
 					should_retry = True
 					reason = e.response
 				else:
