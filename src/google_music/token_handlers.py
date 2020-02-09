@@ -58,7 +58,10 @@ class FileTokenHandler(TokenHandler):
 			pass
 
 		with token_path.open('r') as f:
-			token = json.load(f)
+			try:
+				token = json.load(f)
+			except json.JSONDecodeError:
+				token = {}
 
 		self.token = token
 		self.token_path = token_path

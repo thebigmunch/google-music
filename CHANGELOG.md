@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org).
 ### Fixed
 
 * Change ``HTTPError`` to import from ``httpx`` top level.
+* Token loading when token file is present but empty.
 
 
 ## [3.3.0](https://github.com/thebigmunch/google-music/releases/tag/3.3.0) (2020-01-11)
