@@ -251,7 +251,7 @@ class MusicManager(GoogleMusicClient):
 			try:
 				song = audio_metadata.load(song)
 			except audio_metadata.UnsupportedFormat:
-				raise ValueError("'song' must be FLAC, MP3, or WAV.")
+				raise ValueError("'song' is not of a supported format.")
 
 		if album_art_path:
 			album_art_path = Path(album_art_path).resolve()

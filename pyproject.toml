@@ -5,7 +5,7 @@ build-backend = "poetry.masonry.api"
 [tool.poetry]
 name = "google-music"
 description = "A Google Music API wrapper."
-version = "3.3.0"
+version = "3.4.0"
 
 license = "MIT"
 
@@ -20,12 +20,12 @@ homepage = "https://github.com/thebigmunch/google-music"
 python = "^3.6"
 
 appdirs = "^1.0"
-audio-metadata = "^0.6"
-google-music-proto = "^2.5.2"
+audio-metadata = "^0.8"
+google-music-proto = "^2.8.0"
 httpx = ">=0.11,<1.0"
 oauthlib = "^3.0"
 protobuf = "^3.5"
-tbm-utils = "^1.1.1"
+tbm-utils = "^2.3.0"
 tenacity = ">=5.0,<7.0"
 wrapt = "^1.0"
 
