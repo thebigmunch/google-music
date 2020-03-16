@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/3.4.0...master)
 
+### Changed
+
+* Update for new ``tbm-utils`` version.
+
 
 ## [3.4.0](https://github.com/thebigmunch/google-music/releases/tag/3.4.0) (2020-03-05)
 

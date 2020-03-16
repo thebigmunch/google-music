@@ -456,7 +456,7 @@ class MobileClient(GoogleMusicClient):
 
 		return playlist_song_info
 
-	@cast_to_list(0)
+	@cast_to_list
 	def playlist_songs_add(
 		self,
 		songs,
@@ -534,7 +534,7 @@ class MobileClient(GoogleMusicClient):
 			include_songs=True
 		)
 
-	@cast_to_list(0)
+	@cast_to_list
 	def playlist_songs_delete(self, playlist_songs):
 		"""Delete songs from playlist.
 
@@ -565,7 +565,7 @@ class MobileClient(GoogleMusicClient):
 			include_songs=True
 		)
 
-	@cast_to_list(0)
+	@cast_to_list
 	def playlist_songs_move(
 		self,
 		playlist_songs,
@@ -1559,7 +1559,7 @@ class MobileClient(GoogleMusicClient):
 
 		return song_info
 
-	@cast_to_list(0)
+	@cast_to_list
 	def songs_add(self, songs):
 		"""Add store songs to your library.
 
@@ -1592,7 +1592,7 @@ class MobileClient(GoogleMusicClient):
 			for success_id in success_ids
 		]
 
-	@cast_to_list(0)
+	@cast_to_list
 	def songs_delete(self, songs):
 		"""Delete songs from library.
 
@@ -1629,7 +1629,7 @@ class MobileClient(GoogleMusicClient):
 
 		return success_ids
 
-	@cast_to_list(0)
+	@cast_to_list
 	def songs_play(self, songs):
 		"""Add play to song play count.
 
@@ -1669,7 +1669,7 @@ class MobileClient(GoogleMusicClient):
 			for song in songs
 		]
 
-	@cast_to_list(0)
+	@cast_to_list
 	def songs_rate(self, songs, rating):
 		"""Rate song.
 
