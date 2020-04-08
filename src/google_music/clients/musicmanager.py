@@ -382,7 +382,7 @@ class MusicManager(GoogleMusicClient):
 				original_content_type = track_info.original_content_type
 
 				transcode = (
-					isinstance(song, audio_metadata.WAV)
+					isinstance(song, audio_metadata.WAVE)
 					or original_content_type != locker_pb2.Track.MP3
 				)
 
