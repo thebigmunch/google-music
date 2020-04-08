@@ -1,10 +1,14 @@
 import time
 
-import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from ..sessions import GoogleMusicSession
 from ..token_handlers import FileTokenHandler
+
+try:
+	from httpx import HTTPError as RequestError
+except ImportError:
+	from httpx import RequestError
 
 
 # TODO: Configurable token updater/saver/loader.
@@ -86,7 +90,7 @@ class GoogleMusicClient:
 
 		try:
 			response.raise_for_status()
-		except httpx.HTTPError:
+		except RequestError:
 			raise
 
 		return call.parse_response(response.headers, response.content)
