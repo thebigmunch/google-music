@@ -10,15 +10,22 @@ __all__ = [
 	'__version_info__',
 ]
 
-__title__ = 'google-music'
-__summary__ = 'A Google Music API wrapper.'
-__url__ = 'https://github.com/thebigmunch/google-music'
+try:
+	from importlib.metadata import metadata
+except ImportError:
+	from importlib_metadata import metadata
 
-__version__ = '3.4.0'
+meta = metadata('google-music')
+
+__title__ = meta['Name']
+__summary__ = meta['Summary']
+__url__ = meta['Home-page']
+
+__version__ = meta['Version']
 __version_info__ = tuple(int(i) for i in __version__.split('.') if i.isdigit())
 
-__author__ = 'thebigmunch'
-__author_email__ = 'mail@thebigmunch.me'
+__author__ = meta['Author']
+__author_email__ = meta['Author-email']
 
-__license__ = 'MIT'
+__license__ = meta['License']
 __copyright__ = f'2018-2020 {__author__} <{__author_email__}>'
