@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 [Commits](https://github.com/thebigmunch/google-music/compare/3.6.0...master)
 
+### Changed
+
+* Handle exceptions for upload call.
+
 
 ## [3.6.0](https://github.com/thebigmunch/google-music/releases/tag/3.6.0) (2020-04-08)
 

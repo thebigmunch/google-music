@@ -405,12 +405,20 @@ class MusicManager(GoogleMusicClient):
 							}
 						)
 					else:
-						upload_response = self._call(
-							mm_calls.ScottyAgentPut,
-							upload_url,
-							audio_file,
-							content_type=content_type,
-						).body
+						try:
+							upload_response = self._call(
+								mm_calls.ScottyAgentPut,
+								upload_url,
+								audio_file,
+								content_type=content_type,
+							).body
+						except Exception as e:  # noqa
+							result.update(
+								{
+									'success': False,
+									'reason': str(e),
+								}
+							)
 
 						if upload_response.get('sessionStatus', {}).get('state'):
 							result.update(
