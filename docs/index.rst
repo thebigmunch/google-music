@@ -1,6 +1,8 @@
 google-music --- A Google Music API library
 ===========================================
 
+**Due to Google Music shutting down in favor of YouTube Music, this project has ended.****Due to Google Music shutting down in favor of YouTube Music, this project has ended.**
+
 
 Getting Started
 ---------------
